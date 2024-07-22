@@ -1,6 +1,16 @@
 import os
 import platform
 
+class color:
+
+    OK="\033[92m"
+    AL="\033[93m"
+    BD="\033[91m"
+    NM="\033[0m"
+
+    MG="\033[96m"
+
+
 SYS=platform.system().lower()
 BASE=os.getcwd()
 
@@ -40,7 +50,11 @@ scripts_dir=".scripts/"
 
 scripts_h=[
 
-    "[DOXING TOOLS]\n",
+    "\n[COMANDOS]--->> mgt0L$.py <<---[VERSION-2.1]\n",
+    "findtl      [palabra clave] busca herramientas por palabras clave. ",
+    "help        muestra todas las interacciones disponibles en mgtols.",
+    "exit        termina la sesion de mgtols.",
+    "\n[DOXING TOOLS]\n",
     ">seeker     recopila infromacion con nombres de usuario.",
     ">findperson busca informacion de personas por sus nombres [genealog].",
     ">iplocate   geolocaliza direcciones ip detalladamente.",
@@ -56,7 +70,7 @@ scripts_h=[
     ">httpflood  sobrecarga un servidor enviando solicitudes falsas [http-flood].",
     "\n[VECTOR TOOLS]\n",
     ">unzipper   realiza ataque de diccionario a compresiones [ZIP].",
-    ">tempmail   email temporal basado en mailnesia."
+    ">tempmail   email temporal basado en mailnesia.\n"
 
 ]
 
@@ -77,15 +91,10 @@ execute_s={
 
 }
 
-print("""
-MgToLs [Versión 1.0]
-(c) MIT LICENCE
-""")
-
 while True:
 
     try:
-        shell=input("mgt0l$>>").lower()
+        shell=input(color.BD+"mgt0l$->>"+color.AL).lower()
 
     except:
         pass
@@ -134,17 +143,12 @@ while True:
                 if SYS == "windows":
                     os.system(shell)
 
-                print("\n[MGT0L$.PY] VERSION 1.0\n")
-                print("""[comandos]
-
-findtl     [palabra clave] busca herramientas por palabras clave. 
-help       muestra todas las interacciones disponibles en mgtols.
-exit       termina la sesion de mgtols.
-
-[herramientas]
-""".upper())
                 for word in scripts_h:
-                    print("{}".format(word).upper())
+                    
+                    if "]\n" in word:
+                        print(color.MG+f"{word}".upper()+color.OK)
+                    else:
+                        print("{}".format(word).upper())
             else:
 
                 os.system(shell) # ESTE SHELL SE ENCARGA DE EJECUTAR COMANDOS SI NO SON HELP
