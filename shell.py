@@ -69,7 +69,8 @@ scripts_h=[
     ">icmpdos    realiza ataque ddos con protocolo icmp.",
     ">httpflood  sobrecarga un servidor enviando solicitudes falsas [http-flood].",
     "\n[VECTOR TOOLS]\n",
-    ">unzipper   realiza ataque de diccionario a compresiones [ZIP].",
+    ">ftpbrute   realiza ataques de diccionario a servidores ftp.",
+    ">unzipper   realiza ataque de diccionario a compresiones [zip].",
     ">tempmail   email temporal basado en mailnesia.\n"
 
 ]
@@ -87,7 +88,8 @@ execute_s={
     "reverhttp":"reverseatak.py",
     "iplocate":"iplocate.py",
     "sc4pk":"sc4pk.py",
-    "httpflood":"httpflood.py"
+    "httpflood":"httpflood.py",
+    "ftpbrute":"ftpbrute.py"
 
 }
 
