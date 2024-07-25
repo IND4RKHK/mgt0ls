@@ -14,6 +14,14 @@ class color:
 SYS=platform.system().lower()
 BASE=os.getcwd()
 
+def ayuda():
+    for word in scripts_h:
+
+        if "]\n" in word:
+            print(color.MG+f"{word}".upper()+color.OK)
+        else:
+            print("{}".format(word).upper())
+
 def update():
     
     import requests
@@ -93,6 +101,7 @@ execute_s={
 
 }
 
+ayuda()
 while True:
 
     try:
@@ -144,13 +153,8 @@ while True:
 
                 if SYS == "windows":
                     os.system(shell)
+                ayuda()
 
-                for word in scripts_h:
-                    
-                    if "]\n" in word:
-                        print(color.MG+f"{word}".upper()+color.OK)
-                    else:
-                        print("{}".format(word).upper())
             else:
 
                 os.system(shell) # ESTE SHELL SE ENCARGA DE EJECUTAR COMANDOS SI NO SON HELP
