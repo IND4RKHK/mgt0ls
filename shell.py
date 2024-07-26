@@ -26,16 +26,16 @@ def update():
     
     import requests
     try:
-        ver_base=open("README.md")
+        ver_base=open("shell.py")
         ver_base_all=ver_base.read()
 
-        ver=requests.get("https://raw.githubusercontent.com/IND4RKHK/mgt0ls/main/README.md")
+        ver=requests.get("https://raw.githubusercontent.com/IND4RKHK/mgt0ls/main/shell.py")
 
         if ver.text == ver_base_all:
             return True
         else:
 
-            print("[UPDATE] MGT0LS TIENE UNA ACTUALIZACION DISPONIBLE!!")
+            print("[UPDATE] MGT0L$ TIENE UNA ACTUALIZACION DISPONIBLE!!")
             """
             try:
                 up_str=input("[UPDATE] ACTUALIZAR MGT0LS? [S/N]: ").lower()
@@ -61,7 +61,8 @@ scripts_h=[
     "\n[COMANDOS]--->> mgt0L$.py <<---[VERSION-2.1]\n",
     "findtl      [palabra clave] busca herramientas por palabras clave. ",
     "help        muestra todas las interacciones disponibles en mgtols.",
-    "exit        termina la sesion de mgtols.",
+    "update      verifica si hay una nueva version disponible de mgt0l$.",
+    "exit        termina la sesion de mgt0l$.",
     "\n[DOXING TOOLS]\n",
     ">seeker     recopila infromacion con nombres de usuario.",
     ">findperson busca informacion de personas por sus nombres [genealog].",
@@ -145,7 +146,10 @@ while True:
             
 
         elif shell == "exit" or shell == "quit":
-            break 
+            exit(0)
+        
+        elif shell == "update":
+            update()
 
         else:
 
