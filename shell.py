@@ -32,7 +32,7 @@ def update():
         ver=requests.get("https://raw.githubusercontent.com/IND4RKHK/mgt0ls/main/shell.py")
 
         if ver.text == ver_base_all:
-            return True
+            print("[UPDATED] MGT0L$ ESTA ACTUALIZADO c:")
         else:
 
             print("[UPDATE] MGT0L$ TIENE UNA ACTUALIZACION DISPONIBLE!!")
