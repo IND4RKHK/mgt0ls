@@ -5,6 +5,7 @@ import requests
 import platform
 from bs4 import BeautifulSoup
 
+CONTADOR=0
 SYS=platform.system().lower()
 
 ver_carpeta=os.listdir()
@@ -77,7 +78,7 @@ def crear(selec):
 
 
 def obtener():
-
+    global CONTADOR
     try:
         idcap=input("[ID] Introduce tu ID de seguimiento: ")
 
@@ -113,7 +114,7 @@ def obtener():
                 word=word.replace("\n","")
 
                 if idcap in word:
-
+                    CONTADOR=CONTADOR+1
                     #print(word) DEVOLPING COMMENTS
                     chek=True
 
@@ -121,9 +122,9 @@ def obtener():
                     word=word.replace(idcap,"").replace(" ","").replace("</div>]","")
                     #print(word)
                     try:
-                        print(f"[HEX] YOUR HEX CODE\n->> {word}")
+                        print(f"[HEX] YOUR HEX CODE TARGET->> [{CONTADOR}]")
                         word=str(codecs.decode(word,"hex"))
-                        print(word.replace("\\n","\n").replace("b'","[TARGET]->> SCAM.APK ->> ").replace("#'","\n").replace("%40","@"))
+                        print(word.replace("\\n","\n").replace("b'","[TARGET]->> SCAM.APK ->> ").replace("#'","\n").replace("%40","@").replace("%C3%B1","ñ"))
                     except:
                         print("[ERROR] HEX NO ENCONTRADO X_X")
                         exit(0)
