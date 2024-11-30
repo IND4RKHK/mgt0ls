@@ -78,9 +78,10 @@ scripts_h=[
     ">icmpdos    realiza ataque ddos con protocolo icmp.",
     ">httpflood  sobrecarga un servidor enviando solicitudes falsas [http-flood].",
     "\n[VECTOR TOOLS]\n",
+    ">webdumper  encargado de encontrar directorios ocultos dentro de paginas web. [fuzzing]",
     ">ftpbrute   realiza ataques de diccionario a servidores ftp.",
     ">unzipper   realiza ataque de diccionario a compresiones [zip].",
-    ">tempmail   email temporal basado en mailnesia.\n"
+    ">tempmail   email temporal basado en mailnesia.\n",
 
 ]
 
@@ -98,7 +99,8 @@ execute_s={
     "iplocate":"iplocate.py",
     "sc4pk":"sc4pk.py",
     "httpflood":"httpflood.py",
-    "ftpbrute":"ftpbrute.py"
+    "ftpbrute":"ftpbrute.py",
+    "webdumper":"webdumper.py"
 
 }
 
