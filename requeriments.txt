@@ -9,3 +9,4 @@ pip install aspose-words
 pip install beautifulsoup4
 pip install requests
 pip install zipfile36
+pip install tabulate
