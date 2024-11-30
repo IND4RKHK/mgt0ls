@@ -181,7 +181,8 @@ admin_login_tools.php
 user_login_tools.php
 system_control.php
 admin_portal_cp.php
-user_portal_cp.phplogin_action.php
+user_portal_cp.php
+login_action.php
 auth_action.php
 authenticate.php
 session_login.php
