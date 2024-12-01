@@ -1,5 +1,4 @@
-import os
-import platform
+from __prog__ import * # Importa los programas desde __prog__.py
 
 class color:
 
@@ -87,20 +86,20 @@ scripts_h=[
 
 execute_s={
 
-    "seeker":"seeker.py",
-    "icmpdos":"icmpdos.py",
-    "lopiapi":"lopiapi.py",
-    "unzipper":"unzipper.py",
-    "tempmail":"tempmail.py",
-    "wordinfect":"wordinfect.py",
-    "macromaker":"macromaker.py",
-    "findperson":"findperson.py",
-    "reverhttp":"reverseatak.py",
-    "iplocate":"iplocate.py",
+    "seeker":seeker,
+    "icmpdos":icmpdos,
+    "lopiapi":lopiapi,
+    "unzipper":unzipper,
+    "tempmail":tempmail,
+    "wordinfect":wordinfect,
+    "macromaker":macromaker,
+    "findperson":findperson,
+    "iplocate":iplocate,
+    "httpflood":httpflood,
+    "ftpbrute":ftpbrute,
+    "webdumper":webdumper,
     "sc4pk":"sc4pk.py",
-    "httpflood":"httpflood.py",
-    "ftpbrute":"ftpbrute.py",
-    "webdumper":"webdumper.py"
+    "reverhttp":"reverseatak.py"
 
 }
 
@@ -130,7 +129,11 @@ while True:
                 os.chdir(BASE)
 
             else:
-                os.system("python3 {}{}".format(scripts_dir,execute_s.get(shell)))
+                try:
+                    execute_s[shell]()
+                except:
+                    print("[ERROR] Ejecuta shell.py desde tu consola de comandos...")
+                #os.system("python3 {}{}".format(scripts_dir,execute_s.get(shell)))
 
             #os.system("python3 {}{}".format(scripts_dir,execute_s.get(shell)))
         
