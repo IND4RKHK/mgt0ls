@@ -1,88 +1,183 @@
+# MGT0L$
+
+**MGT0L$** is a powerful collection of security and analysis tools designed for advanced tasks like **doxing**, **malware crafting**, and **penetration testing**. This project is aimed at researchers, developers, and cybersecurity enthusiasts who want to automate and simplify complex processes.
+
 ---
 
-# mgt0ls
+## **Features**
 
-## Description
+### **Doxing Tools**
+- **`seeker`**: Searches for information based on usernames across over 100 platforms.
+- **`findperson`**: Investigates personal information using public databases.
+- **`iplocate`**: Geolocates an IP address with advanced details.
+- **`lopiapi`**: Queries data related to phone numbers in **Chile**.
 
-`mgt0ls` is a powerful tool designed for a variety of uses in controlled and research environments. It provides a wide range of functions that can be useful for security testing, malware behavior analysis, and other controlled applications. **It is important to note that the misuse of this tool is strictly prohibited.**
+### **Scam Tools**
+- **`sc4pk`**: Generates APK applications for security testing purposes.
+  
+### **Malware Tools**
+- **`macromaker`**: Creates malicious macros for Word documents.
+- **`wordinfect`**: Embeds macros into existing `.docm` documents for testing.
 
-## Features
+### **DDoS Tools**
+- **`icmpdos`**: Performs basic DDoS attacks using the ICMP protocol.
+- **`httpflood`**: Overloads HTTP servers with fake requests.
 
-`mgt0ls` offers the following functionalities:
+### **Vector Tools**
+- **`webdumper`**: Finds hidden directories on web servers.
+- **`ftpbrute`**: Performs brute force attacks on FTP servers.
+- **`unzipper`**: Cracks password-protected ZIP files using dictionaries.
+- **`tempmail`**: Generates temporary email addresses using **Mailnesia**.
 
-- **Infecting Word documents**: Allows injecting malicious code into Word documents.
-- **DDoS attacks**: Facilitates the simulation of distributed denial-of-service attacks for stress testing.
-- **Temporary email**: Generates temporary email addresses for testing and privacy protection.
-- **Doxing**: Tools for searching and tracking personal information on the internet.
+---
 
-## Installation Requirements
+## **Installation**
 
-To use `mgt0ls`, you need to meet the following requirements:
+### **Requirements**
+Before installing, ensure the following prerequisites are met:
+1. **Operating System**: Windows, Linux, or Termux (Android).
+2. **Python**: Version 3.8 or higher.
+3. **Required Libraries**:
+   - `requests`
+   - `beautifulsoup4`
+   - `aspose-words`
+   - `tabulate`
 
-- **Python**: Ensure Python is installed. `mgt0ls` requires Python along with several basic libraries to function properly. If Python 3 doesn't work, try Python 2.
+You can automatically install these dependencies using the `requirements.txt` file.
 
-### Installation on Linux Distributions and Similar (including Termux):
+---
 
-```bash
-apt-get install python3
-bash requeriments.txt
-```
-
-Run `Python3 Shell.py` from the `mgt0ls` directory to avoid errors.
-
-### Installation on Windows:
-
-1. **Download Python**: Download Python from the [official Python website](https://www.python.org/downloads/) and install the latest version.
-   
-2. **Download `mgt0ls`**: Download `mgt0ls` from your browser and extract it.
-
-3. **Open CMD**: Open Command Prompt (CMD) from the `mgt0ls` folder.
-
-4. **Install Required Libraries**:
-   
-   ```bash
-   ./requeriments.txt
+### **Installation on Windows**
+1. Clone or download the repository from GitHub:
+   ```powershell
+   git clone https://github.com/IND4RKHK/mgt0ls.git
+   cd mgt0ls
    ```
 
-5. **Run `shell.py`**:
+2. Install the required dependencies:
+   ```powershell
+   pip install -r requirements.txt
+   ```
 
+3. Run the main script:
+   ```powershell
+   python3 shell.py
+   ```
+
+---
+
+### **Installation on Linux**
+1. Clone the repository using Git:
+   ```bash
+   git clone https://github.com/IND4RKHK/mgt0ls.git
+   cd mgt0ls
+   ```
+
+2. Install the required dependencies:
+   ```bash
+   pip3 install -r requirements.txt
+   ```
+
+3. Grant execution permissions to the main script:
+   ```bash
+   chmod +x shell.py
+   ```
+
+4. Execute the tool:
+   ```bash
+   ./shell.py
+   ```
+
+---
+
+### **Installation on Termux**
+1. Update Termux:
+   ```bash
+   pkg update && pkg upgrade
+   ```
+
+2. Install Python and Git:
+   ```bash
+   pkg install python3 git
+   ```
+
+3. Clone the repository:
+   ```bash
+   git clone https://github.com/IND4RKHK/mgt0ls.git
+   cd mgt0ls
+   ```
+
+4. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+5. Run the main script:
    ```bash
    python3 shell.py
    ```
 
-## General Explanation
+---
 
-Once inside, you will have access to various commands and tools:
+## **Usage**
 
-```
-[MGT0LS.PY] VERSION 1.0
-
-# [COMMANDS]
-
-FINDTL     [KEYWORD] Search tools by keyword.
-HELP       Display all available interactions in MGT0LS.
-EXIT       Terminate the MGT0LS session.
-
-# [TOOLS]
-
-SEEKER     Gather information using usernames.
-ICMPDOS    Perform a DDoS attack using ICMP protocol.
-LOPIAPI    Test with a phone number [CL].
-UNZIPPER   Perform dictionary attack on ZIP compressions.
-TEMPMAIL   Temporary email based on Mailnesia.
-WORDINFECT Inject infected macro into a Word document [DOCM].
-MACROMAKER Create a Word macro based on your specifications [OFFICE].
+### **Starting the Program**
+Run the main script to access the interactive menu:
+```bash
+python3 shell.py
 ```
 
-## Some Incompatibility Errors
+### **Main Commands**
+Below are some of the commands available in the tool:
 
-Enter the tool or command name to execute it. These scripts are still under development, so you may encounter the following issues:
+#### **Basic Commands**
+- `help`: Displays all available tools and their descriptions.
+- `update`: Checks for updates for the project.
+- `exit`: Terminates the program.
 
-1. Library incompatibility
-2. Path handling
-3. Compatibility issues with certain native Windows scripts
+#### **Doxing Tools**
+```plaintext
+> seeker       Collects information based on usernames from social networks and public platforms.
+> findperson   Searches personal information using public databases.
+> iplocate     Geolocates an IP address.
+```
 
-## License
+#### **Vector Tools**
+```plaintext
+> webdumper    Finds hidden directories and files on web servers.
+> ftpbrute     Performs brute force attacks on FTP servers.
+> unzipper     Cracks password-protected ZIP files using dictionaries.
+```
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+### **Example Usage**
+```plaintext
+mgt0l$->> help
+[DOXING TOOLS]
+> seeker      Collects information based on usernames.
+> findperson  Searches for information about people by their names [genealog].
+> iplocate    Geolocates IP addresses with detailed data.
+...
+```
 
+---
+
+## **Project Structure**
+```plaintext
+mgt0ls/
+│
+├── shell.py            # Main script managing the interactive menu.
+├── __prog__.py         # Module containing the implemented tools.
+├── requirements.txt    # List of dependencies needed for the project.
+├── README.md           # Project documentation.
+└── .scripts/           # Optional directory for future extensions.
+```
+
+---
+
+## **Disclaimer**
+The use of this software should be limited to **educational** or **research** purposes in controlled environments. **Do not use these tools for illegal activities.** The author is not responsible for misuse of the code.
+
+---
+
+## **License**
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). See the `LICENSE` file for more details.
