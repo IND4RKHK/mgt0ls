@@ -774,7 +774,7 @@ def seeker():
                             save.write("\n[URL] "+word)
                         #a=soli.status_code
                         
-                        print("[URL] {}{}\n[{}]".format(word,status_codes.get(soli.status_code)))
+                        print("[URL] {}\n[{}]".format(word,status_codes.get(soli.status_code)))
 
                     except:
                         pass
