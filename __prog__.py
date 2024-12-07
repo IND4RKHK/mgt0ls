@@ -755,7 +755,7 @@ def seeker():
                 pass
             
             else:
-                print("[Tipo de busqueda] ===> [URL] A [{}]\n".format(usuario))
+                print("[Tipo de busqueda] ===> [URL] A [{}]\n[Buscando en 800 <sitios>]".format(usuario))
                 
                 leer=open(".bdd")
                 lectura=leer.readlines()
@@ -767,13 +767,14 @@ def seeker():
                         word=word.replace("\n","")
                     
                     try:
-                        soli=requests.get("{}{}".format(word, usuario), timeout=20)            
+                        word=word.replace("name_find", usuario) # Reemplaza el name_find del diccionario por el usuario
+                        soli=requests.get(word, timeout=20)           
                         
                         if soli.status_code == 200:
-                            save.write("\n[URL] "+word+usuario)
+                            save.write("\n[URL] "+word)
                         #a=soli.status_code
                         
-                        print("[URL] {}{}\n[{}]".format(word,usuario,status_codes.get(soli.status_code)))
+                        print("[URL] {}{}\n[{}]".format(word,status_codes.get(soli.status_code)))
 
                     except:
                         pass
