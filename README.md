@@ -14,7 +14,7 @@
 
 ### **Scam Tools**
 - **`sc4pk`**: Generates APK applications for security testing purposes.
-  
+
 ### **Malware Tools**
 - **`macromaker`**: Creates malicious macros for Word documents.
 - **`wordinfect`**: Embeds macros into existing `.docm` documents for testing.
@@ -127,13 +127,15 @@ Run the main script to access the interactive menu:
 python3 shell.py
 ```
 
+### **New Features for `fsh.py`**
+
+With the new structure in `fsh.py`, users can now access detailed documentation and examples for each tool directly from the command line. This feature makes it easier to understand the purpose, usage, and parameters of each tool without having to refer to external documentation.
+
 ### **Main Commands**
 Below are some of the commands available in the tool:
 
 #### **Basic Commands**
 - `help`: Displays all available tools and their descriptions.
-- `update`: Checks for updates for the project.
-- `exit`: Terminates the program.
 
 #### **Doxing Tools**
 ```plaintext
@@ -150,14 +152,56 @@ Below are some of the commands available in the tool:
 ```
 
 ### **Example Usage**
+
+#### **Example 1: Displaying Help**
+To see the list of available tools and their descriptions, use:
+```bash
+python3 fsh.py help
+```
+
+**Output**:
 ```plaintext
-mgt0l$->> help
 [DOXING TOOLS]
 > seeker      Collects information based on usernames.
 > findperson  Searches for information about people by their names [genealog].
 > iplocate    Geolocates IP addresses with detailed data.
 ...
 ```
+
+#### **Example 2: Using the `seeker` Tool**
+To search for information about a specific username on multiple platforms:
+```bash
+python3 fsh.py seeker --a johndoe
+```
+
+This will search for the username `johndoe` across over 100 social platforms.
+
+#### **Example 3: Using `iplocate` to Geolocate an IP**
+To find detailed geolocation data for an IP address:
+```bash
+python3 fsh.py iplocate --a 8.8.8.8
+```
+
+This will return information such as the geographical location and ISP of the IP address `8.8.8.8`.
+
+#### **Example 4: Brute Force Attack with `ftpbrute`**
+Perform a brute-force attack on an FTP server with a specific username and password dictionary:
+```bash
+python3 fsh.py ftpbrute --a one --b ftp.example.com --c user123 --d passlist.txt
+```
+
+- `--a` defines the mode (`one` for a single user attack).
+- `--b` is the FTP server address.
+- `--c` is the file containing usernames.
+- `--d` is the file containing passwords.
+
+#### **Example 5: Cracking ZIP Files with `unzipper`**
+To crack a password-protected ZIP file using a dictionary:
+```bash
+python3 fsh.py unzipper --a passwordlist.txt --b secretfile.zip
+```
+
+This will attempt to extract the contents of `secretfile.zip` using passwords from `passwordlist.txt`.
 
 ---
 
@@ -167,6 +211,8 @@ mgt0ls/
 │
 ├── shell.py            # Main script managing the interactive menu.
 ├── __prog__.py         # Module containing the implemented tools.
+├── __prog__fast__.py   # Module containing the implemented tools to fsh.py.
+├── fsh.py              # Quick use of the module __prog__fast__.py.
 ├── requirements.txt    # List of dependencies needed for the project.
 ├── README.md           # Project documentation.
 └── .scripts/           # Optional directory for future extensions.
