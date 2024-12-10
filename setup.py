@@ -39,7 +39,7 @@ else:
         for inst in kl_l:
             os.system(f"apt-get install {inst} -y")
         for one in modules:
-            os.system(f"pip install {one}")
+            os.system(f"pip install {one} --break-system-packages")
     except Exception as err:
         print(err)
         exit(0)
