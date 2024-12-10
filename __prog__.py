@@ -13,6 +13,13 @@ from bs4 import BeautifulSoup
 from tabulate import tabulate
 from ftplib import FTP, error_perm, error_reply, error_temp
 
+try:
+    with open(".root", "r") as root_dir:
+        ROOT_MAX = root_dir.readlines()[0]
+except:
+    print("[ERROR] setup.py Aun no ah sido ejecutado...")
+    exit(0)
+
 def findperson():
 
     def limpieza(limp):

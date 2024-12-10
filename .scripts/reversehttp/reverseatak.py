@@ -141,7 +141,7 @@ def server():
             pausa=int(input("[SERVER IN] [01] GNU/LINUX [02] WINDOWS ->>"))
         """
 
-        if SYS != "windows":
+        if "win" not in SYS:
             pausa=1
         else:
             pausa=2

@@ -160,7 +160,7 @@ while True:
 
             if shell == "help":
 
-                if SYS == "windows":
+                if "win" in SYS :
                     os.system(shell)
                 ayuda()
 
