@@ -1,3 +1,5 @@
+import os
+
 try:
     with open(".root", "r") as root_dir:
         ROOT_MAX = root_dir.readlines()[0]
@@ -15,7 +17,6 @@ except:
         print("[ERROR 02] No estas en la carpeta principal de mgt0ls...")
     exit(0)
 
-import os
 import sys
 import time
 import shutil
