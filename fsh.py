@@ -49,7 +49,7 @@ execute_s = {
         "a", 
         "[DESCRIPCION]\nBusca información asociada a un número telefónico usando APIs públicas.\n\n"
         "[USO]\npython3 fsh.py lopiapi --a <número_telefónico>\n\n"
-        "[PARAMETROS]\n--a: Número telefónico, incluyendo el código de país (obligatorio)."
+        "[PARAMETROS]\n--a: Número telefónico, ejemplo: 983222434 (obligatorio)."
     ],
     "unzipper": [
         unzipper, 
@@ -118,10 +118,10 @@ execute_s = {
         webdumper, 
         "abc", 
         "[DESCRIPCION]\nExplora sitios web en busca de directorios y archivos ocultos utilizando diccionarios.\n\n"
-        "[USO]\npython3 fsh.py webdumper --a <url> --b <diccionario> --c <F|S>\n\n"
-        "[PARAMETROS]\n--a: URL base (obligatorio).\n"
-        "--b: Diccionario con palabras clave (obligatorio).\n"
-        "--c: Modo (`F` para inicial, `S` para recursivo, obligatorio)."
+        "[USO]\npython3 fsh.py webdumper --a <F|S> --b <url> --c <diccionario>\n\n"
+        "[PARAMETROS]\n--a: Modo (`F` para inicial, `S` para recursivo, obligatorio).\n"
+        "--b: URL base (obligatorio).\n"
+        "--c: Diccionario con palabras clave (obligatorio)."
     ],
     "sc4pk": [
         sc4pk, 

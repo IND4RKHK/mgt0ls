@@ -22,7 +22,7 @@ modules = [
     "aspose-words",
     "beautifulsoup4",
     "requests",
-    "zipfile36",
+    "pyzipper",
     "tabulate"
     
 ]
