@@ -1,3 +1,20 @@
+try:
+    with open(".root", "r") as root_dir:
+        ROOT_MAX = root_dir.readlines()[0]
+
+        if "\\" in ROOT_MAX:
+            ROOT_MAX = ROOT_MAX.replace("\\", "/")
+        
+        if "//" not in f"{ROOT_MAX}/":
+            ROOT_MAX = ROOT_MAX + "/" # Cuando se use ROOT_MAX no hay que usar / porque ya lo tiene incluido
+
+except:
+    if "mgt0ls" in os.getcwd():
+        print("[ERROR 01] setup.py Aun no ah sido ejecutado...")
+    else:
+        print("[ERROR 02] No estas en la carpeta principal de mgt0ls...")
+    exit(0)
+
 import os
 import sys
 import time
@@ -12,13 +29,6 @@ import aspose.words as aw
 from bs4 import BeautifulSoup
 from tabulate import tabulate
 from ftplib import FTP, error_perm, error_reply, error_temp
-
-try:
-    with open(".root", "r") as root_dir:
-        ROOT_MAX = root_dir.readlines()[0]
-except:
-    print("[ERROR] setup.py Aun no ah sido ejecutado...")
-    exit(0)
 
 def findperson():
 

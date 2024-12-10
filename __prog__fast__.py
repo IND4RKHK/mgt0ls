@@ -1,20 +1,3 @@
-import os
-import sys
-import time
-import shutil
-import codecs
-import random
-import base64
-import zipfile
-# import zipfile36 as zipfile 
-# Descomentar en caso de ser incompatible con version python
-import platform
-import requests
-import aspose.words as aw
-from bs4 import BeautifulSoup
-from tabulate import tabulate
-from ftplib import FTP, error_perm, error_reply, error_temp
-
 try:
     with open(".root", "r") as root_dir:
         ROOT_MAX = root_dir.readlines()[0]
@@ -31,6 +14,23 @@ except:
     else:
         print("[ERROR 02] No estas en la carpeta principal de mgt0ls...")
     exit(0)
+
+import os
+import sys
+import time
+import shutil
+import codecs
+import random
+import base64
+import zipfile
+# import zipfile36 as zipfile 
+# Descomentar en caso de ser incompatible con version python
+import platform
+import requests
+import aspose.words as aw
+from bs4 import BeautifulSoup
+from tabulate import tabulate
+from ftplib import FTP, error_perm, error_reply, error_temp
 
 def findperson(nombre, arg):
 
