@@ -32,8 +32,7 @@ from tabulate import tabulate
 from ftplib import FTP, error_perm, error_reply, error_temp
 
 def findperson(nombre, arg): # Funciona with
-
-    nombre = f"{nombre} /{arg}"
+    nombre = f"{nombre} /{arg.upper()}"
 
 
 
@@ -107,8 +106,9 @@ def findperson(nombre, arg): # Funciona with
 
                 if '{"' in line:
                     resultados=line.replace("var result = ", "")
-                    os.remove("a.txt")
                     #resultados_json=json.loads(resultados)
+
+        os.remove("a.txt")
 
         return limpieza(resultados)
 
@@ -172,6 +172,8 @@ def findperson(nombre, arg): # Funciona with
         pass
 
 def ftpbrute(selec, ftpserver, usuario, password): # Deberia funcionar with
+
+    selec = selec.lower()
 
     def limpieza():
 
@@ -356,6 +358,8 @@ def httpflood(URL):
                 print("[ATACANDO] URL ->> {} STATUS CODE ATACK ->> [{}]".format(URL, atak.status_code))
 
 def icmpdos(ip, pack):
+
+    pack = int(pack)
 
     SYS=platform.system().lower()
                 
@@ -840,6 +844,8 @@ def unzipper(dic, directiorio_archivo): # Funciona with
 
 def webdumper(select, url, dic_path): # Funciona with
 
+    select = select.lower()
+
     random_usera={
 
         1:"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.1234.567 Safari/537.36",
@@ -994,6 +1000,7 @@ def wordinfect(ruta, macro):
 
 def sc4pk(idcap, selec):
 
+    selec = selec.lower()
     CONTADOR=0
     SYS=platform.system().lower()
 
