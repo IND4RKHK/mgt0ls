@@ -42,8 +42,10 @@ Before installing, ensure the following prerequisites are met:
    - `beautifulsoup4`
    - `aspose-words`
    - `tabulate`
+   - `StringGenerator`
+   - `pyzipper`
 
-You can automatically install these dependencies using the `requirements.txt` file.
+You can automatically install these dependencies using the `setup.py` file.
 
 ---
 
@@ -56,7 +58,7 @@ You can automatically install these dependencies using the `requirements.txt` fi
 
 2. Install the required dependencies:
    ```powershell
-   pip install -r requirements.txt
+   python3 setup.py
    ```
 
 3. Run the main script:
@@ -69,13 +71,14 @@ You can automatically install these dependencies using the `requirements.txt` fi
 ### **Installation on Linux**
 1. Clone the repository using Git:
    ```bash
+   sudo su
    git clone https://github.com/IND4RKHK/mgt0ls.git
    cd mgt0ls
    ```
 
 2. Install the required dependencies:
    ```bash
-   pip3 install -r requirements.txt
+   python3 setup.py
    ```
 
 3. Grant execution permissions to the main script:
@@ -109,7 +112,7 @@ You can automatically install these dependencies using the `requirements.txt` fi
 
 4. Install the required dependencies:
    ```bash
-   pip install -r requirements.txt
+   python3 setup.py
    ```
 
 5. Run the main script:
@@ -209,12 +212,13 @@ This will attempt to extract the contents of `secretfile.zip` using passwords fr
 ```plaintext
 mgt0ls/
 │
+├── fsh.py              # Quick use via the __prog__fast__.py module.
 ├── shell.py            # Main script managing the interactive menu.
 ├── __prog__.py         # Module containing the implemented tools.
 ├── __prog__fast__.py   # Module containing the implemented tools to fsh.py.
-├── fsh.py              # Quick use of the module __prog__fast__.py.
 ├── requirements.txt    # List of dependencies needed for the project.
 ├── README.md           # Project documentation.
+├── assets/             # Extensions Directory.
 └── .scripts/           # Optional directory for future extensions.
 ```
 
