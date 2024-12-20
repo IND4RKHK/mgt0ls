@@ -1145,7 +1145,7 @@ def urljump(select, cant):
         if saved_ != []:
             print("\n",tabulate(saved_, headers=["ENLACES ENCONTRADOS"]))
         else:
-            print(f"---------------\n[JUMPED] No encontramos ningun enlace valido...")
+            print(f"---------------------\n[JUMPED] No encontramos ningun enlace valido...")
         exit(0)
 
     
@@ -1179,11 +1179,11 @@ def urljump(select, cant):
         
     }
 
-    select = select.lower()
+    select = select.lower(); cant = int(cant)
 
     if select in chk_ and cant > 0:
 
-        print(f"[JUMPED] {select.upper()} LINKS [{cant}]\n---------------")
+        print(f"[JUMPED] {select.upper()} LINKS [{cant}]\n---------------------")
 
         select = chk_[select]#; select = int(select)
         url = [
@@ -1218,7 +1218,6 @@ def urljump(select, cant):
             try:
                 soli = requests.get(f"https://{url[select][0]}{url_s}", headers=headers)
             except KeyboardInterrupt:
-                print("\n",tabulate(saved_, headers=["ENLACES ENCONTRADOS"]))
                 exit_emer_()
             except Exception as err:
                 print(f"[ERROR] {err}")
