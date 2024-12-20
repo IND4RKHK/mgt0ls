@@ -25,7 +25,9 @@ exit        termina la sesion de mgt0l$.
 >webdumper  encargado de encontrar directorios ocultos dentro de paginas web. [fuzzing]
 >ftpbrute   realiza ataques de diccionario a servidores ftp.
 >unzipper   realiza ataque de diccionario a compresiones [zip].
->tempmail   email temporal basado en mailnesia.\n""".upper()
+>tempmail   email temporal basado en mailnesia.
+>urljump    generador de invitaciones para RRSS [fuzzing].
+\n""".upper()
 
 execute_s = {
 
@@ -67,6 +69,14 @@ execute_s = {
         "[PARAMETROS]\n--a: Alias del correo temporal (obligatorio).\n"
         "--b: Número del mensaje en la bandeja (opcional)."
     ],
+        "urljump": [
+        urljump, 
+        "ab", 
+        "[DESCRIPCION]\nGenera enlaces de invitacion aleatorios para RRSS.\n\n"
+        "[USO]\npython3 fsh.py urljump --a <RRSS_to_gen> --b <cantidad>\n\n"
+        "[PARAMETROS]\n--a: Enlace de RRSS a generar (e.g., `WA` para WhatsApp, `TG` para Telegram, `DC` para Discord, `BT` para Bit.ly, `YT` para YouTube, obligatorio).\n"
+        "--b: Cantidad a generar (obligatorio)."
+    ],
     "wordinfect": [
         wordinfect, 
         "ab", 
@@ -88,7 +98,7 @@ execute_s = {
         "[DESCRIPCION]\nBusca información genealógica sobre personas basándose en sus nombres y países.\n\n"
         "[USO]\npython3 fsh.py findperson --a <nombre_persona> --b <A|C|C|G|M|V|ALL>\n\n"
         "[PARAMETROS]\n--a: Nombre de la persona a buscar (obligatorio).\n"
-        "--b: Código del país (e.g., A para Argentina, C para Chile, V para Venezuela, C para Colombia, G para Guatemala, M para Mexico, B para Bolivia, ALL para todos los países, obligatorio)."
+        "--b: Código del país (e.g., `A` para Argentina, `C` para Chile, `V` para Venezuela, `C` para Colombia, `G` para Guatemala, `M` para Mexico, `B` para Bolivia, `ALL` para todos los países, obligatorio)."
     ],
     "iplocate": [
         iplocate, 

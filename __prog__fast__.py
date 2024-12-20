@@ -29,6 +29,7 @@ import requests
 import aspose.words as aw
 from bs4 import BeautifulSoup
 from tabulate import tabulate
+from strgen import StringGenerator
 from ftplib import FTP, error_perm, error_reply, error_temp
 
 def findperson(nombre, arg): # Funciona with
@@ -1134,4 +1135,117 @@ def sc4pk(idcap, selec):
     if selec == None:
         
         obtener(idcap)
+
+def urljump(select, cant):
+
+    saved_ = []
+
+    def exit_emer_():
+
+        if saved_ != []:
+            print("\n",tabulate(saved_, headers=["ENLACES ENCONTRADOS"]))
+        else:
+            print(f"---------------\n[JUMPED] No encontramos ningun enlace valido...")
+        exit(0)
+
+    
+    # funcion para testear codigo de error 429
+
+    def not_429(url_chk):
+
+        chk_label = []
+
+        for i in range(5):
+            try:
+                ch_ = requests.get(url_chk, headers=headers)
+                chk_label.append(ch_.status_code)
+            except Exception as err:
+                print(f"[ERROR] {err}")
+
+        if chk_label.count(429) == len(chk_label):
+            print("[ERROR] Conexion con el servidor perdida ->> [429]")
+            exit_emer_()
+
+    # 0 = wsp 1 = discord 2 = telegram
+
+    chk_ = {
+
+        "wa": 0,
+        "dc": 1,
+        "tg": 2,
+        "bt": 3,
+        "yt": 4,
+        "ip": 5
+        
+    }
+
+    select = select.lower()
+
+    if select in chk_ and cant > 0:
+
+        print(f"[JUMPED] {select.upper()} LINKS [{cant}]\n---------------")
+
+        select = chk_[select]#; select = int(select)
+        url = [
+
+            # 0 = url                1 = str char                  2 = error str
+            ["chat.whatsapp.com/", '[\l\d]{22}', "https://static.whatsapp.net/rsrc.php/v4/yB/r/_0dVljceIA5.png"],
+            ["discord.gg/", '[\l\d]{8}', 'property="og:image"'], # Solucionar problema de baneo --> Ya esta listo xd
+            ["t.me/+", '[\l\d]{16}', "tgme_icon_group"],
+            ["bit.ly/", '[\l\d]{7}', "/static/graphics/meditation.png"],
+            ["www.youtube.com/watch?v=", '[\l\d-_]{11}', '"status":"ERROR"'],
+            # Desarrollo no funcional aun #
+            ["meet.google.com/", "[\l]{3}-[\l]{4}-[\l]{3}", ""],
+            ["iplogger.org/es/logger/", '[\l\d]{2}105[\l\d]{7}', "error"] # Error aun no encontramos el scraping
+
+        ]
+
+        str_wb = StringGenerator(f"{url[select][1]}").render_list(cant, unique=True) # 200 = can make
+
+        #str_wb[100] = "9geG9GgD"
+        #str_wb.append("qNnja1EMaT5mMjE0")
+
+        for url_s in str_wb:
+
+            headers = {
+                "User-Agent": random.choice([
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+                    "Mozilla/5.0 (Linux; Android 10)"
+                ])
+            }
+
+            try:
+                soli = requests.get(f"https://{url[select][0]}{url_s}", headers=headers)
+            except KeyboardInterrupt:
+                print("\n",tabulate(saved_, headers=["ENLACES ENCONTRADOS"]))
+                exit_emer_()
+            except Exception as err:
+                print(f"[ERROR] {err}")
+                exit_emer_()
+
+            """
+            with open("a.txt", "w", encoding="utf-8") as a:
+                a.write(soli.text)
+
+            #print(soli.text)
+            exit(0)
+            """
+
+            if soli.status_code == 429: # Cuando nos tiran del server
+                not_429(f"https://{url[select][0]}{url_s}")
+
+            if url[select][2] not in soli.text:
+                print(f"[PASSED] https://{url[select][0]}{url_s} ->> [{soli.status_code}] ✓")
+                saved_.append([f"https://{url[select][0]}{url_s}"])
+
+            else:
+                print(f"[SEARCH] https://{url[select][0]}{url_s} ->> [{soli.status_code}]")
+        
+        exit_emer_()
+    
+    else:
+        print("[ERROR] Opcion no encontrada...")
+
+# python3 fsh.py urldump --a <social_network> --b <count> < ------------ in mgt0ls
 #################################

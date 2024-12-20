@@ -23,7 +23,8 @@ modules = [
     "beautifulsoup4",
     "requests",
     "pyzipper",
-    "tabulate"
+    "tabulate",
+    "StringGenerator"
     
 ]
 
