@@ -1,33 +1,42 @@
 import argparse
 from __prog__fast__ import *
 
-scripts_h="""
-\n[COMANDOS]--->> mgt0L$.py <<---[VERSION-2.1]\n
-findtl      [palabra clave] busca herramientas por palabras clave.
-help        muestra todas las interacciones disponibles en mgtols.
-update      verifica si hay una nueva version disponible de mgt0l$.
-exit        termina la sesion de mgt0l$.
-\n[DOXING TOOLS]\n
->seeker     recopila infromacion con nombres de usuario.
->findperson busca informacion de personas por sus nombres [genealog].
->iplocate   geolocaliza direcciones ip detalladamente.
->lopiapi    prueba con un numero de telefono [CL].
-\n[SCAM TOOLS]\n
->sc4pk      crea un archivo apk que se usa como scam permanente.
-\n[MALWARE TOOLS]\n
->macromaker crea una macro para word dependiendo de tu especificacion [office].
->wordinfect agrega macro infectada a un documento de word [docm].
->reverhttp  controla una maquina mediante http y solicitudes post [php].
-\n[DDOS TOOLS]\n
->icmpdos    realiza ataque ddos con protocolo icmp.
->httpflood  sobrecarga un servidor enviando solicitudes falsas [http-flood].
-\n[VECTOR TOOLS]\n
->webdumper  encargado de encontrar directorios ocultos dentro de paginas web. [fuzzing]
->ftpbrute   realiza ataques de diccionario a servidores ftp.
->unzipper   realiza ataque de diccionario a compresiones [zip].
->tempmail   email temporal basado en mailnesia.
->urljump    generador de invitaciones para RRSS [fuzzing].
-\n""".upper()
+scripts_h = """
+-------------------------------------------------
+[:: DOXING TOOLS ::] <<---->> mgt0L$.py [v2.1] --
+-------------------------------------------------
+> seeker       :: Recolecta información de usuarios en fuentes públicas.
+> findperson   :: Obtiene datos genealógicos a partir de nombres.
+> iplocate     :: Geolocaliza IPs con detalles sobre ubicación y proveedor.
+> lopiapi      :: Busca información asociada a números telefónicos.
+
+[:: SCAM TOOLS ::]
+-------------------------------------------------
+> sc4pk        :: Crea un archivo APK para pruebas de phishing.
+
+[:: MALWARE TOOLS ::]
+-------------------------------------------------
+> macromaker   :: Genera macros personalizadas para documentos Word.
+> wordinfect   :: Inserta macros maliciosas en documentos Word (.docm).
+> reverhttp    :: Establece control remoto usando solicitudes HTTP.
+
+[:: DDOS TOOLS ::]
+-------------------------------------------------
+> icmpdos      :: Realiza ataques DDoS con paquetes ICMP.
+> httpflood    :: Sobrecarga servidores con solicitudes HTTP.
+
+[:: BRUTE FORCE TOOLS ::]
+-------------------------------------------------
+> ftpbrute     :: Ataques de fuerza bruta a servidores FTP.
+> unzipper     :: Descompone archivos ZIP protegidos por contraseña.
+> unlocker     :: Rompe hashes MD5 y SHA1 con diccionario.
+
+[:: VECTOR TOOLS ::]
+-------------------------------------------------
+> webdumper    :: Encuentra directorios ocultos en sitios web.
+> tempmail     :: Crea correos electrónicos temporales.
+> urljump      :: Genera enlaces personalizados para redes sociales.
+"""
 
 execute_s = {
 
@@ -132,6 +141,15 @@ execute_s = {
         "[PARAMETROS]\n--a: Modo (`F` para inicial, `S` para recursivo, obligatorio).\n"
         "--b: URL base (obligatorio).\n"
         "--c: Diccionario con palabras clave (obligatorio)."
+    ],
+    "unlocker": [
+        unlocker, 
+        "abc", 
+        "[DESCRIPCION]\nRompe hashes MD5 y SHA1 con el uso de diccionarios.\n\n"
+        "[USO]\npython3 fsh.py unlocker --a <MD5|SHA1> --b <diccionario> --c <hash>\n\n"
+        "[PARAMETROS]\n--a: Modo (`MD5` para cifrado md5, `SHA1` para cifrado SHA1, obligatorio).\n"
+        "--b: Diccionario de palabras (obligatorio).\n"
+        "--c: Hash a romper (obligatorio)."
     ],
     "sc4pk": [
         sc4pk, 

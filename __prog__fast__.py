@@ -29,6 +29,7 @@ import requests
 import aspose.words as aw
 from bs4 import BeautifulSoup
 from tabulate import tabulate
+from hashlib import md5, sha1
 from strgen import StringGenerator
 from ftplib import FTP, error_perm, error_reply, error_temp
 
@@ -1245,6 +1246,33 @@ def urljump(select, cant):
     
     else:
         print("[ERROR] Opcion no encontrada...")
+
+def unlocker(type_, dictionary, hash_):
+    type_ = type_.lower()
+    try:
+        with open(dictionary, "r", encoding="utf-8") as dictionary_:
+
+            for match_ in dictionary_:
+
+                match_ = match_.strip()
+                if type_ == "md5":
+
+                    unl_ = md5(match_.encode("utf-8")).hexdigest()
+                    if unl_ == hash_:
+                        print(f"[PASSED] {match_} <---✓---> {unl_}")
+                        exit(0)
+                
+                if type_ == "sha1":
+                    unl_ = sha1(match_.encode("utf-8")).hexdigest()
+                    if unl_ == hash_:
+                        print(f"[PASSED] {match_} <---✓---> {unl_}")
+                        exit(0)
+                
+                print(f"[SEARCH] {match_} <---x---> {unl_}")
+
+    except Exception as err:
+        print(f"[ERROR] {err}")
+
 
 # python3 fsh.py urldump --a <social_network> --b <count> < ------------ in mgt0ls
 #################################
