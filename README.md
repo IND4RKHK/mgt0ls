@@ -214,9 +214,9 @@ mgt0ls/
 │
 ├── fsh.py              # Quick use via the __prog__fast__.py module.
 ├── shell.py            # Main script managing the interactive menu.
+├── setup.py            # Mgt0ls Setup.
 ├── __prog__.py         # Module containing the implemented tools.
 ├── __prog__fast__.py   # Module containing the implemented tools to fsh.py.
-├── requirements.txt    # List of dependencies needed for the project.
 ├── README.md           # Project documentation.
 ├── assets/             # Extensions Directory.
 └── .scripts/           # Optional directory for future extensions.
