@@ -63,7 +63,7 @@ You can automatically install these dependencies using the `setup.py` file.
 
 3. Run the main script:
    ```powershell
-   python3 shell.py
+   python3 fsh.py --h
    ```
 
 ---
@@ -83,12 +83,12 @@ You can automatically install these dependencies using the `setup.py` file.
 
 3. Grant execution permissions to the main script:
    ```bash
-   chmod +x shell.py
+   chmod +x fsh.py --h
    ```
 
 4. Execute the tool:
    ```bash
-   ./shell.py
+   ./fsh.py --h
    ```
 
 ---
@@ -117,7 +117,7 @@ You can automatically install these dependencies using the `setup.py` file.
 
 5. Run the main script:
    ```bash
-   python3 shell.py
+   python3 fsh.py --h
    ```
 
 ---
@@ -127,12 +127,8 @@ You can automatically install these dependencies using the `setup.py` file.
 ### **Starting the Program**
 Run the main script to access the interactive menu:
 ```bash
-python3 shell.py
+python3 fsh.py --h
 ```
-
-### **New Features for `fsh.py`**
-
-With the new structure in `fsh.py`, users can now access detailed documentation and examples for each tool directly from the command line. This feature makes it easier to understand the purpose, usage, and parameters of each tool without having to refer to external documentation.
 
 ### **Main Commands**
 Below are some of the commands available in the tool:
@@ -213,13 +209,10 @@ This will attempt to extract the contents of `secretfile.zip` using passwords fr
 mgt0ls/
 │
 ├── fsh.py              # Quick use via the __prog__fast__.py module.
-├── shell.py            # Main script managing the interactive menu.
 ├── setup.py            # Mgt0ls Setup.
-├── __prog__.py         # Module containing the implemented tools.
 ├── __prog__fast__.py   # Module containing the implemented tools to fsh.py.
 ├── README.md           # Project documentation.
-├── assets/             # Extensions Directory.
-└── .scripts/           # Optional directory for future extensions.
+└── assets/             # Extensions Directory.
 ```
 
 ---

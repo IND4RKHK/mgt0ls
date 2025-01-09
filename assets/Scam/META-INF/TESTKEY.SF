@@ -1,0 +1,56 @@
+Signature-Version: 1.0
+Created-By: 1.0 (Android)
+SHA-256-Digest-Manifest: HGmxsDPSqRIo3IREqF4gLgyJZeXhPEEMi3CM/0T1EbU=
+X-Android-APK-Signed: 2, 3
+
+Name: AndroidManifest.xml
+SHA-256-Digest: OErhVhHi3+VkPllxIUCoRfzz+t0iIXCdEhrDSzFk80E=
+
+Name: assets/facebook.html
+SHA-256-Digest: Eh+KEx2zeaj5a/0ONOFukztTkzYTeX8JGG+kChIEsOY=
+
+Name: assets/google.html
+SHA-256-Digest: YVO0ukbL8Ni5lvV7CcAMQkm51OmMBZ+/5ERH/PJoD0E=
+
+Name: assets/id.rdp
+SHA-256-Digest: XWhRFZltn04GPEkU30BCT3qoA6nwPdJqLYfILRTNRIw=
+
+Name: assets/instagram.html
+SHA-256-Digest: XLHRJoQIp8K08wgKRle168StSTrDTvf8OYzeuqOtBNE=
+
+Name: assets/selec.rdp
+SHA-256-Digest: 9Fsnp2HmrDlXuAj2F569ke4iqARCKhB27ERUltW/rvM=
+
+Name: assets/twitter.html
+SHA-256-Digest: N0mc8YCDmNYPCzZPGVVjX1FRWscPVaMYsNlncqyyjT0=
+
+Name: classes.dex
+SHA-256-Digest: GRnGv4ZrxbNSW/5n69ox5XNsgpal0KdC2sgFpHqsSRc=
+
+Name: classes2.dex
+SHA-256-Digest: tm1u9rbH+Yph5EA8M6aivBFTS5Mth9LSPiCXUk7D4zc=
+
+Name: classes3.dex
+SHA-256-Digest: a7HymEqkBsyrn0uUizjo6E8Jiod5uio7+GFv8xbdjvM=
+
+Name: classes4.dex
+SHA-256-Digest: RvSqF9J2Uh6MW6zTywsEClJ9ZW41jifGeDRiUd1NBVE=
+
+Name: classes5.dex
+SHA-256-Digest: PFGheRHtGwx7ldeuYcGCF1K/SNVcoigk7AtLFVMIeMA=
+
+Name: okhttp3/internal/publicsuffix/publicsuffixes.gz
+SHA-256-Digest: q3PmZLeqG/rSkGldAD1dBfM3Ql9BbIQ/f+h2zBvPYzg=
+
+Name: res/drawable-xhdpi-v4/app_icon.png
+SHA-256-Digest: ysUljBKI9Lhef5NQNKi0jX3S/RCU31QPiGrXDLQ9fEk=
+
+Name: res/drawable-xhdpi-v4/default_image.png
+SHA-256-Digest: aktsDrhwy3ex8ad59r3aoV+5TJncFYVy98Lcvjc4s44=
+
+Name: res/layout/main.xml
+SHA-256-Digest: 8AHP8itoiuRm27q5yjN/R1ui/t/fNUBv/kWzSdOj31M=
+
+Name: resources.arsc
+SHA-256-Digest: jZ6yRoN734iNR5jiF1UuI3qVYlRsPk/mV1KuRynYgA8=
+

