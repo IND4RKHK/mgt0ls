@@ -89,6 +89,10 @@ Si no está de acuerdo con estos términos, absténgase de utilizarlo.
 ╔════════════════════════════════════════════╗
 ║                   [USOS]                   ║
 ╠════════════════════════════════════════════╣
+║   ___         [ADVERTENCIA]                ║
+║  (o,o)                                     ║
+║  { " } :: Usalo bajo tu responsabilidad.   ║ 
+║  -"-"-                                     ║
 ║ python3 fsh.py --h  =>> Uso con parámetros ║
 ╚════════════════════════════════════════════╝
 """)

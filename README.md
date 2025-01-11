@@ -212,6 +212,7 @@ mgt0ls/
 ├── setup.py            # Mgt0ls Setup.
 ├── __prog__fast__.py   # Module containing the implemented tools to fsh.py.
 ├── README.md           # Project documentation.
+├── LICENSE             # Project license.
 └── assets/             # Extensions Directory.
 ```
 
