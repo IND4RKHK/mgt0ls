@@ -2,7 +2,7 @@ import os
 import time
 from sys import platform
 
-ROOT = os.getcwd()
+ROOT = {"root": os.getcwd(), "lang": "es"}
 
 temp = "█"
 try:
@@ -34,14 +34,14 @@ Si no está de acuerdo con estos términos, absténgase de utilizarlo.
         temp = temp + "█"
         time.sleep(0.2)
 
-    select = input("\n[USAGE] ¿Acepto usar el sofware de acorde al texto anterior? [Y/n]: ")
+    select = input("\n[USAGE] ¿Acepto usar el software de acorde al texto anterior? [Y/n]: ")
 
     if select.lower() == "y":
 
         print("\n[INSTALLING] Instalando modulos necesarios...")
 
         with open(".root", "w", encoding="utf-8") as cook_k:
-            cook_k.write(ROOT)
+            cook_k.write(str(ROOT).replace("'", '"'))
 
         kl_l = [
 
@@ -60,7 +60,8 @@ Si no está de acuerdo con estos términos, absténgase de utilizarlo.
             "requests",
             "pyzipper",
             "tabulate",
-            "StringGenerator"
+            "StringGenerator",
+            "googletrans"
             
         ]
 
@@ -94,6 +95,7 @@ Si no está de acuerdo con estos términos, absténgase de utilizarlo.
 ║  { " } :: Usalo bajo tu responsabilidad.   ║ 
 ║  -"-"-                                     ║
 ║ python3 fsh.py --h  =>> Uso con parámetros ║
+║ python3 fsh.py lang_cfg => Change language ║
 ╚════════════════════════════════════════════╝
 """)
 except Exception as err:

@@ -1,8 +1,10 @@
 import os
+import json
 
 try:
-    with open(".root", "r") as root_dir:
-        ROOT_MAX = root_dir.readlines()[0]
+    with open(".root", "r", encoding="utf-8") as root_dir:
+        root_json = json.load(root_dir)
+        ROOT_MAX = root_json["root"]
 
         if "\\" in ROOT_MAX:
             ROOT_MAX = ROOT_MAX.replace("\\", "/")
@@ -18,7 +20,6 @@ except:
     exit(0)
 
 import sys
-import json
 import time
 import shutil
 import codecs
@@ -32,7 +33,10 @@ from bs4 import BeautifulSoup
 from tabulate import tabulate
 from hashlib import md5, sha1
 from strgen import StringGenerator
+from googletrans import Translator
 from ftplib import FTP, error_perm, error_reply, error_temp
+
+###################################################################
 
 def sht(path):   # Encargado de adaptar las rutas
 
@@ -43,6 +47,41 @@ def sht(path):   # Encargado de adaptar las rutas
             path = path.replace("/", "\\")
 
     return path
+
+def lang_cfg(lang):
+
+    with open(sht("assets/lang.cfg"), "r", encoding="utf-8") as verify, open(".root", "w", encoding="utf-8") as save_lang:
+
+        verify_ = verify.read()
+
+        if lang in verify_:
+            root_json["lang"] = lang
+            print(translate("[PASSED] Tu idioma se ah configurado correctamente..."))
+
+        else:
+            print("[ERROR] No tenemos tu idioma en nuestro registro...")
+
+        save_lang.write(str(root_json).replace("'", '"'))
+
+def translate(text):
+
+    try:
+        if root_json["lang"] == "es":
+            return text
+        else:
+            trans_ = Translator()
+            detect_ = trans_.translate(text, dest=root_json["lang"], src="es")
+
+            return "\n"+detect_.text
+        
+    except Exception as err:
+
+        print(f"[ERROR] {err}\n[AUTOCONFIG] Idioma reestablecido a: Spanish")
+        root_json["lang"] = "es"
+        with open(".root", "w", encoding="utf-8") as emergency_mod:
+            emergency_mod.write(str(root_json).replace("'", '"'))
+
+###################################################################
 
 def findperson(nombre, arg): # Funciona with
     nombre = f"{nombre} /{arg.upper()}"

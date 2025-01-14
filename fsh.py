@@ -7,7 +7,7 @@ scripts_h = """
 -------------------------------------------------
 > seeker       :: Recolecta información de usuarios en fuentes públicas.
 > findperson   :: Obtiene datos genealógicos a partir de nombres.
-> iplocate     :: Geolocaliza IPs con detalles sobre ubicación y proveedor.
+> iplocate     :: Localiza IPs con detalles sobre ubicación y proveedor.
 > lopiapi      :: Busca información asociada a números telefónicos.
 
 [:: SCAM TOOLS ::]
@@ -37,6 +37,12 @@ scripts_h = """
 > webdumper    :: Encuentra directorios ocultos en sitios web.
 > tempmail     :: Crea correos electrónicos temporales.
 > urljump      :: Genera enlaces personalizados para redes sociales.
+
+[:: MGT0L$ CONFIG ::]
+-------------------------------------------------
+> lang_cfg     :: Configurar idioma.
+
+
 """
 
 execute_s = {
@@ -172,6 +178,13 @@ execute_s = {
         m4cware,
         "[DESCRIPCION]\nCrea un APK malicioso que puede ser usado para obtener, rastrear, o infectar\nmaquinas vulnerables.\n\n"
         "[USO]\npython3 fsh.py m4cware"
+    ],
+    "lang_cfg": [
+        lang_cfg,
+        "a",
+        "[DESCRIPCION] Configura el idioma de mgt0ls.\n\n"
+        "[USO]\npython3 fsh.py lang_cfg --a <EN|AR|ES|ETC>\n\n"
+        "[PARAMETROS]\n--a Idioma que se utilizara permanentemente."
     ]
 }
 
@@ -179,7 +192,7 @@ GUI_scripts = [
     "m4cware"
 ]
 
-parse = argparse.ArgumentParser(usage=scripts_h)
+parse = argparse.ArgumentParser(usage=translate(scripts_h))
 
 parse.add_argument("tool", type=str, help="<tool_to_execute_usage>")
 parse.add_argument("--a", type=str, help="<optional>")
@@ -192,7 +205,7 @@ arguments = parse.parse_args()
 try:
 
     if arguments.tool in execute_s and arguments.a == None and arguments.tool not in GUI_scripts:
-        print(execute_s[arguments.tool][2])
+        print(translate(execute_s[arguments.tool][2]))
 
     # Se ejecutan dependiendo de la cantidad de parametros necesarios
 
