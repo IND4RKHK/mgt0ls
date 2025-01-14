@@ -61,7 +61,7 @@ def lang_cfg(lang):
             print(translate("[PASSED] Tu idioma se ah configurado correctamente..."))
 
         else:
-            print("[ERROR] No tenemos tu idioma en nuestro registro...")
+            print(translate("[ERROR] No tenemos tu idioma en nuestro registro..."))
 
         save_lang.write(str(root_json).replace("'", '"'))
 

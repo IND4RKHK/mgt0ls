@@ -44,6 +44,7 @@ Before installing, ensure the following prerequisites are met:
    - `tabulate`
    - `StringGenerator`
    - `pyzipper`
+   - `googletrans`
 
 You can automatically install these dependencies using the `setup.py` file.
 
@@ -83,12 +84,7 @@ You can automatically install these dependencies using the `setup.py` file.
 
 3. Grant execution permissions to the main script:
    ```bash
-   chmod +x fsh.py --h
-   ```
-
-4. Execute the tool:
-   ```bash
-   ./fsh.py --h
+   chmod +x fsh.py
    ```
 
 ---
@@ -115,11 +111,6 @@ You can automatically install these dependencies using the `setup.py` file.
    python3 setup.py
    ```
 
-5. Run the main script:
-   ```bash
-   python3 fsh.py --h
-   ```
-
 ---
 
 ## **Usage**
@@ -128,6 +119,11 @@ You can automatically install these dependencies using the `setup.py` file.
 Run the main script to access the interactive menu:
 ```bash
 python3 fsh.py --h
+```
+
+Change language (optional):
+```powershell
+python3 fsh.py lang_cfg --a <EN|ES|AR|JA|100+>
 ```
 
 ### **Main Commands**
