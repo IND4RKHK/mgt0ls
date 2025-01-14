@@ -25,6 +25,7 @@ import shutil
 import codecs
 import random
 import base64
+import asyncio
 import pyzipper
 import platform
 import requests
@@ -50,6 +51,7 @@ def sht(path):   # Encargado de adaptar las rutas
 
 def lang_cfg(lang):
 
+    lang = lang.lower()
     with open(sht("assets/lang.cfg"), "r", encoding="utf-8") as verify, open(".root", "w", encoding="utf-8") as save_lang:
 
         verify_ = verify.read()
@@ -63,16 +65,17 @@ def lang_cfg(lang):
 
         save_lang.write(str(root_json).replace("'", '"'))
 
-def translate(text):
+async def translate_as(text):
 
     try:
-        if root_json["lang"] == "es":
-            return text
-        else:
-            trans_ = Translator()
-            detect_ = trans_.translate(text, dest=root_json["lang"], src="es")
+        trans_ = Translator()
 
-            return "\n"+detect_.text
+        if "win" in platform.system().lower():
+            detect_ = trans_.translate(text, dest=root_json["lang"], src="es") # Espera para poder retornar
+        else:
+            detect_ = await trans_.translate(text, dest=root_json["lang"], src="es") # Espera para poder retornar
+
+        return "\n"+detect_.text
         
     except Exception as err:
 
@@ -80,6 +83,13 @@ def translate(text):
         root_json["lang"] = "es"
         with open(".root", "w", encoding="utf-8") as emergency_mod:
             emergency_mod.write(str(root_json).replace("'", '"'))
+
+def translate(text):
+
+    if root_json["lang"] == "es":
+        return text
+    else:
+        return asyncio.run(translate_as(text)) # Ejecuta la tarea asyncrona para poder retornar
 
 ###################################################################
 
