@@ -98,7 +98,7 @@ def update():
             chek_vl = check_lo.read()
             chek_v = requests.get("https://raw.githubusercontent.com/IND4RKHK/mgt0ls/refs/heads/main/fsh.py")
 
-            if chek_v != chek_vl:
+            if chek_v.text != chek_vl:
                 return "[UPDATE] MGT0L$ Tiene una nueva actualizacion disponible..."
             else:
                 return "[PASSED] MGT0L$ Esta actualizado a su version mas reciente..."
