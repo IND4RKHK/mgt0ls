@@ -91,6 +91,21 @@ def translate(text):
     else:
         return asyncio.run(translate_as(text)) # Ejecuta la tarea asyncrona para poder retornar
 
+def update():
+
+    try:
+        with open("fsh.py", "r", encoding="utf-8") as check_lo:
+            chek_vl = check_lo.read()
+            chek_v = requests.get("https://raw.githubusercontent.com/IND4RKHK/mgt0ls/refs/heads/main/fsh.py")
+
+            if chek_v != chek_vl:
+                return "[UPDATE] MGT0L$ Tiene una nueva actualizacion disponible..."
+            else:
+                return "[PASSED] MGT0L$ Esta actualizado a su version mas reciente..."
+            
+    except Exception as err:
+        print(f"[ERROR] {err}")
+
 ###################################################################
 
 def findperson(nombre, arg): # Funciona with

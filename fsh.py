@@ -41,6 +41,7 @@ scripts_h = """
 [:: MGT0L$ CONFIG ::]
 -------------------------------------------------
 > lang_cfg     :: Configurar idioma.
+> check_up     :: Verifica la version de mgt0ls.
 
 
 """
@@ -185,6 +186,11 @@ execute_s = {
         "[DESCRIPCION] Configura el idioma de mgt0ls.\n\n"
         "[USO]\npython3 fsh.py lang_cfg --a <EN|AR|ES|ETC>\n\n"
         "[PARAMETROS]\n--a Idioma que se utilizara permanentemente."
+    ],
+    "check_up": [
+        update,
+        "[DESCRIPCION]\nVerifica si es que mgt0ls esta actualizado.\n\n"
+        "[USO]\npython3 fsh.py update"
     ]
 }
 
@@ -203,6 +209,10 @@ parse.add_argument("--d", type=str, help="<optional>")
 arguments = parse.parse_args()
 
 try:
+
+    if arguments.tool == "check_up":
+        print(translate(execute_s[arguments.tool][0]()))
+        exit(0)
 
     if arguments.tool in execute_s and arguments.a == None and arguments.tool not in GUI_scripts:
         print(translate(execute_s[arguments.tool][2]))
