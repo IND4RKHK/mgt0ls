@@ -1740,6 +1740,7 @@ m4cware->> """))
                     print(f"[ERROR] {err}")
         
         except Exception as err:
+            os.remove("m4.apk")
             print(f"[ERROR] {err}")
 
     def api_settings():

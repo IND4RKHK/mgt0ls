@@ -1,90 +1,54 @@
 import argparse
 from __prog__fast__ import *
 
-scripts_h = """
--------------------------------------------------
-[:: DOXING TOOLS ::] <<---->> mgt0L$.py [v2.1] --
--------------------------------------------------
-> seeker       :: Recolecta información de usuarios en fuentes públicas.
-> findperson   :: Obtiene datos genealógicos a partir de nombres.
-> iplocate     :: Localiza IPs con detalles sobre ubicación y proveedor.
-> lopiapi      :: Busca información asociada a números telefónicos.
-
-[:: SCAM TOOLS ::]
--------------------------------------------------
-> sc4pk        :: Crea un archivo APK para pruebas de phishing.
-
-[:: MALWARE TOOLS ::]
--------------------------------------------------
-> macromaker   :: Genera macros personalizadas para documentos Word.
-> wordinfect   :: Inserta macros maliciosas en documentos Word (.docm).
-> reverhttp    :: Establece control remoto usando solicitudes HTTP.
-> m4cware      :: Recolecta, modifica o elimina informacion usando APK malicioso.
-
-[:: DDOS TOOLS ::]
--------------------------------------------------
-> icmpdos      :: Realiza ataques DDoS con paquetes ICMP.
-> httpflood    :: Sobrecarga servidores con solicitudes HTTP.
-
-[:: BRUTE FORCE TOOLS ::]
--------------------------------------------------
-> ftpbrute     :: Ataques de fuerza bruta a servidores FTP.
-> unzipper     :: Descompone archivos ZIP protegidos por contraseña.
-> unlocker     :: Rompe hashes MD5 y SHA1 con diccionario.
-
-[:: VECTOR TOOLS ::]
--------------------------------------------------
-> webdumper    :: Encuentra directorios ocultos en sitios web.
-> tempmail     :: Crea correos electrónicos temporales.
-> urljump      :: Genera enlaces personalizados para redes sociales.
-
-[:: MGT0L$ CONFIG ::]
--------------------------------------------------
-> lang_cfg     :: Configurar idioma.
-> check_up     :: Verifica la version de mgt0ls.
-
-
-"""
+dox_lst = []; ddos_lst = []
+dic_lst = []; vec_lst = []
+cmd_lst = []; mal_lst = []
 
 execute_s = {
 
     "seeker": [
         seeker, 
         "a", 
-        "[DESCRIPCION]\nRecopila información basada en nombres de usuario buscando en diversas fuentes web.\n\n"
+        "[DESCRIPCION]\nRecopila información sobre usuarios buscando en diversas fuentes web.\n\n"
         "[USO]\npython3 fsh.py seeker --a <nombre_de_usuario>\n\n"
-        "[PARAMETROS]\n--a: Nombre de usuario a buscar (obligatorio)."
+        "[PARAMETROS]\n--a: Nombre de usuario a buscar (obligatorio).",
+        "dox"
     ],
     "icmpdos": [
         icmpdos, 
         "ab", 
-        "[DESCRIPCION]\nRealiza un ataque DDoS utilizando paquetes ICMP enviados repetidamente a un destino.\n\n"
+        "[DESCRIPCION]\nRealiza un ataque DDoS utilizando paquetes ICMP.\n\n"
         "[USO]\npython3 fsh.py icmpdos --a <ip_destino> --b <tamaño_paquete>\n\n"
         "[PARAMETROS]\n--a: Dirección IP del objetivo (obligatorio).\n"
-        "--b: Tamaño del paquete ICMP en bytes (opcional, recomendado: 65550)."
+        "--b: Tamaño del paquete ICMP en bytes (opcional, recomendado: 65550).",
+        "ddos"
     ],
     "lopiapi": [
         lopiapi, 
         "a", 
-        "[DESCRIPCION]\nBusca información asociada a un número telefónico usando APIs públicas.\n\n"
+        "[DESCRIPCION]\nBusca información asociada a un número telefónico mediante APIs.\n\n"
         "[USO]\npython3 fsh.py lopiapi --a <número_telefónico>\n\n"
-        "[PARAMETROS]\n--a: Número telefónico, ejemplo: 983222434 (obligatorio)."
+        "[PARAMETROS]\n--a: Número telefónico, ejemplo: 983222434 (obligatorio).",
+        "dox"
     ],
     "unzipper": [
         unzipper, 
         "ab", 
-        "[DESCRIPCION]\nDescomprime archivos protegidos por contraseña utilizando un ataque de diccionario.\n\n"
+        "[DESCRIPCION]\nDescomprime archivos protegidos con contraseña mediante ataque de diccionario.\n\n"
         "[USO]\npython3 fsh.py unzipper --a <ruta_diccionario> --b <ruta_archivo_zip>\n\n"
         "[PARAMETROS]\n--a: Ruta al diccionario de contraseñas (obligatorio).\n"
-        "--b: Ruta al archivo ZIP (obligatorio)."
+        "--b: Ruta al archivo ZIP (obligatorio).",
+        "dic"
     ],
     "tempmail": [
         tempmail, 
         "ab", 
-        "[DESCRIPCION]\nCrea un correo temporal basado en la plataforma Mailnesia.\n\n"
+        "[DESCRIPCION]\nCrea correos temporales usando Mailnesia.\n\n"
         "[USO]\npython3 fsh.py tempmail --a <alias_correo> --b <número_mensaje>\n\n"
         "[PARAMETROS]\n--a: Alias del correo temporal (obligatorio).\n"
-        "--b: Número del mensaje en la bandeja (opcional)."
+        "--b: Número del mensaje en la bandeja (opcional).",
+        "vec"
     ],
         "urljump": [
         urljump, 
@@ -92,44 +56,50 @@ execute_s = {
         "[DESCRIPCION]\nGenera enlaces de invitacion aleatorios para RRSS.\n\n"
         "[USO]\npython3 fsh.py urljump --a <RRSS_to_gen> --b <cantidad>\n\n"
         "[PARAMETROS]\n--a: Enlace de RRSS a generar (e.g., `WA` para WhatsApp, `TG` para Telegram, `DC` para Discord, `BT` para Bit.ly, `YT` para YouTube, obligatorio).\n"
-        "--b: Cantidad a generar (obligatorio)."
+        "--b: Cantidad a generar (obligatorio).",
+        "vec"
     ],
     "wordinfect": [
         wordinfect, 
         "ab", 
-        "[DESCRIPCION]\nInserta una macro maliciosa en un documento Word habilitado para macros (.docm).\n\n"
+        "[DESCRIPCION]\nInserta macros maliciosas en documentos Word habilitados para macros.\n\n"
         "[USO]\npython3 fsh.py wordinfect --a <ruta_docm> --b <ruta_macro>\n\n"
         "[PARAMETROS]\n--a: Ruta al archivo de Word (.docm, obligatorio).\n"
-        "--b: Ruta al archivo que contiene la macro (obligatorio)."
+        "--b: Ruta al archivo que contiene la macro (obligatorio).",
+        "mal"
     ],
     "macromaker": [
         macromaker, 
         "a", 
-        "[DESCRIPCION]\nGenera un script de macro diseñado para Microsoft Word, ya sea para descargar un archivo o ejecutar comandos de shell.\n\n"
+        "[DESCRIPCION]\nCrea scripts de macros para Microsoft Word.\n\n"
         "[USO]\npython3 fsh.py macromaker\n\n"
-        "[PARAMETROS]\nSin parámetros adicionales."
+        "[PARAMETROS]\nSin parámetros adicionales.",
+        "mal"
     ],
     "findperson": [
         findperson, 
         "ab", 
-        "[DESCRIPCION]\nBusca información genealógica sobre personas basándose en sus nombres y países.\n\n"
+        "[DESCRIPCION]\nObten el posible DNI de una persona.\n\n"
         "[USO]\npython3 fsh.py findperson --a <nombre_persona> --b <A|C|C|G|M|V|ALL>\n\n"
         "[PARAMETROS]\n--a: Nombre de la persona a buscar (obligatorio).\n"
-        "--b: Código del país (e.g., `A` para Argentina, `C` para Chile, `V` para Venezuela, `C` para Colombia, `G` para Guatemala, `M` para Mexico, `B` para Bolivia, `ALL` para todos los países, obligatorio)."
+        "--b: Código del país (e.g., `A` para Argentina, `C` para Chile, `V` para Venezuela, `C` para Colombia, `G` para Guatemala, `M` para Mexico, `B` para Bolivia, `ALL` para todos los países, obligatorio).",
+        "dox"
     ],
     "iplocate": [
         iplocate, 
         "a", 
-        "[DESCRIPCION]\nGeolocaliza direcciones IP y proporciona detalles como ubicación, ISP y más.\n\n"
+        "[DESCRIPCION]\nLocaliza direcciones IP y proporciona detalles como ubicación, ISP y más.\n\n"
         "[USO]\npython3 fsh.py iplocate --a <dirección_ip>\n\n"
-        "[PARAMETROS]\n--a: Dirección IP objetivo (obligatorio)."
+        "[PARAMETROS]\n--a: Dirección IP objetivo (obligatorio).",
+        "dox"
     ],
     "httpflood": [
         httpflood, 
         "a", 
-        "[DESCRIPCION]\nSatura un servidor web enviando múltiples solicitudes HTTP falsas.\n\n"
+        "[DESCRIPCION]\nSatura un servidor web enviando múltiples solicitudes HTTP.\n\n"
         "[USO]\npython3 fsh.py httpflood --a <url_objetivo>\n\n"
-        "[PARAMETROS]\n--a: URL del servidor objetivo (obligatorio)."
+        "[PARAMETROS]\n--a: URL del servidor objetivo (obligatorio).",
+        "ddos"
     ],
     "ftpbrute": [
         ftpbrute, 
@@ -139,58 +109,68 @@ execute_s = {
         "[PARAMETROS]\n--a: Modo de ataque (`mul` para múltiples usuarios, `one` para un único usuario, obligatorio).\n"
         "--b: Dirección del servidor FTP (obligatorio).\n"
         "--c: Usuario o diccionario de usuarios (obligatorio).\n"
-        "--d: Diccionario de contraseñas (obligatorio)."
+        "--d: Diccionario de contraseñas (obligatorio).",
+        "dic"
     ],
     "webdumper": [
         webdumper, 
         "abc", 
-        "[DESCRIPCION]\nExplora sitios web en busca de directorios y archivos ocultos utilizando diccionarios.\n\n"
+        "[DESCRIPCION]\nExplora sitios web buscando directorios y archivos ocultos.\n\n"
         "[USO]\npython3 fsh.py webdumper --a <F|S> --b <url> --c <diccionario>\n\n"
         "[PARAMETROS]\n--a: Modo (`F` para inicial, `S` para recursivo, obligatorio).\n"
         "--b: URL base (obligatorio).\n"
-        "--c: Diccionario con palabras clave (obligatorio)."
+        "--c: Diccionario con palabras clave (obligatorio).",
+        "dic"
     ],
     "unlocker": [
         unlocker, 
         "abc", 
-        "[DESCRIPCION]\nRompe hashes MD5 y SHA1 con el uso de diccionarios.\n\n"
+        "[DESCRIPCION]\nRompe hashes MD5 y SHA1 con fuerza bruta.\n\n"
         "[USO]\npython3 fsh.py unlocker --a <MD5|SHA1> --b <diccionario> --c <hash>\n\n"
         "[PARAMETROS]\n--a: Modo (`MD5` para cifrado md5, `SHA1` para cifrado SHA1, obligatorio).\n"
         "--b: Diccionario de palabras (obligatorio).\n"
-        "--c: Hash a romper (obligatorio)."
+        "--c: Hash a romper (obligatorio).",
+        "dic"
     ],
     "sc4pk": [
         sc4pk, 
         "ab", 
-        "[DESCRIPCION]\nGenera un archivo APK malicioso que puede ser usado para propagar malware.\n\n"
+        "[DESCRIPCION]\nGenera APK maliciosos para propagar malware.\n\n"
         "[USO]\npython3 fsh.py sc4pk --a <ID_de_seguimiento> --b <ig|fb|tw|go> | Creacion del APK.\n"
         "python3 fsh.py sc4pk --a <ID_de_seguimiento> | Busqueda de victimas.\n\n"
         "[PARAMETROS]\n--a: ID asociada a tus victimas (obligatorio).\n"
-        "--b: Scam a usar (ig para Instagram, fb para Facebook, tw para Twitter, go para Google, opcional)"
+        "--b: Scam a usar (ig para Instagram, fb para Facebook, tw para Twitter, go para Google, opcional)",
+        "mal"
     ],
     "reverhttp": [
         reverhttp, 
         "a", 
-        "[DESCRIPCION]\nEstablece un canal de control remoto basado en solicitudes HTTP y POST.\n\n"
+        "[DESCRIPCION]\nEstablece un canal remoto usando solicitudes HTTP/POST.\n\n"
         "[USO]\npython3 fsh.py reverhttp --a <PORT|URL>\n\n"
-        "[PARAMETROS]\n--a PORT Para crear un host local y URL para host externo."
+        "[PARAMETROS]\n--a PORT Para crear un host local y URL para host externo.",
+        "mal"
     ],
     "m4cware": [
         m4cware,
-        "[DESCRIPCION]\nCrea un APK malicioso que puede ser usado para obtener, rastrear, o infectar\nmaquinas vulnerables.\n\n"
-        "[USO]\npython3 fsh.py m4cware"
+        "None",
+        "[DESCRIPCION]\nCrea un APK malicioso para rastreo o infección.\n\n"
+        "[USO]\npython3 fsh.py m4cware",
+        "mal"
     ],
     "lang_cfg": [
         lang_cfg,
         "a",
-        "[DESCRIPCION] Configura el idioma de mgt0ls.\n\n"
+        "[DESCRIPCION]\nConfigura el idioma de mgt0ls.\n\n"
         "[USO]\npython3 fsh.py lang_cfg --a <EN|AR|ES|ETC>\n\n"
-        "[PARAMETROS]\n--a Idioma que se utilizara permanentemente."
+        "[PARAMETROS]\n--a Idioma que se utilizara permanentemente.",
+        "cmd"
     ],
     "check_up": [
         update,
+        "None",
         "[DESCRIPCION]\nVerifica si es que mgt0ls esta actualizado.\n\n"
-        "[USO]\npython3 fsh.py update"
+        "[USO]\npython3 fsh.py update",
+        "cmd"
     ]
 }
 
@@ -198,7 +178,53 @@ GUI_scripts = [
     "m4cware"
 ]
 
-parse = argparse.ArgumentParser(usage=translate(scripts_h))
+keys_ = execute_s.keys()
+
+for key in keys_:
+
+    temp_ls = execute_s[key][2].split("\n\n")
+    temp_sv = temp_ls[0].replace("[DESCRIPCION]\n", "> "+key+"| :: ").split("|") # Se obtiene solamente la descipcion y el nombre se guarda una lista anidada
+    # ["nombre", "descripcion"]
+
+    # TIPOS: dox, ddos, dic, mal, vec, cmd
+    type_tmp = execute_s[key][3]
+    if type_tmp == "dox":
+        dox_lst.append(temp_sv)
+    elif type_tmp == "ddos":
+        ddos_lst.append(temp_sv)
+    elif type_tmp == "dic":
+        dic_lst.append(temp_sv)
+    elif type_tmp == "mal":
+        mal_lst.append(temp_sv)
+    elif type_tmp == "vec":
+        vec_lst.append(temp_sv)
+    elif type_tmp == "cmd":
+        cmd_lst.append(temp_sv)
+
+
+tb_dox = tabulate(dox_lst).replace("-", "")
+tb_ddos = tabulate(ddos_lst).replace("-", "")
+tb_dic = tabulate(dic_lst).replace("-", "")
+tb_mal = tabulate(mal_lst).replace("-", "")
+tb_vec = tabulate(vec_lst).replace("-", "")
+tb_cmd = tabulate(cmd_lst).replace("-", "")
+
+
+mgtols = R"""
+  __________
+ / ___  ___ \     
+/ / . \/ . \ \   
+\ \___/\___/ /\  
+ \____\/____/||  [ YouTube DEV ] ￬ [ mgt0l$ V2.19.2 ]
+ /     /\\\\\//  
+|     |\\\\\\    > https://ytub.ee/IND4RKHK
+ \      \\\\\\
+   \______/\\\\  :: I See You ::
+    _||_||_"""
+
+scripts_h = "\n[ DOXING TOOLS ]\n" + tb_dox + "\n[ DDoS TOOLS ]\n" + tb_ddos + "\n[ BRUTE FORCE TOOLS ]\n" + tb_dic + "\n[ MALWARE TOOLS ]\n" + tb_mal + "\n[ VECTOR TOOLS ]\n" + tb_vec + "\n[ SETTINGS ]\n" + tb_cmd
+
+parse = argparse.ArgumentParser(usage=mgtols+translate(scripts_h))
 
 parse.add_argument("tool", type=str, help="<tool_to_execute_usage>")
 parse.add_argument("--a", type=str, help="<optional>")
@@ -237,7 +263,7 @@ try:
         execute_s[arguments.tool][0]()
 
     else:
-        print("[ERROR] Funcion no encontrada...")
+        print(translate("[ERROR] Funcion no encontrada ..."))
 
 except Exception as err:
     print(err)
