@@ -115,7 +115,10 @@ def update():
 ###################################################################
 
 def findperson(nombre, arg): # Funciona with
-
+    
+    if arg == None:
+        arg = "all"
+    
     nombre = f"{nombre} /{arg.upper()}"
 
     def limpieza(limp):
@@ -142,7 +145,7 @@ def findperson(nombre, arg): # Funciona with
                     return "[ERROR] {} NO ENCONTRADA".format(nombre).upper()
                     break
                 else:
-                    palabra = palabra.replace("CONTENT:",f"[COINCIDENCIA] ==> POSIBLE RUT DE {nombre}: ").split("\n")
+                    palabra = palabra.replace("CONTENT:",f"[COINCIDENCIA] ==> POSIBLE DNI DE {nombre}: ").split("\n")
                     return palabra[0]
 
                 #print(palabra.upper().replace("_"," ").replace('"',"").replace("===>",": ").replace("="," ").replace(":RUT","\nRUT"))
