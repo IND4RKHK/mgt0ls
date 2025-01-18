@@ -177,8 +177,8 @@ execute_s = {
         "abc",
         "[DESCRIPCION]\nAcortador de enlaces maliciosos.\n\n"
         "[USO]\npython3 fsh.py shorty --a <GOO|LIN|WHA|YOU|RID|TIN> --b <URL> --c <ALIAS>\n\n"
-        "[PARAMETROS]\n--a Suplantar plataforma (GOO para Google, LIN para Linkedin, WHA para WhatsApp, YOU para YouTube, RID para Ride.ee, TIN para Tin.al, obligatorio)."
-        "--b URL a acortar, (obligatorio)."
+        "[PARAMETROS]\n--a Suplantar plataforma (GOO para Google, LIN para Linkedin, WHA para WhatsApp, YOU para YouTube, RID para Ride.ee, TIN para Tin.al, obligatorio).\n"
+        "--b URL a acortar, (obligatorio).\n"
         "--c Alias para el enlace acortado, (opcional).",
         "vec"
     ]
