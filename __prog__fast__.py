@@ -2024,5 +2024,58 @@ WMIC           Muestra información de WMI en el shell de comandos interactivo.
     
     server(url_port)
 
+def shorty(rrss, url, sub):
+
+    if sub == None:
+        sub = ""
+    
+    if url == None:
+        url = ""
+    
+    rrss = rrss.lower()
+
+    domains_ = {
+
+        "tin": 0,
+        "rid": 1,
+        "you": 2,
+        "wha": 3,
+        "lin": 4,
+        "goo": 5
+        
+    }
+    
+    data = {
+
+        "url": url,
+        "domain": domains_[rrss],
+        "alias": sub,
+        "expiration_date": "",
+        "expiration_hits": "",
+        "cloak": 0,
+        "password": ""
+
+    }
+
+    if "://" not in url or url == None or rrss == None or rrss.lower() not in domains_:
+        print("[ERROR] Introduce una URL valida ...")
+    
+    else:
+
+        try:
+            shorty_ = requests.post("https://shorten.ly/g.php", data=data)
+
+            dict_j = json.loads(shorty_.content)
+            #dict_j_key = dict_j.keys()
+            #for key in dict_j_key:     SE MUESTRA CADA RESULTADO
+                #print(f"{key} => {dict_j[key]}".upper()) 
+
+            if "success" in shorty_.text:
+                print(f'[PASSED] Shorted URL =>> [{dict_j["short_url"]}]')
+            #print(shorty_.text)
+
+        except Exception as err:
+            print(f"[ERROR] {err}")
+
 # python3 fsh.py urldump --a <social_network> --b <count> < ------------ in mgt0ls
 #################################

