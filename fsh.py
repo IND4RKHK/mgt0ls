@@ -220,17 +220,39 @@ tb_vec = tabulate(vec_lst).replace("-", "")
 tb_cmd = tabulate(cmd_lst).replace("-", "")
 
 
-mgtols = R"""
+mgtols = Fore.LIGHTBLACK_EX + R"""
   __________
  / ___  ___ \     
-/ / . \/ . \ \   
+/ / {}.{} \/ {}.{} \ \   
 \ \___/\___/ /\  
- \____\/____/||  [ YouTube DEV ] ￬ [ mgt0l$ V2.19.2 ]
+ \____\/____/||  {}[ YouTube DEV ]{} ￦ {}[ mgt0l$ V2.19.2 ]{}
  /     /\\\\\//  
-|     |\\\\\\    > https://ytub.ee/IND4RKHK
- \      \\\\\\
-   \______/\\\\  :: I See You ::
-    _||_||_"""
+|     |\\\\\\    {}>{} {}https://ytub.ee/IND4RKHK{}
+ \      \\\\\
+   \______/\\\\  {}:: I See You ::{}
+    _||_||_""".format(
+        # Ojos
+        Fore.LIGHTWHITE_EX,
+        Fore.LIGHTBLACK_EX,
+        Fore.LIGHTWHITE_EX,
+        Fore.LIGHTBLACK_EX,
+        
+        Fore.LIGHTWHITE_EX,
+        Fore.LIGHTBLACK_EX,
+        Fore.LIGHTWHITE_EX,
+        Fore.LIGHTBLACK_EX,
+
+        # Pre URL
+        Fore.LIGHTRED_EX,
+        Fore.LIGHTBLACK_EX,
+
+        # URL
+        Fore.LIGHTWHITE_EX,
+        Fore.LIGHTBLACK_EX, 
+        
+        # 
+        Fore.LIGHTWHITE_EX,
+        Fore.LIGHTBLACK_EX) + Fore.WHITE
 
 scripts_h = "\n[ DOXING TOOLS ]\n" + tb_dox + "\n[ DDoS TOOLS ]\n" + tb_ddos + "\n[ BRUTE FORCE TOOLS ]\n" + tb_dic + "\n[ MALWARE TOOLS ]\n" + tb_mal + "\n[ VECTOR TOOLS ]\n" + tb_vec + "\n[ SETTINGS ]\n" + tb_cmd
 

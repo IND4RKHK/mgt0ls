@@ -61,7 +61,8 @@ Si no está de acuerdo con estos términos, absténgase de utilizarlo.
             "pyzipper",
             "tabulate",
             "StringGenerator",
-            "googletrans"
+            "googletrans",
+            "colorama"
             
         ]
 
