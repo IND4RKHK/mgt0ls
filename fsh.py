@@ -181,6 +181,14 @@ execute_s = {
         "--b URL a acortar, (obligatorio).\n"
         "--c Alias para el enlace acortado, (opcional).",
         "vec"
+    ],
+    "fastscan": [
+        fastscan,
+        "a",
+        "[DESCRIPCION]\nEscaneo rapido de pagina web.\n\n"
+        "[USO] python3 fsh.py fastscan --a <url>\n\n"
+        "[PARAMETROS]\n--a Pagina web a escanear ej: https://example.com/",
+        "dic"
     ]
 }
 

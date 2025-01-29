@@ -29,10 +29,12 @@ import asyncio
 import pyzipper
 import platform
 import requests
+from sys import stdout
 from bs4 import BeautifulSoup
 from tabulate import tabulate
 from hashlib import md5, sha1
 from colorama import Fore, init
+from subprocess import getoutput
 from strgen import StringGenerator
 from googletrans import Translator
 from ftplib import FTP, error_perm, error_reply, error_temp
@@ -109,7 +111,15 @@ def crint(txt):
         txt = txt.replace("[", f"{Fore.LIGHTBLACK_EX}[").replace("]", f"]{Fore.WHITE}")
     
     print(txt)
-    
+
+def srint(txt):
+
+    if "[" in txt and "]" in txt:
+        txt = txt.replace("[", f"{Fore.LIGHTBLACK_EX}[").replace("]", f"]{Fore.WHITE}")
+
+    stdout.write("\r"+txt+"\r")
+    stdout.flush()
+
 def update():
 
     try:
@@ -2092,5 +2102,386 @@ def shorty(rrss, url, sub):
         except Exception as err:
             crint(f"[ERROR] {err}")
 
+def fastscan(url):
+    # Cosas que no deben de incluir las URLS
+    not_url = [ 
+
+        #".js",
+        ".css",
+        "google",
+        ".png",
+        #".xml", 
+        ".mp4", 
+        ".png", 
+        ".jpg", 
+        ".ico", 
+        #".pdf",
+        ".jpeg",
+        ".gif"
+
+    ]
+
+    # Cosas que tienen que incluir las URLS
+    url_in = [ "href", "src", "url", "action", "iframe" ]
+
+    # Limpieza de URL
+    clean_ = [
+
+            ["<", ""], 
+            ["\\/", "/"],
+            ["\\", ""],
+            [">", "\n"],
+            ['": "', '="'],
+            ['="', " "],
+            ['"', ""],
+            # Zona JS
+            [",", "\n"]
+
+    ]
+
+    # Resultados
+    results = []
+    open_ports = ""
+
+    not_error = {
+
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edg/132.0.0.0",
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "Cache-Control": "no-cache"
+
+    }
+
+    def save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_):
+
+        open_ports = ""
+
+        # Integramos su id gestionando su estado cada 7 segundos
+        crint("\n[INFO] Terminando escaneo =>> [OK]")
+        while no_data:
+
+            try:
+                get_st = requests.get(f'https://hide.mn/api/nmap.php?out=js&get={form_["id"]}')
+                res_ = json.loads(get_st.content)
+
+                # Si el escaneo termino
+                if res_["text"] != "":
+                    no_data = False
+                    open_ports = res_["text"]
+                    res_["stats"][0] = "OK"
+
+                srint(f"[INFO] Obteniendo Puertos =>> [{res_['stats'][0]}]")
+                time.sleep(7)
+
+            except:
+                crint("[INFO] Obteniendo Puertos =>> [BAD]")
+                break
+        
+        all_info = {
+
+            "domain": domain_get,
+            "ip": ip_domain,
+            "info": whois_pro,
+            "open_ports": open_ports,
+            "dns_info": dns_info,
+            "map": robot_
+            
+        }
+
+        with open("info.txt", "w", encoding="utf-8") as save_txt, open("urls.txt", "w", encoding="utf-8") as save_urls:
+            save_txt.write(str(all_info).replace(",", ",\n").replace("'", '"').replace("{", "{\n").replace("}", "\n}").replace("\\n", "\n").replace("\\r", ""))
+            crint("[PASS] Informacion del dominio guardada en info.txt ...")
+            
+            if len(results) > 1:
+
+                for url_rs in results:
+                    save_urls.write(url_rs + "\n")
+
+                crint("[PASS] URL's han sido guardadas en urls.txt ...")
+
+    results.append(url)
+
+    if "://" not in url:
+        crint("[ERROR] Formato de URL: https://example.com/ OR http://example.com/")
+        exit(0)
+
+    # Creamos una lista donde el dominio base es 2 y asignamos el filtro
+    url = url.replace("://", "3M3")
+    try:
+        url_PM = url.split("/")
+        filter_ = url_PM[0].replace("3M3", "://")
+    except:
+        url = url + "/"
+        url_PM = url.split("/")
+        filter_ = url_PM[0].replace("3M3", "://")
+
+    ##############################
+    #        Get IP DOMAIN       #
+    ##############################
+
+    domain_get = filter_.split("://")[1]
+
+    do_clean = [
+        
+        # WN
+        ["[", "\nIP"],
+        ["]", "\n"],
+        # LX
+        ["(", "\nIP"],
+        [")", "\n"]
+
+    ]
+
+    if "win" in SYS_GLOBAL:
+        exe_ = f"ping {domain_get} -w 1 -n 1 -4"
+
+    else:
+        exe_ = f"ping -c 1 -W 1 {domain_get}"
+
+    ip = getoutput(exe_)
+
+    for do_ in do_clean:
+        ip = ip.replace(do_[0], do_[1])
+
+    ip = ip.split("\n")
+
+    for line in ip:
+
+        if "IP" in line:
+            ip_domain = line.strip("IP").strip()
+            crint(f"[INFO] IP del dominio =>> [{ip_domain}]")
+            break
+
+    ##############################
+    #   Get Open Ports Domain    #
+    ##############################
+
+    no_data = True
+    nm_dat = {
+
+        "host": ip_domain,
+        "ports": ""
+
+    }
+    try:
+        # Enviamos la solicitud de mapeo al host
+        post_nm = requests.post("https://hide.mn/api/nmap.php?out=js&post", data=nm_dat)
+
+        # Obtenemos su ID asignada
+        form_ = json.loads(post_nm.content)
+
+        crint("[INFO] Obteniendo Puertos =>> [OK]")
+        if post_nm.status_code != 200:
+            crint("[INFO] Obteniendo Puertos =>> [BAD]")
+            no_data = False
+
+    except:
+        crint("[INFO] Obteniendo Puertos =>> [BAD]")
+        no_data = False
+    
+    ##############################
+    #        ROBOTS .TXT SC      #
+    ##############################
+
+    try:
+        # Obtenemos los robots .txt
+        get_bot = requests.get(filter_+"/robots.txt")
+        robot_ = get_bot.text
+
+        if robot_ != "" and "disallow" in robot_.lower() or "sitemap" in robot_.lower():
+            crint("[INFO] Obteniendo el mapeo del Sitio =>> [OK]")
+            robot_ = robot_.split("\n") #########3 Solucionar error de limpieza
+
+            for dir_ in robot_:
+
+                if "disallow" in dir_.lower() or "sitemap" in dir_.lower():
+                    
+                    # Aqui agragamos a results las urls detectadas por robots.txt
+                    dir_tmp = dir_.split(": ")[1]
+
+                    # El formato que viene de filter_ es https://example.com
+                    if "://" in dir_tmp:
+                        url_rb = dir_tmp
+
+                    elif dir_tmp.startswith("/") == False:
+                        url_rb = filter_ + "/" + dir_tmp
+
+                    elif dir_tmp.startswith("/") == True:
+                        url_rb = filter_ + dir_tmp
+                    
+                    if url_rb not in results:
+                        try:
+                            results.append(url_rb)#.split("\n")[0])
+                        except Exception as err:
+                            print(err)
+                            pass
+        else:
+            crint("[INFO] Obteniendo el mapeo del Sitio =>> [BAD]")
+        
+        # De todas formas se guarda el texto
+        robot_ = get_bot.text
+
+    except Exception as err:
+        crint(f"[ERROR] {err}")
+        pass
+
+    ##############################
+    #         Who IS Pro         #
+    ##############################
+
+    whois_pro = ""
+    not_who = [ ">", ";", "<" ]
+    rep_who = [
+
+            [">", ">\n"],
+            [";", ";\n"],
+            ["<", "\n<"]
+
+    ]
+    verify = False
+
+    try:
+
+        crint(f"[INFO] Dominio =>> [{domain_get}]")
+        # Obtenemos la informacion del dominio
+        get_ = requests.get(f"https://www.whois.com/whois/{domain_get}", headers=not_error, timeout=10)
+
+        if "df-raw" not in get_.text:
+            get_ = requests.get(f"https://www.whois.com/whois/{ip_domain}", headers=not_error, timeout=10)
+
+        read_ = get_.text
+
+        # Limpiamos y modificamos el html haciendolo compatible con listas
+        for cl_ in rep_who:
+                read_ = read_.replace(cl_[0], cl_[1])
+
+        # Lo hacemos ITERABLE
+        read_ = read_.split("\n")
+
+        # Verificamos cada linea hasta encontar el RAW y extraer datos necesarios
+        if "df-raw" in get_.text:
+            crint("[INFO] Informacion de la WEB =>> [OK]")
+
+            for line in read_:
+                    
+                    if "df-raw" in line:
+                            verify = True
+
+                    if verify == True and all(not_ not in line for not_ in not_who):
+                            whois_pro = whois_pro + line.strip("\n") + "\n"
+                            
+                    if "DNSSEC" in line or "</pre" in line:
+                            verify = False
+                            break
+
+        else:
+            crint("[INFO] Informacion de la WEB =>> [BAD] ")
+
+    except:
+        crint("[INFO] Informacion de la WEB =>> [BAD] ")
+
+    ##############################
+    #         DNS Look UP        #
+    ##############################
+
+    try:
+        get_ = requests.get(f"https://api.hackertarget.com/dnslookup/?q={domain_get}")
+        dns_info = get_.text
+
+        if "{" not in dns_info:
+            crint("[INFO] DNS's Obtenidos =>> [OK]")
+        else:
+            crint("[INFO] DNS's Obtenidos =>> [BAD]")
+
+    except:
+        crint("[INFO] DNS's Obtenidos =>> [BAD]")
+
+    ##############################
+    #       Escaneo de URL       #
+    ##############################
+
+    crint("[INFO] Presiona CTRL + C para terminar con el escaneo ...")
+
+    for url in results:
+
+        # En caso de error mostrar los resultados
+        try:
+            get_ = requests.get(url, timeout=10)
+            save_rq = get_.text
+        except KeyboardInterrupt:
+            save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_)
+            exit(0)
+        
+        except Exception as err:
+            pass    
+
+        # Reemplazamos :// para trabajar mejor
+        url = url.replace("://", "3M3")
+
+        # Creamos una lista donde el dominio base es 1
+        url_ls = url.split("/")
+
+        ######
+        url_dm = url_ls[0]
+        ######
+
+        # Se guarda y limpia el archivo html
+        for exc_ in clean_:
+            save_rq = save_rq.replace(exc_[0], exc_[1])
+
+        # Se almacena save_rq como lista
+        read_ = save_rq.split("\n")
+
+        # Se lee y procesan los URL
+        for line in read_:
+            line_ = line.split()
+            
+            # Si una de las opciones esta en la var line
+            if any(x in line for x in url_in):
+
+                # Por cada intento de busqueda
+                for intent in url_in:
+                    
+                    try:
+                        # Nueva url almacenada
+                        new_url = line_[line_.index(intent)+1].strip()
+
+                        # Si no hay ninguna de las opciones en la linea
+                        if all(x not in line for x in not_url):
+                            
+                            # Si la url empieza con htt
+                            if new_url.startswith("htt") == True:
+
+                                # Si la url no fue escaneada
+                                if new_url not in results: #and filter_ in new_url:
+                                    results.append(new_url)
+                                    continue
+
+                            # Si empieza por /
+                            elif new_url.startswith("/") == True:
+                                new_url = url_dm + new_url; new_url = new_url.replace("//", "/")
+                                
+                            elif new_url.startswith("/") == False and new_url.endswith("/") == True:
+                                new_url = url_dm + "/" + new_url
+                            
+                            elif new_url.startswith("/") == False and new_url.endswith("/") == False:
+                                new_url = url_dm + "/" + new_url
+
+                            if new_url.replace("3M3", "://") not in results: #and filter_ in new_url:
+                                results.append(new_url.replace("3M3", "://"))
+                                
+
+                    except:
+                        pass
+        #crint(url)
+        srint(f"[SCAN] Escaneando URL's =>> [{len(results)}] Status [{get_.status_code}]")
+
+        if len(results) == 1:
+            save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_)
+            break
+
+    # Si se obtuvieron resultados
+    save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_)
+
+    # VERSION DE PHP Y SERVIDOR ETC 
 # python3 fsh.py urldump --a <social_network> --b <count> < ------------ in mgt0ls
 #################################
