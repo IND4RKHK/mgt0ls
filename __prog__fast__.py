@@ -89,7 +89,10 @@ async def translate_as(text):
         else:
             detect_ = await trans_.translate(text, dest=root_json["lang"], src="es") # Espera para poder retornar
 
-        return "\n"+detect_.text
+        if "[" in detect_.text and "]" in detect_.text:
+            txt = detect_.text.replace("[", f"{Fore.LIGHTBLACK_EX}[").replace("]", f"]{Fore.WHITE}") # Se repite
+
+        return "\n"+txt
         
     except Exception as err:
 
@@ -101,6 +104,9 @@ async def translate_as(text):
 def translate(text):
 
     if root_json["lang"] == "es":
+        if "[" in text and "]" in text:
+            text = text.replace("[", f"{Fore.LIGHTBLACK_EX}[").replace("]", f"]{Fore.WHITE}") # Se repite
+
         return text
     else:
         return asyncio.run(translate_as(text)) # Ejecuta la tarea asyncrona para poder retornar
@@ -108,14 +114,14 @@ def translate(text):
 def crint(txt):
 
     if "[" in txt and "]" in txt:
-        txt = txt.replace("[", f"{Fore.LIGHTBLACK_EX}[").replace("]", f"]{Fore.WHITE}")
+        txt = txt.replace("[", f"{Fore.LIGHTBLACK_EX}[").replace("]", f"]{Fore.WHITE}") # Se repite
     
     print(txt)
 
 def srint(txt):
 
     if "[" in txt and "]" in txt:
-        txt = txt.replace("[", f"{Fore.LIGHTBLACK_EX}[").replace("]", f"]{Fore.WHITE}")
+        txt = txt.replace("[", f"{Fore.LIGHTBLACK_EX}[").replace("]", f"]{Fore.WHITE}") # Se repite
 
     stdout.write("\r"+txt+"\r")
     stdout.flush()
@@ -2102,7 +2108,7 @@ def shorty(rrss, url, sub):
         except Exception as err:
             crint(f"[ERROR] {err}")
 
-def fastscan(url):
+def webmap(url):
     # Cosas que no deben de incluir las URLS
     not_url = [ 
 

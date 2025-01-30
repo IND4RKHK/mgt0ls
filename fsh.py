@@ -182,11 +182,11 @@ execute_s = {
         "--c Alias para el enlace acortado, (opcional).",
         "vec"
     ],
-    "fastscan": [
-        fastscan,
+    "webmap": [
+        webmap,
         "a",
-        "[DESCRIPCION]\nEscaneo rapido de pagina web.\n\n"
-        "[USO] python3 fsh.py fastscan --a <url>\n\n"
+        "[DESCRIPCION]\nMapeo y escaneo de pagina web.\n\n"
+        "[USO]\npython3 fsh.py webmap --a <url>\n\n"
         "[PARAMETROS]\n--a Pagina web a escanear ej: https://example.com/",
         "dic"
     ]
@@ -262,7 +262,16 @@ mgtols = Fore.LIGHTBLACK_EX + R"""
         Fore.LIGHTWHITE_EX,
         Fore.LIGHTBLACK_EX) + Fore.WHITE
 
-scripts_h = "\n[ DOXING TOOLS ]\n" + tb_dox + "\n[ DDoS TOOLS ]\n" + tb_ddos + "\n[ BRUTE FORCE TOOLS ]\n" + tb_dic + "\n[ MALWARE TOOLS ]\n" + tb_mal + "\n[ VECTOR TOOLS ]\n" + tb_vec + "\n[ SETTINGS ]\n" + tb_cmd
+usage_mg_bn = """
+> python3 fsh.py <nombre_de_herramienta> :: Obten ayuda respecto a tu herramienta. 
+> python3 fsh.py lang_cfg --a en         :: Configura el idioma a Ingles.
+> python3 fsh.py check_up                :: Comprueba actualizaciones de mgt0l$.
+
+[ Estas usando mgt0l$ bajo TU RESPONSABILIDAD ] </> [ by HKNX ]
+
+"""
+
+scripts_h = "\n[ DOXING TOOLS ]\n" + tb_dox + "\n[ DDoS TOOLS ]\n" + tb_ddos + "\n[ BRUTE FORCE TOOLS ]\n" + tb_dic + "\n[ MALWARE TOOLS ]\n" + tb_mal + "\n[ VECTOR TOOLS ]\n" + tb_vec + "\n[ SETTINGS ]\n" + tb_cmd + "\n[ USAGE MGT0L$ ]\n" + usage_mg_bn
 
 parse = argparse.ArgumentParser(usage=mgtols+translate(scripts_h))
 

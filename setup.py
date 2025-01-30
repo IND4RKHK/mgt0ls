@@ -96,7 +96,6 @@ Si no está de acuerdo con estos términos, absténgase de utilizarlo.
 ║  { " } :: Usalo bajo tu responsabilidad.   ║ 
 ║  -"-"-                                     ║
 ║ python3 fsh.py --h  =>> Uso con parámetros ║
-║ python3 fsh.py lang_cfg => Change language ║
 ╚════════════════════════════════════════════╝
 """)
 except Exception as err:
