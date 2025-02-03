@@ -1,6 +1,6 @@
 # MGT0L$
 
-![MGT0L$ Banner](https://github.com/IND4RKHK/mgt0ls/assets/banner.png)
+![MGT0L$ Banner](https://repository-images.githubusercontent.com/831577639/b5e872bf-e08e-4d85-823a-0d64f67fa893)
 
 MGT0L$ is a powerful collection of cybersecurity tools designed for **penetration testing**, **doxing**, **malware crafting**, and **OSINT research**. It is tailored for **security professionals**, **ethical hackers**, and **researchers** looking to automate and simplify complex security-related tasks.
 
