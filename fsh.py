@@ -147,7 +147,7 @@ execute_s = {
         "a", 
         "[DESCRIPCION]\nEstablece un canal remoto usando solicitudes HTTP/POST.\n\n"
         "[USO]\npython3 fsh.py reverhttp --a <PORT|URL>\n\n"
-        "[PARAMETROS]\n--a PORT Para crear un host local y URL para host externo.",
+        "[PARAMETROS]\n--a: PORT Para crear un host local y URL para host externo.",
         "mal"
     ],
     "m4cware": [
@@ -162,7 +162,7 @@ execute_s = {
         "a",
         "[DESCRIPCION]\nConfigura el idioma de mgt0ls.\n\n"
         "[USO]\npython3 fsh.py lang_cfg --a <EN|AR|ES|ETC>\n\n"
-        "[PARAMETROS]\n--a Idioma que se utilizara permanentemente.",
+        "[PARAMETROS]\n--a: Idioma que se utilizara permanentemente.",
         "cmd"
     ],
     "check_up": [
@@ -177,9 +177,9 @@ execute_s = {
         "abc",
         "[DESCRIPCION]\nAcortador de enlaces maliciosos.\n\n"
         "[USO]\npython3 fsh.py shorty --a <GOO|LIN|WHA|YOU|RID|TIN> --b <URL> --c <ALIAS>\n\n"
-        "[PARAMETROS]\n--a Suplantar plataforma (GOO para Google, LIN para Linkedin, WHA para WhatsApp, YOU para YouTube, RID para Ride.ee, TIN para Tin.al, obligatorio).\n"
-        "--b URL a acortar, (obligatorio).\n"
-        "--c Alias para el enlace acortado, (opcional).",
+        "[PARAMETROS]\n--a: Suplantar plataforma (GOO para Google, LIN para Linkedin, WHA para WhatsApp, YOU para YouTube, RID para Ride.ee, TIN para Tin.al, obligatorio).\n"
+        "--b: URL a acortar, (obligatorio).\n"
+        "--c: Alias para el enlace acortado, (opcional).",
         "vec"
     ],
     "webmap": [
@@ -187,8 +187,20 @@ execute_s = {
         "a",
         "[DESCRIPCION]\nMapeo y escaneo de pagina web.\n\n"
         "[USO]\npython3 fsh.py webmap --a <url>\n\n"
-        "[PARAMETROS]\n--a Pagina web a escanear ej: https://example.com/",
+        "[PARAMETROS]\n--a: Pagina web a escanear ej: https://example.com/",
         "dic"
+    ],
+    "sshforce": [
+        sshforce,
+        "abcd",
+        "[DESCRIPCION]\nRealiza ataques de fuerza bruta contra servidores SSH.\n\n"
+        "[USO]\npython3 fsh.py sshforce --a <ip> --b <puerto> --c <usuario|diccionario_usuarios> --d <contraseña|diccionario_contraseñas>\n\n"
+        "[PARAMETROS]\n--a: Ip del servidor (obligatorio).\n"
+        "--b: Puerto del servidor (obligatorio).\n"
+        "--c: Usuario o diccionario de usuarios (obligatorio).\n"
+        "--d: Contraseña o diccionario de contraseñas (obligatorio).",
+        "dic"
+
     ]
 }
 

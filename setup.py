@@ -59,6 +59,7 @@ Si no está de acuerdo con estos términos, absténgase de utilizarlo.
             "beautifulsoup4",
             "requests",
             "pyzipper",
+            "paramiko",
             "tabulate",
             "StringGenerator",
             "googletrans",
