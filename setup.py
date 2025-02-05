@@ -1,10 +1,14 @@
 import os
 import time
+from subprocess import getoutput
 from sys import platform
 
 ROOT = {"root": os.getcwd(), "lang": "es"}
 
 temp = "█"
+apt_err = []
+mod_comm = []
+
 try:
     for i in range(50):
 
@@ -48,7 +52,6 @@ Si no está de acuerdo con estos términos, absténgase de utilizarlo.
             "php",
             "pip",
             "zip",
-            "python3",
             "apktool"
 
         ]
@@ -71,6 +74,7 @@ Si no está de acuerdo con estos términos, absténgase de utilizarlo.
             try:
                 for one in modules:
                     os.system(f"pip install {one}")
+
             except Exception as err:
                 print(err)
                 exit(0)
@@ -80,9 +84,26 @@ Si no está de acuerdo con estos términos, absténgase de utilizarlo.
                     os.system(f"apt-get install {inst} -y")
                 for one in modules:
                     os.system(f"pip install {one} --break-system-packages")
+                
+                # Lista de paquetes instalados
+                apt_pack = getoutput("apt list")
+
+                for package_ in kl_l:
+                    
+                    # Si el package no esta instalado
+                    if package_ not in apt_pack:
+                        apt_err.append(package_)
+
             except Exception as err:
                 print(err)
                 exit(0)
+
+        list_ = getoutput("pip list")
+
+        # Se listan los modulos y se guaran los que no estan instalados
+        for mod_ in modules:
+            if mod_ not in list_:
+                mod_comm.append(mod_)
 
         print("""
 ╔════════════════════════════════════════════╗
@@ -99,5 +120,38 @@ Si no está de acuerdo con estos términos, absténgase de utilizarlo.
 ║ python3 fsh.py --h  =>> Uso con parámetros ║
 ╚════════════════════════════════════════════╝
 """)
+
+
+        if apt_err != [] or mod_comm != []:
+
+            print(" __________________________ \n[INFORME DE INSTALACION </>]\n ────────────────────────── \n")
+
+            if "win" not in platform and apt_err != []:
+
+                for package_ in apt_err:
+                    print(f"[ERROR] El paquete {package_} no se logro instalar correctamente [apt-get install {package_}]")
+                        
+            # Verificando instalacion de modulos python correcta
+            if mod_comm != []:
+
+                with open("__prog__fast__.py", "r", encoding="utf-8") as moded_mg:
+                    file_read = moded_mg.read()
+
+                    for element in mod_comm:
+                        moded_mg.seek(0)
+                        print(f"[ERROR] El modulo {element} no se logro instalar correctamente [pip install {element} --break-system-packages]")
+                        
+                        for line in moded_mg:
+
+                            # Una vez se
+                            if "import" in line and element in line:
+                                file_read = file_read.replace(line, "# "+line)
+                                continue
+
+                    with open("__prog__fast__.py", "w", encoding="utf-8") as save_mg:
+                        save_mg.write(file_read)
+
+            print("[INFO] Verifica la estabilidad del los paquetes para tu entorno ↓\n[SOLVED] Se han comentado las librerias confilctivas ...")
+
 except Exception as err:
     print(f"[ERROR] {err}")
