@@ -2894,7 +2894,7 @@ def eashi(dir_):
                                     ch_tmp = True
                                 
                                 # Se obtiene la ip
-                                if "inet" in line:
+                                if ch_tmp == True and "inet" in line:
                                     ip = line.split(" ")
                                     ip = ip[ip.index("inet")+1].strip()
                                     break
