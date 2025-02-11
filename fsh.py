@@ -200,7 +200,14 @@ execute_s = {
         "--c: Usuario o diccionario de usuarios (obligatorio).\n"
         "--d: Contraseña o diccionario de contraseñas (obligatorio).",
         "dic"
-
+    ],
+    "eashi": [
+        eashi,
+        "a",
+        "[DESCRIPCION]\nClona paginas web mediante archivos MHTML.\n\n"
+        "[USO]\npython3 fsh.py eashi --a file.mhtml\n\n"
+        "[PARAMETROS]\n--a: Ruta del archivo .mhtml descargado (obligatorio).\n",
+        "vec"
     ]
 }
 

