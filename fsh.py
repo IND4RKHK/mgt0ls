@@ -208,7 +208,16 @@ execute_s = {
         "[USO]\npython3 fsh.py eashi --a file.mhtml\n\n"
         "[PARAMETROS]\n--a: Ruta del archivo .mhtml descargado (obligatorio).\n",
         "vec"
+    ],
+    "fireleak": [
+        fireleak,
+        "a",
+        "[DESCRIPCION]\nAuditor de aplicaciones con claves de Firebase hardcodeadas.\n\n"
+        "[USO]\npython3 fsh.py fireleak --a apk_a_escanear.apk\n\n"
+        "[PARAMETROS]\n--a: Ruta del archivo .apk a escanear (obligatorio).\n",
+        "vec"
     ]
+
 }
 
 GUI_scripts = [
