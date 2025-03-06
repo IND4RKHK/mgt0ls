@@ -12,7 +12,7 @@ execute_s = {
         "a", 
         "[DESCRIPCION]\nRecopila información sobre usuarios buscando en diversas fuentes web.\n\n"
         "[USO]\npython3 fsh.py seeker --a <nombre_de_usuario>\n\n"
-        "[PARAMETROS]\n--a: Nombre de usuario a buscar (obligatorio).",
+        "[PARAMETROS]\n--a: Nombre de usuario a buscar, (obligatorio).",
         "dox"
     ],
     "icmpdos": [
@@ -20,8 +20,8 @@ execute_s = {
         "ab", 
         "[DESCRIPCION]\nRealiza un ataque DDoS utilizando paquetes ICMP.\n\n"
         "[USO]\npython3 fsh.py icmpdos --a <ip_destino> --b <tamaño_paquete>\n\n"
-        "[PARAMETROS]\n--a: Dirección IP del objetivo (obligatorio).\n"
-        "--b: Tamaño del paquete ICMP en bytes (opcional, recomendado: 65550).",
+        "[PARAMETROS]\n--a: Dirección IP del objetivo, (obligatorio).\n"
+        "--b: Tamaño del paquete ICMP en bytes, (opcional, recomendado: 65550).",
         "ddos"
     ],
     "lopiapi": [
@@ -29,7 +29,7 @@ execute_s = {
         "a", 
         "[DESCRIPCION]\nBusca información asociada a un número telefónico mediante APIs.\n\n"
         "[USO]\npython3 fsh.py lopiapi --a <número_telefónico>\n\n"
-        "[PARAMETROS]\n--a: Número telefónico, ejemplo: 983222434 (obligatorio).",
+        "[PARAMETROS]\n--a: Número telefónico, ejemplo: 983222434, (obligatorio).",
         "dox"
     ],
     "unzipper": [
@@ -37,8 +37,8 @@ execute_s = {
         "ab", 
         "[DESCRIPCION]\nDescomprime archivos protegidos con contraseña mediante ataque de diccionario.\n\n"
         "[USO]\npython3 fsh.py unzipper --a <ruta_diccionario> --b <ruta_archivo_zip>\n\n"
-        "[PARAMETROS]\n--a: Ruta al diccionario de contraseñas (obligatorio).\n"
-        "--b: Ruta al archivo ZIP (obligatorio).",
+        "[PARAMETROS]\n--a: Ruta al diccionario de contraseñas, (obligatorio).\n"
+        "--b: Ruta al archivo ZIP, (obligatorio).",
         "dic"
     ],
     "tempmail": [
@@ -46,8 +46,8 @@ execute_s = {
         "ab", 
         "[DESCRIPCION]\nCrea correos temporales usando Mailnesia.\n\n"
         "[USO]\npython3 fsh.py tempmail --a <alias_correo> --b <número_mensaje>\n\n"
-        "[PARAMETROS]\n--a: Alias del correo temporal (obligatorio).\n"
-        "--b: Número del mensaje en la bandeja (opcional).",
+        "[PARAMETROS]\n--a: Alias del correo temporal, (obligatorio).\n"
+        "--b: Número del mensaje en la bandeja, (opcional).",
         "vec"
     ],
         "urljump": [
@@ -56,7 +56,7 @@ execute_s = {
         "[DESCRIPCION]\nGenera enlaces de invitacion aleatorios para RRSS.\n\n"
         "[USO]\npython3 fsh.py urljump --a <RRSS_to_gen> --b <cantidad>\n\n"
         "[PARAMETROS]\n--a: Enlace de RRSS a generar (e.g., `WA` para WhatsApp, `TG` para Telegram, `DC` para Discord, `BT` para Bit.ly, `YT` para YouTube, obligatorio).\n"
-        "--b: Cantidad a generar (obligatorio).",
+        "--b: Cantidad a generar, (obligatorio).",
         "vec"
     ],
     "wordinfect": [
@@ -64,8 +64,8 @@ execute_s = {
         "ab", 
         "[DESCRIPCION]\nInserta macros maliciosas en documentos Word habilitados para macros.\n\n"
         "[USO]\npython3 fsh.py wordinfect --a <ruta_docm> --b <ruta_macro>\n\n"
-        "[PARAMETROS]\n--a: Ruta al archivo de Word (.docm, obligatorio).\n"
-        "--b: Ruta al archivo que contiene la macro (obligatorio).",
+        "[PARAMETROS]\n--a: Ruta al archivo de Word, (.docm, obligatorio).\n"
+        "--b: Ruta al archivo que contiene la macro, (obligatorio).",
         "mal"
     ],
     "macromaker": [
@@ -81,7 +81,7 @@ execute_s = {
         "ab", 
         "[DESCRIPCION]\nObten el posible DNI de una persona.\n\n"
         "[USO]\npython3 fsh.py findperson --a <nombre_persona> --b <A|C|C|G|M|V|ALL>\n\n"
-        "[PARAMETROS]\n--a: Nombre de la persona a buscar (obligatorio).\n"
+        "[PARAMETROS]\n--a: Nombre de la persona a buscar, (obligatorio).\n"
         "--b: Código del país (e.g., `A` para Argentina, `C` para Chile, `V` para Venezuela, `C` para Colombia, `G` para Guatemala, `M` para Mexico, `B` para Bolivia, `ALL` para todos los países, obligatorio).",
         "dox"
     ],
@@ -90,7 +90,7 @@ execute_s = {
         "a", 
         "[DESCRIPCION]\nLocaliza direcciones IP y proporciona detalles como ubicación, ISP y más.\n\n"
         "[USO]\npython3 fsh.py iplocate --a <dirección_ip>\n\n"
-        "[PARAMETROS]\n--a: Dirección IP objetivo (obligatorio).",
+        "[PARAMETROS]\n--a: Dirección IP objetivo, (obligatorio).",
         "dox"
     ],
     "httpflood": [
@@ -98,7 +98,7 @@ execute_s = {
         "a", 
         "[DESCRIPCION]\nSatura un servidor web enviando múltiples solicitudes HTTP.\n\n"
         "[USO]\npython3 fsh.py httpflood --a <url_objetivo>\n\n"
-        "[PARAMETROS]\n--a: URL del servidor objetivo (obligatorio).",
+        "[PARAMETROS]\n--a: URL del servidor objetivo, (obligatorio).",
         "ddos"
     ],
     "ftpbrute": [
@@ -107,9 +107,9 @@ execute_s = {
         "[DESCRIPCION]\nRealiza ataques de fuerza bruta contra servidores FTP.\n\n"
         "[USO]\npython3 fsh.py ftpbrute --a <modo> --b <servidor_ftp> --c <usuario|diccionario_usuarios> --d <diccionario_contraseñas>\n\n"
         "[PARAMETROS]\n--a: Modo de ataque (`mul` para múltiples usuarios, `one` para un único usuario, obligatorio).\n"
-        "--b: Dirección del servidor FTP (obligatorio).\n"
-        "--c: Usuario o diccionario de usuarios (obligatorio).\n"
-        "--d: Diccionario de contraseñas (obligatorio).",
+        "--b: Dirección del servidor FTP, (obligatorio).\n"
+        "--c: Usuario o diccionario de usuarios, (obligatorio).\n"
+        "--d: Diccionario de contraseñas, (obligatorio).",
         "dic"
     ],
     "webdumper": [
@@ -119,7 +119,7 @@ execute_s = {
         "[USO]\npython3 fsh.py webdumper --a <F|S> --b <url> --c <diccionario>\n\n"
         "[PARAMETROS]\n--a: Modo (`F` para inicial, `S` para recursivo, obligatorio).\n"
         "--b: URL base (obligatorio).\n"
-        "--c: Diccionario con palabras clave (obligatorio).",
+        "--c: Diccionario con palabras clave, (obligatorio).",
         "dic"
     ],
     "unlocker": [
@@ -128,8 +128,8 @@ execute_s = {
         "[DESCRIPCION]\nRompe hashes MD5 y SHA1 con fuerza bruta.\n\n"
         "[USO]\npython3 fsh.py unlocker --a <MD5|SHA1> --b <diccionario> --c <hash>\n\n"
         "[PARAMETROS]\n--a: Modo (`MD5` para cifrado md5, `SHA1` para cifrado SHA1, obligatorio).\n"
-        "--b: Diccionario de palabras (obligatorio).\n"
-        "--c: Hash a romper (obligatorio).",
+        "--b: Diccionario de palabras, (obligatorio).\n"
+        "--c: Hash a romper, (obligatorio).",
         "dic"
     ],
     "sc4pk": [
@@ -139,7 +139,7 @@ execute_s = {
         "[USO]\npython3 fsh.py sc4pk --a <ID_de_seguimiento> --b <ig|fb|tw|go> | Creacion del APK.\n"
         "python3 fsh.py sc4pk --a <ID_de_seguimiento> | Busqueda de victimas.\n\n"
         "[PARAMETROS]\n--a: ID asociada a tus victimas, (obligatorio).\n"
-        "--b: Scam a usar (ig para Instagram, fb para Facebook, tw para Twitter, go para Google, opcional)",
+        "--b: Scam a usar (ig para Instagram, fb para Facebook, tw para Twitter, go para Google, opcional).",
         "mal"
     ],
     "reverhttp": [
@@ -147,7 +147,7 @@ execute_s = {
         "a", 
         "[DESCRIPCION]\nEstablece un canal remoto usando solicitudes HTTP/POST.\n\n"
         "[USO]\npython3 fsh.py reverhttp --a <PORT|URL>\n\n"
-        "[PARAMETROS]\n--a: PORT Para crear un host local y URL para host externo.",
+        "[PARAMETROS]\n--a: PORT Para crear un host local y URL para host externo, (obligatorio).",
         "mal"
     ],
     "m4cware": [
@@ -162,7 +162,7 @@ execute_s = {
         "a",
         "[DESCRIPCION]\nConfigura el idioma de mgt0ls.\n\n"
         "[USO]\npython3 fsh.py lang_cfg --a <EN|AR|ES|ETC>\n\n"
-        "[PARAMETROS]\n--a: Idioma que se utilizara permanentemente.",
+        "[PARAMETROS]\n--a: Idioma que se utilizara permanentemente, (obligatorio).",
         "cmd"
     ],
     "check_up": [
@@ -184,10 +184,11 @@ execute_s = {
     ],
     "webmap": [
         webmap,
-        "a",
+        "ab",
         "[DESCRIPCION]\nMapeo y escaneo de pagina web.\n\n"
-        "[USO]\npython3 fsh.py webmap --a <url>\n\n"
-        "[PARAMETROS]\n--a: Pagina web a escanear ej: https://example.com/",
+        "[USO]\npython3 fsh.py webmap --a <url> --b <ONE>\n\n"
+        "[PARAMETROS]\n--a: Pagina web a escanear ej: https://example.com/, (obligatorio).\n"
+        "--b: Modo (ONE: Se usa para realizar un escaneo no recursivo, opcional).",
         "dic"
     ],
     "sshforce": [

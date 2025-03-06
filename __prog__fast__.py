@@ -2112,7 +2112,14 @@ def shorty(rrss, url, sub):
         except Exception as err:
             crint(f"[ERROR] {err}")
 
-def webmap(url):
+def webmap(url, one_r):
+
+    # Check para evitar errores
+    if one_r == None: 
+        one_r = "null"
+    else:
+        one_r = one_r.lower()
+
     # Cosas que no deben de incluir las URLS
     not_url = [ 
 
@@ -2149,9 +2156,18 @@ def webmap(url):
 
     ]
 
+    # Wordpress urls
+    wordpress_ = [
+        "/wp-json/wp/v2/users", "/wp-json/wp/v2/comments",
+        "/wp-json/wp/v2/settings", "/wp-json/wp/v2/posts",
+        "/wp-json/wc/v3/products", "/wp-json/wc/v3/customers",
+        "/?wc-ajax=xoo_wsc_refresh_fragments", "/wp-json/wc/v3/orders"
+        ]
+
     # Resultados
     results = []
     open_ports = ""
+    wordpr_save = ""
 
     not_error = {
 
@@ -2161,7 +2177,7 @@ def webmap(url):
 
     }
 
-    def save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_):
+    def save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_, wordpr_save):
 
         open_ports = ""
 
@@ -2193,7 +2209,8 @@ def webmap(url):
             "info": whois_pro,
             "open_ports": open_ports,
             "dns_info": dns_info,
-            "map": robot_
+            "map": robot_,
+            "wordpress": wordpr_save
             
         }
 
@@ -2289,6 +2306,30 @@ def webmap(url):
         crint("[INFO] Obteniendo Puertos =>> [BAD]")
         no_data = False
     
+    ##############################
+    #        TEST WORDPRESS      #
+    ##############################
+
+    word_chk = False
+    try:
+        # Realizamos las peticiones de wordpress
+        for leak_wordp in wordpress_:
+            word_intent = requests.get(filter_+leak_wordp)
+
+            # Si da 200 verificamos su obtencion exitosa y guardamos en variable los resultados
+            if word_intent.status_code == 200:
+                word_chk = True
+                wordpr_save = wordpr_save + str(word_intent.content.decode("utf-8")) + "\n"
+
+        # Le mostramos al usuario lo sucedido
+        if word_chk == False:
+            crint("[INFO] Obteniendo WordPress Leaks =>> [BAD]")
+        else:
+            crint("[INFO] Obteniendo WordPress Leaks =>> [OK]")
+
+    except:
+        crint("[INFO] Obteniendo WordPress Leaks =>> [BAD]")
+
     ##############################
     #        ROBOTS .TXT SC      #
     ##############################
@@ -2421,14 +2462,14 @@ def webmap(url):
             get_ = requests.get(url, timeout=10)
             save_rq = get_.text
         except KeyboardInterrupt:
-            save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_)
+            save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_, wordpr_save)
             exit(0)
         
         except:
 
             if len(results) == 1:
                 crint("[ERROR] El servidor no respondio de la manera indicada ...")
-                save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_)
+                save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_, wordpr_save)
                 break
             else:
                 pass
@@ -2472,7 +2513,15 @@ def webmap(url):
 
                                 # Si la url no fue escaneada
                                 if new_url not in results: #and filter_ in new_url:
-                                    results.append(new_url)
+
+                                    # Si es recursiva la url se agrega
+                                    if one_r != "one":
+                                        results.append(new_url)
+                                    
+                                    # Si no es recursiva se agrega el filtro y si cumple se agrega
+                                    if one_r == "one" and filter_ in new_url:
+                                        results.append(new_url)
+
                                     continue
 
                             # Si empieza por /
@@ -2486,8 +2535,14 @@ def webmap(url):
                                 new_url = url_dm + "/" + new_url
 
                             if new_url.replace("3M3", "://") not in results: #and filter_ in new_url:
-                                results.append(new_url.replace("3M3", "://"))
                                 
+                                # Si el usuario no quiere recursivo guarda 
+                                if one_r != "one":
+                                    results.append(new_url.replace("3M3", "://"))
+
+                                # Si quiere que sea, lo verifica y guarda
+                                if one_r == "one" and filter_ in new_url.replace("3M3", "://"):
+                                    results.append(new_url.replace("3M3", "://"))
 
                     except:
                         pass
@@ -2495,11 +2550,11 @@ def webmap(url):
         srint(f"[SCAN] Escaneando URL's =>> [{len(results)}] Status [{get_.status_code}]")
 
         if len(results) == 1:
-            save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_)
+            save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_, wordpr_save)
             break
 
     # Si se obtuvieron resultados
-    save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_)
+    save_all(no_data, form_, ip_domain, domain_get, whois_pro, open_ports, results, dns_info, robot_, wordpr_save)
 
     # VERSION DE PHP Y SERVIDOR ETC 
 
