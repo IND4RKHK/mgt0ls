@@ -31,6 +31,7 @@ import paramiko
 import pyzipper
 import platform
 import requests
+import concurrent.futures
 from sys import stdout
 from bs4 import BeautifulSoup
 from tabulate import tabulate
@@ -1010,7 +1011,7 @@ def webdumper(select, url, dic_path): # Funciona with
 
             for palabra in dict_line:
 
-                palabra = palabra.replace("\n", "")
+                palabra = palabra.replace("\n", "").strip(" ")
                 url_100 = f"{url}{palabra}"
 
                 if "//" in url_100:
@@ -2161,7 +2162,8 @@ def webmap(url, one_r):
         "/wp-json/wp/v2/users", "/wp-json/wp/v2/comments",
         "/wp-json/wp/v2/settings", "/wp-json/wp/v2/posts",
         "/wp-json/wc/v3/products", "/wp-json/wc/v3/customers",
-        "/?wc-ajax=xoo_wsc_refresh_fragments", "/wp-json/wc/v3/orders"
+        "/?wc-ajax=xoo_wsc_refresh_fragments", "/wp-json/wc/v3/orders",
+        "/wp-json/wp/v2/pages", "/wp-json/wp/v2/media"
         ]
 
     # Resultados
@@ -3191,5 +3193,371 @@ def fireleak(apk_path):
         except Exception as err:
             crint(f"[ERROR] {err}")
 
-# python3 fsh.py urldump --a <social_network> --b <count> < ------------ in mgt0ls
-#################################
+def wpscrap(url, brute, check):
+
+    if brute != None:
+        brute = brute.lower()
+    
+    if check != None:
+        check = check.lower()
+
+    # Habilitar el modo entrenamiento para ir mejorando el escaneo por diccionario
+    # Automaticamente mediante el uso de la herramienta
+    train_use = False
+    assets_ = sht("assets/plugins-wp.txt")
+
+    if train_use == True:
+        crint("[TRAINING MODE] Los recursos se demoraran en cargar =>> train__")
+        train__ = []
+
+    # wordpress(https://example/, dic or )
+    apis_Wordpress = []
+    all_Wordpress_api = []
+    history_list = []
+
+    error_codes = {
+
+        200: "Publica",
+        400: "Mal formada",
+        401: "Requiere autenticacion",
+        403: "Sin permisos suficientes",
+        404: "No funcional",
+        500: "Error interno"
+
+    }
+
+    # Codigos de errores en las web pages
+    any_st = [200, 400, 401, 403]
+
+    # Variable que maneja de como se almacenan los endpoints en diferentes versiones de wordpress
+    versions_ = ["href", "self"]
+
+    # Obtenemos las urls a los endpoints y las almacenamos en una variable global en caso de ser necesario
+    # Si no se retorna como lista para su uso a estimar
+    def url_automatic(my_dir_json_var, global_ = True):
+
+        bored_json = str(my_dir_json_var).split(",")
+        my_urls = []
+        
+        for line in bored_json:
+
+            try:
+                for vrs in versions_:
+                
+                    # Si alguno de esto coincide, se obtiene los enlaces
+                    if vrs in line and "://" in line and f"{vrs}=" not in line:
+                        
+                        url = line.split("'")
+                        url = url[url.index(vrs)+2]
+
+                        if url not in apis_Wordpress and global_ == True:
+                            apis_Wordpress.append(url)
+                        
+                        if url not in apis_Wordpress and global_ == False:
+                            my_urls.append(url)
+
+            except:
+                pass
+        
+        if global_ == False:
+            return my_urls
+
+    # Guardamos los endpoints en un archivo llamado wp-urls
+    def save_wp_file():
+        apis_Wordpress.sort()
+        with open("wp-urls.txt", "w", encoding="utf-8") as save_:
+            
+            for url_to_save in apis_Wordpress:
+                save_.write(url_to_save+"\n")
+
+        crint("[INFO] Endpoints guardados en =>> [wp-urls.txt]")
+
+    # Si el usuario no incluye el / del final se le agrega
+    if url.endswith("/") == False:
+        url = url+"/"
+
+    # Si el usuario escribio la url sin el formato adecuado
+    if "://" not in url:
+        crint("[ERROR] No ingresaste la url con el formato solicitado: https://example.com/")
+        exit(0)
+
+    # Si el usuario quiere buscar plugins por fuerza bruta
+    if brute == "dic":
+
+        # Se leeran los plugins mas probables
+        with open(assets_, "r", encoding="utf-8") as read_:
+
+            for line in read_:
+                try:
+
+                    force_get = requests.get(url+"wp-json/"+line.strip("\n"))
+                    srint(f"[INFO] Probando plugin {line.strip()} =>> [{force_get.status_code}]")
+
+                    # Si el plugin existe, se agrega a la lista
+                    if any(force_get.status_code == st_x for st_x in any_st) and "<html" not in force_get.text:
+                        apis_Wordpress.append(force_get.url)
+
+                except KeyboardInterrupt:
+                    save_wp_file()
+                    exit(0)
+
+                except:
+                    pass
+            
+        # Guardamos las apis encontradas
+        if apis_Wordpress != []:
+            save_wp_file()
+            exit(0)
+
+        else:
+            crint("\n[INFO] No se lograron encontrar Endpoints ...")
+
+    # Si el usuario quiere buscar por wp-json
+    if brute != "dic":
+
+        try:
+            normal_url= url+"wp-json"
+            slash_url= url+"wp-json/"
+
+            try:
+                wp_json = requests.get(normal_url)
+            except:
+                pass
+
+            if wp_json.status_code != 200 or "<html" in wp_json.text:
+                crint("[ERROR] No se logro encontrar el archivo WordPress de JSON ...")
+                exit(0)
+            
+            wp_json_ct = json.loads(wp_json.content)
+            
+            # Se agrega a historial de apis para evitar bucle de scaneo
+            history_list.append(wp_json.url)
+
+            if "namespaces" not in wp_json_ct:
+                crint("[ERROR] No se logro encontrar la configuracion de WordPress ...")
+                exit(0)
+            
+            crint("[INFO] Configuracion de WordPress encontrada =>> [OK]")
+            
+            # Se obtienen los plugins que estan expuestos en la web
+            for plugin in wp_json_ct["namespaces"]:
+                apis_Wordpress.append(slash_url+plugin)
+            
+            # Luego por cada plugin se analiza para obtener sus subendpoints
+            for url_temp in apis_Wordpress:
+                
+                srint(f"[INFO] Analizando URL =>> [{url_temp}]")
+
+                # Creamos una variable sin el plugin
+                url_no_format = url_temp.split("/")
+
+                #########################################
+                # </> Machine learning
+                #########################################
+                if train_use == True:
+                    cont = 1
+                    histy = []
+                    while True:
+
+                        xdxd = url_no_format[url_no_format.index("wp-json")+cont]
+
+                        if histy != []:
+                            for xd_ in histy:
+                                xdxd = xd_ + "/" + xdxd
+                            histy.clear()
+
+                        train = url+"wp-json/"+xdxd
+
+                        test = requests.get(train)
+
+                        if any(test.status_code == xd for xd in any_st) and "<html" not in test.text:
+
+                            if xdxd not in train__:
+                                train__.append(xdxd)
+                            break
+
+                        else:
+                            histy.append(xdxd)
+
+                        cont += 1
+
+                #########################################
+
+                url_no_format = url_no_format[url_no_format.index("wp-json")+1]
+                url_no_format = url_temp.replace("/"+url_no_format, "")
+                
+                # Este bloque se encarga de verificar los plugins con sus endpoints completas.
+                # Es decir, tratar de obtener todas directamente
+                try:
+
+                    # Si la url no se escaneo se obtiene el contenido
+                    if url_no_format not in history_list:
+                        test_all_plug = requests.get(url_no_format)
+
+                    # Si se encuentra plugin se continua con el escaneo
+                    if test_all_plug.status_code == 200:
+                    
+                        # Si se encuentra se obtiene todos los endpoints y se agregan a la variable
+                        try:
+
+                            history_list.append(url_no_format)
+                            get_json = json.loads(test_all_plug.content)
+
+                            for url_get in url_automatic(get_json, False):
+
+                                if url_get not in all_Wordpress_api:
+                                    all_Wordpress_api.append(url_get)
+
+                        except:
+                            pass
+
+                except KeyboardInterrupt:
+                    save_wp_file()
+                    exit(0)
+
+                except:
+                    pass
+                
+                try:
+                    my_query = requests.get(url_temp)
+
+                    # Se intenta obtener los endpoints de cada plugin
+                    try:
+                        get_json = json.loads(my_query.content)
+
+                        # Si todo sale bien se deberian de almacenar en la variable global
+                        for url_jsoned in url_automatic(get_json, False):
+
+                            if url_jsoned not in all_Wordpress_api:
+                                all_Wordpress_api.append(url_jsoned)
+
+                    except:
+                        pass
+
+                except KeyboardInterrupt:
+                    save_wp_file()
+                    exit(0)
+
+                except:
+                    pass
+            
+            all_Wordpress_api.pop(0)
+
+            # Agregamos las urls encontradas a la lista global 
+            url_automatic(wp_json_ct, True)
+            for url_dup in all_Wordpress_api:
+
+                if url_dup not in apis_Wordpress:
+                    apis_Wordpress.append(url_dup)
+
+            # Guardamos los endpoints en un archivo llamado wp-urls
+            save_wp_file()
+
+            ############ </> dev zone ###########################
+
+            if train_use == True:
+                with open(assets_, "a+", encoding="utf-8") as trine_:
+                    
+                    trine_.seek(0)
+                    buff_ = trine_.read()
+
+                    for url_train in train__:
+                        if url_train+"\n" not in buff_:
+                            trine_.write(url_train+"\n")
+
+            #####################################################
+
+        except KeyboardInterrupt:
+            save_wp_file()
+            exit(0)
+
+        except Exception as err:
+            crint(f"[ERROR] {err}")
+            pass
+    
+    # Check multi hilo
+    if check == "check":
+        crint("[INFO] Iniciando verificacion de Endpoints =>> [OK]")
+        
+        # Definimos la funcion encargada de enviar las solicitudes y realizar
+        # El proceso de obtencion de los enlaces de los Endpoints
+        def requests_wh(url):
+
+            try:
+                
+                multi_ = requests.get(url)
+                srint(f"[INFO] API_REST {error_codes[multi_.status_code]} =>> [{url}]")
+
+                # Si el codigo es aceptable y la resuesta no trae una lista vacia se retorna la lista
+                if any(multi_.status_code == st_cd for st_cd in any_st) and multi_.text.startswith("[]") == False:
+                    return url_automatic(json.loads(multi_.content), False)
+            
+            except:
+                pass
+        
+        try:
+
+            # Mientras tengamos la ejecucion por hilos se le asignara a cada elemnto de la lista
+            # la funcion requests_wh hasta un maximo de 10 veces
+            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executes_:
+                
+                # Luego cuando se obtienen los resultados se transforman a una lista
+                apis_multi_pool = list(executes_.map(requests_wh, apis_Wordpress))
+
+            # Por cada elemno de esta lista si no esta repetido y es difrente de None
+            # Se agregan todos los elementos de esta misma a la lista general de endpoints
+            for pool_url in apis_multi_pool:
+
+                try:
+                    if pool_url not in apis_Wordpress and pool_url != None:
+                        apis_Wordpress.extend(pool_url)
+                except:
+                    pass
+            
+            # Finalmente se eliminan los elementos repetidos con set() y volviendo a transformarlo en una lista con list()
+            apis_Wordpress = list(set(apis_Wordpress))
+            save_wp_file()
+
+            crint(f"[INFO] Se han verificado {len(apis_Wordpress)} Endpoints ...")
+
+        except Exception as err:
+            print(f"[ERROR] {err}")
+
+    # Si el usuario desea verificar lo encontrado secuencialmente
+    if check == "check-sec" and apis_Wordpress != []:
+
+        crint("[INFO] Iniciando verificacion de Endpoints =>> [OK]")
+        apis_Wordpress.append("https://www.youtube.com/@InTheDarkNet")
+
+        for url_check in apis_Wordpress:
+
+            # Tope para no entrar en bucles de escaneos
+            if url_check == "https://www.youtube.com/@InTheDarkNet":
+                break
+
+            try:
+                my_query = requests.get(url_check)
+
+                srint(f"[INFO] API_REST {error_codes[my_query.status_code]} =>> [{url_check}]")
+
+                if any(my_query.status_code == st_est for st_est in any_st):
+                    url_automatic(json.loads(my_query.content), True)
+
+            except KeyboardInterrupt:
+                save_wp_file()
+                exit(0)
+
+            except:
+                pass
+            
+        # Ordenamos y guardamos los endpoints nuevamente
+        apis_Wordpress.sort()
+        save_wp_file()
+
+        crint(f"[INFO] Se han verificado {len(apis_Wordpress)} Endpoints ...")
+
+################################################
+# CREACION DE JSON PARA OPTIMIZACION EN FSH.PY #
+################################################
+#           MODULAR LAS HERRAMIENTAS           #
+################################################
