@@ -60,6 +60,7 @@ Si no está de acuerdo con estos términos, absténgase de utilizarlo.
 
             "aspose-words",
             "beautifulsoup4",
+            "Flask",
             "requests",
             "pyzipper",
             "paramiko",

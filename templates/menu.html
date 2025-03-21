@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>GUI MGT0LS</title>
+    <link rel="icon" href="{{ url_for('static', filename='css/owl.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+
+    <!-- HEAD es para todo lo que se importa o se agrega, pero no se renderiza -->
+</head>
+<body>
+
+    <header>
+        <h1>Herramientas Disponibles</h1>
+        <nav class="sidebar">
+            <ul>
+                <li><a href="https://www.youtube.com/@InTheDarkNet">YouTube</a></li>
+                <li><a href="https://github.com/IND4RKHK/mgt0ls">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <center>
+            <!-- Si el usuario esta en el menu de seleccion -->
+            {% if section_ == "selection" %}
+
+                <h4>T00LS</h4>
+                <form method="POST">
+                    <select name="tools" id="tools_" style="width: 250px;">
+
+                        {% for tool in lista_ %}
+                            <option value="{{ tool }}" style="width: 250px;">{{ tool }}</option>
+                        {% endfor %}
+
+                    </select>
+                    <br>
+                    <button type="submit" name="use_button" value="use" style="width: 250px;">Seleccionar</button>
+                </form>
+            
+            <!-- Si el usuario esta en modo ataque -->
+            {% elif section_ == "form_dict" %}
+
+                <h4>{{ name_tool }}</h4>
+                
+                <form id="loading_" style="display: none;">
+                    <div class="loader" id="eye_"></div>
+                    <div class="terminal-text" id="ter_txt">EJECUTANDO EN TERMINAL<span class="dots"></span></div>
+                    <br>
+                </form>
+                
+                <form method="POST" id="form_to_image">
+
+                    <!-- Aqui obtenemos el formulario dinamicamente -->
+                    {% for place_, name_ in tool_ %}
+                        <input placeholder="{{ place_ }}" style="width: 250px;" name="{{ name_ }}">
+                        <br>
+                    {% endfor %}
+                    
+                    <input type="hidden" name="name_tool" value="{{ name_tool }}">
+                    <button type="submit" name="use_button" value="attack" style="width: 250px;" onclick="mostrar_imagen()">Usar</button>
+
+                </form>
+
+                <form method="GET">
+                    <button type="menu" style="width: 250px;">Menu Principal</button>
+                </form>
+
+                <article>
+                    <h5>{{ descrip_tool|safe }}</h5>
+                </article>
+                
+                <!-- Se crea una funcion que cumplira el rol de ocultar el formulario seleccionado -->
+                <script>
+                    function mostrar_imagen() {
+                        document.getElementById("form_to_image").style.display = "none";
+                        document.getElementById("loading_").style.display = "block"
+                    }
+                </script>
+
+            {% elif section_ == "passed" %}
+
+                <h4>{{ name_tool }}</h4>
+                <article>
+                    <h5>{{ end_message|safe }}</h5>
+                </article>
+                <form method="GET">
+                    <button type="menu" style="width: 250px;">Menu Principal</button>
+                </form>
+
+            {% endif %}
+        </center>
+    </main>
+    <footer><h6>[ Estas usando mgt0l$ bajo TU RESPONSABILIDAD ] [ by HKNX ]</h6></footer>
+</body>
+</html>

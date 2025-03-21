@@ -103,6 +103,8 @@ mgt0ls/
 ├── __prog__fast__.py   # Core module
 ├── README.md           # Documentation
 ├── LICENSE             # License file
+├── static/             # CSS & images files
+├── templates/          # HTML files
 └── assets/             # Extensions & resources
 ```
 

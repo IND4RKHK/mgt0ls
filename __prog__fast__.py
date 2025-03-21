@@ -233,7 +233,7 @@ def findperson(nombre, arg): # Funciona with
 
         os.remove("a.txt")
 
-        limpieza(resultados)
+        crint(limpieza(resultados))
 
 
     ##### PRINCIPAL CODE
@@ -675,7 +675,7 @@ def seeker(usuario): # Funciona with
         407: "Se requiere autenticación de proxy",
         408: "Tiempo de espera agotado",
         409: "Conflicto",
-        410: "Gone (El recurso ya no está disponible y no lo estará nuevamente)",
+        410: "Recurso no disponible",
         411: "Longitud requerida",
         412: "Precondición fallida",
         413: "Carga útil demasiado grande",
@@ -683,7 +683,7 @@ def seeker(usuario): # Funciona with
         415: "Tipo de medio no soportado",
         416: "Rango no satisfactorio",
         417: "Expectativa fallida",
-        418: "Soy una tetera (código de estado de broma)",
+        418: "Soy una tetera",
         421: "Solicitud mal dirigida",
         422: "Entidad no procesable",
         423: "Bloqueado",
@@ -692,13 +692,13 @@ def seeker(usuario): # Funciona with
         426: "Se requiere actualización",
         428: "Requisito previo necesario",
         429: "Demasiadas solicitudes",
-        431: "Campos de encabezado de solicitud demasiado grandes",
+        431: "Campos de encabezado grandes",
         451: "No disponible por razones legales",
         500: "Error interno del servidor",
         501: "No implementado",
         502: "Puerta de enlace incorrecta",
         503: "Servicio no disponible",
-        504: "Tiempo de espera de la puerta de enlace agotado",
+        504: "Tiempo de espera agotado",
         505: "Versión HTTP no soportada",
         506: "La variante también negocia",
         507: "Almacenamiento insuficiente",
@@ -732,50 +732,65 @@ def seeker(usuario): # Funciona with
         
     }
 
+    def new_requests(url_list):
+
+        url_list = url_list.strip().replace("name_find", usuario)
+        # Intentamos obtener el codigo de respuesta del usuario
+        try:
+            my_query = requests.get(url_list, timeout=6)
+
+            url_domain = url_list.replace("://", "<>").split("/")[0].replace("<>", "://")
+            srint(f"[INFO] {status_codes.get(my_query.status_code)} en la URL =>> [{url_domain}]")
+
+            # Si existe se retorna el url donde se obtuvo el enlace correcto           
+            if my_query.status_code == 200 or "xbox" in my_query.url:
+                return my_query.url
+
+            # En caso de fallar o no encontrar nada se retorna Nulo
+            return "Null"
+        
+        except KeyboardInterrupt:
+            crint(f"[INFO] Escaneo cancelado ...")
+            exit(0)
+
+        except:
+            return "Null"
+
     def buscador(usuario):
 
-        while True:
-            
-            crint("[INFO] Tipo de busqueda =>> [URL] to [{}]\n[Buscando en 800 <sitios>]".format(usuario))
-            
-            #leer=open(".bdd")
-            #lectura=leer.readlines()
+        crint("[INFO] Tipo de busqueda =>> [URL] to [{}]\n[Buscando en 800 <sitios>]".format(usuario))
 
-            #save=open("capture.txt", "w")
+        with open(".bdd", "r") as lectura, open("capture.txt", "w") as save:
+            
+            my_read_new = lectura.readlines()
+            try:
+                with concurrent.futures.ThreadPoolExecutor(max_workers=10) as thread_:
+                    return_ = list(thread_.map(new_requests, my_read_new))
 
-            with open(".bdd", "r") as lectura, open("capture.txt", "w") as save:
+            except KeyboardInterrupt:
+                save.close()
+                crint(f"[INFO] Escaneo cancelado ...")
+                exit(0)
+
+            except:
+                pass
+
+            for url_return in return_:
+                if "://" in url_return:
+                    save.write("[URL] "+url_return+"\n")
                 
-                for word in lectura:
-                    
-                    if "\n" in word:
-                        word=word.replace("\n","")
-                    
-                    try:
-                        word=word.replace("name_find", usuario) # Reemplaza el name_find del diccionario por el usuario
-                        soli=requests.get(word, timeout=20)           
-                        
-                        if soli.status_code == 200 or "xbox" in word:
-                            save.write("\n[URL] "+word)
-                        #a=soli.status_code
-                        
-                        crint("[URL] {}\n[{}]".format(word,status_codes.get(soli.status_code)))
-
-                    except KeyboardInterrupt:
-                        save.close()
-                        exit(0)
-
-                    except:
-                        pass
-                    
-            # Bloque de finalizacion
-            print("\nSiguiente busqueda: [IN WEB]->>60 sec")
-
-            time.sleep(60)
+        # Bloque de finalizaciont
+        try:
+            crint("\n[INFO] Siguiente busqueda en =>> [10 SEC]")
+            time.sleep(10)
             siguiente()
-            break
+        
+        except KeyboardInterrupt:
+            crint(f"[INFO] Escaneo cancelado ...")
+            exit(0)
 
     def siguiente():
-        crint("[INFO] Tipo de busqueda =>> [IN WEB] to [{}]\n".format(usuario))
+        crint("[INFO] Tipo de busqueda =>> [IN WEB] to [{}]".format(usuario))
 
         head_up={
             "User-Agent": "{}".format(random_usera.get(random.randint(1,10)))
@@ -806,8 +821,8 @@ def seeker(usuario): # Funciona with
                     palabra=str(word.get("href")) # Obtengo la etiqueta especifica href
 
                     if "https://" in palabra:
-                        crint("[URL] {}\n[{}]".format(palabra,status_codes.get(dox.status_code)))
-                        save.write("\n[URL] {}".format(palabra))
+                        srint("[URL] {} =>> [{}]".format(palabra,status_codes.get(dox.status_code)))
+                        save.write("[URL] {}\n".format(palabra))
                     
                     if "first=" in palabra:
                         red.append(palabra)
@@ -828,8 +843,8 @@ def seeker(usuario): # Funciona with
                             palabra=str(word_soup.get("href"))
 
                             if "https://" in palabra:
-                                crint("[URL] {}\n[{}]".format(palabra,status_codes.get(dox.status_code)))
-                                save.write("\n[URL] {}".format(palabra)) ##########################
+                                srint("[URL] {} =>> [{}]".format(palabra,status_codes.get(dox.status_code)))
+                                save.write("[URL] {}\n".format(palabra)) ##########################
 
             crint("[INFO] Datos de {} guardados en capture.txt ...".format(usuario))
             exit(0)
@@ -1267,7 +1282,7 @@ def urljump(select, cant):
             print("\n",tabulate(saved_, headers=["ENLACES ENCONTRADOS"]))
         else:
             crint(f"---------------------\n[ERROR] No encontramos ningun enlace valido ...")
-        exit(0)
+        return
 
     
     # funcion para testear codigo de error 429
@@ -1326,7 +1341,10 @@ def urljump(select, cant):
         #str_wb[100] = "9geG9GgD"
         #str_wb.append("qNnja1EMaT5mMjE0")
 
-        for url_s in str_wb:
+        #for url_s in str_wb:
+
+        # BETA
+        def requests_mulith(url_s):
 
             headers = {
                 "User-Agent": random.choice([
@@ -1362,6 +1380,10 @@ def urljump(select, cant):
             else:
                 crint(f"[INFO] https://{url[select][0]}{url_s} ->> [{soli.status_code}]")
         
+        # BETA
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as multi_soli:
+            multi_soli.map(requests_mulith, str_wb)
+
         exit_emer_()
     
     else:
@@ -3279,7 +3301,7 @@ def wpscrap(url, brute, check):
     # Si el usuario escribio la url sin el formato adecuado
     if "://" not in url:
         crint("[ERROR] No ingresaste la url con el formato solicitado: https://example.com/")
-        exit(0)
+        return
 
     # Si el usuario quiere buscar plugins por fuerza bruta
     if brute == "dic":
@@ -3299,7 +3321,7 @@ def wpscrap(url, brute, check):
 
                 except KeyboardInterrupt:
                     save_wp_file()
-                    exit(0)
+                    return
 
                 except:
                     pass
@@ -3307,7 +3329,7 @@ def wpscrap(url, brute, check):
         # Guardamos las apis encontradas
         if apis_Wordpress != []:
             save_wp_file()
-            exit(0)
+            return
 
         else:
             crint("\n[INFO] No se lograron encontrar Endpoints ...")
@@ -3326,7 +3348,7 @@ def wpscrap(url, brute, check):
 
             if wp_json.status_code != 200 or "<html" in wp_json.text:
                 crint("[ERROR] No se logro encontrar el archivo WordPress de JSON ...")
-                exit(0)
+                return
             
             wp_json_ct = json.loads(wp_json.content)
             
@@ -3335,7 +3357,7 @@ def wpscrap(url, brute, check):
 
             if "namespaces" not in wp_json_ct:
                 crint("[ERROR] No se logro encontrar la configuracion de WordPress ...")
-                exit(0)
+                return
             
             crint("[INFO] Configuracion de WordPress encontrada =>> [OK]")
             
@@ -3344,8 +3366,9 @@ def wpscrap(url, brute, check):
                 apis_Wordpress.append(slash_url+plugin)
             
             # Luego por cada plugin se analiza para obtener sus subendpoints
-            for url_temp in apis_Wordpress:
-                
+            # EX METHOD for url_temp in apis_Wordpress:
+            def multi_thread(url_temp):
+            
                 srint(f"[INFO] Analizando URL =>> [{url_temp}]")
 
                 # Creamos una variable sin el plugin
@@ -3413,7 +3436,7 @@ def wpscrap(url, brute, check):
 
                 except KeyboardInterrupt:
                     save_wp_file()
-                    exit(0)
+                    return
 
                 except:
                     pass
@@ -3436,12 +3459,15 @@ def wpscrap(url, brute, check):
 
                 except KeyboardInterrupt:
                     save_wp_file()
-                    exit(0)
+                    return
 
                 except:
                     pass
             
-            all_Wordpress_api.pop(0)
+            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as multi_process_execute:
+                multi_process_execute.map(multi_thread, apis_Wordpress)
+
+            # EX METHOD all_Wordpress_api.pop(0)
 
             # Agregamos las urls encontradas a la lista global 
             url_automatic(wp_json_ct, True)
@@ -3469,7 +3495,7 @@ def wpscrap(url, brute, check):
 
         except KeyboardInterrupt:
             save_wp_file()
-            exit(0)
+            return
 
         except Exception as err:
             crint(f"[ERROR] {err}")
@@ -3522,39 +3548,6 @@ def wpscrap(url, brute, check):
 
         except Exception as err:
             print(f"[ERROR] {err}")
-
-    # Si el usuario desea verificar lo encontrado secuencialmente
-    if check == "check-sec" and apis_Wordpress != []:
-
-        crint("[INFO] Iniciando verificacion de Endpoints =>> [OK]")
-        apis_Wordpress.append("https://www.youtube.com/@InTheDarkNet")
-
-        for url_check in apis_Wordpress:
-
-            # Tope para no entrar en bucles de escaneos
-            if url_check == "https://www.youtube.com/@InTheDarkNet":
-                break
-
-            try:
-                my_query = requests.get(url_check)
-
-                srint(f"[INFO] API_REST {error_codes[my_query.status_code]} =>> [{url_check}]")
-
-                if any(my_query.status_code == st_est for st_est in any_st):
-                    url_automatic(json.loads(my_query.content), True)
-
-            except KeyboardInterrupt:
-                save_wp_file()
-                exit(0)
-
-            except:
-                pass
-            
-        # Ordenamos y guardamos los endpoints nuevamente
-        apis_Wordpress.sort()
-        save_wp_file()
-
-        crint(f"[INFO] Se han verificado {len(apis_Wordpress)} Endpoints ...")
 
 ################################################
 # CREACION DE JSON PARA OPTIMIZACION EN FSH.PY #
