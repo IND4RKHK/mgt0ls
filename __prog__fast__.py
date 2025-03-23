@@ -3309,11 +3309,18 @@ def wpscrap(url, brute, check):
         # Se leeran los plugins mas probables
         with open(assets_, "r", encoding="utf-8") as read_:
 
-            for line in read_:
+            all_lines = read_.readlines()
+
+            # Definimos la funcion que usaremos en el threadpoolexecutor
+            def multi_dic(line):
+                
+                plug_ = line.strip()
+                line = url+"wp-json/"+plug_
+
                 try:
 
-                    force_get = requests.get(url+"wp-json/"+line.strip("\n"))
-                    srint(f"[INFO] Probando plugin {line.strip()} =>> [{force_get.status_code}]")
+                    force_get = requests.get(line)
+                    srint(f"[INFO] Probando plugin {plug_} =>> [{force_get.status_code}]")
 
                     # Si el plugin existe, se agrega a la lista
                     if any(force_get.status_code == st_x for st_x in any_st) and "<html" not in force_get.text:
@@ -3325,6 +3332,9 @@ def wpscrap(url, brute, check):
 
                 except:
                     pass
+            
+            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as dic_force:
+                dic_force.map(multi_dic, all_lines)
             
         # Guardamos las apis encontradas
         if apis_Wordpress != []:
