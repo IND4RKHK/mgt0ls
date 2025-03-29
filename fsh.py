@@ -115,7 +115,7 @@ execute_s = {
         "[DESCRIPCION]\nRealiza un ataque DDoS utilizando paquetes ICMP.\n\n"
         "[USO]\npython3 fsh.py icmpdos --a <IP> --b <SIZE>\n\n"
         "[PARAMETROS]\n--a: Dirección IP del objetivo, (obligatorio).\n"
-        "--b: Tamaño del paquete ICMP en bytes, (opcional, recomendado: 65550).",
+        "--b: Tamaño del paquete ICMP en bytes, (opcional, recomendado: 65500).",
         "ddos"
     ],
     "lopiapi": [

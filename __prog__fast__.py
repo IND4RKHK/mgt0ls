@@ -481,14 +481,25 @@ def httpflood(URL):
 
 def icmpdos(ip, pack):
 
+    if pack == None or int(pack) > 65500:
+        crint("[ERROR] No has ingresado el tamaño de los paquetes correctamente ...")
+        return
+    
     pack = int(pack)
+    crint("[INFO] Atacando =>> {} CON {}".format(ip,pack))
 
-    print("Atacando => {} CON {}".format(ip,pack))
-
-    if "win" in SYS_GLOBAL:
-        os.system("ping -l {} -t {}".format(pack,ip))
-    else:
-        os.system("ping -s {} {}".format(pack,ip))
+    try:
+        if "win" in SYS_GLOBAL:
+            os.system("ping -l {} -t {}".format(pack,ip))
+        else:
+            os.system("ping -s {} {}".format(pack,ip))
+            
+    except KeyboardInterrupt:
+        crint(f"[INFO] Terminando ataque =>> [OK]")
+        return
+    except Exception as err:
+        crint(f"[ERROR] {err}")
+        return
 
 def iplocate(ip):
 
@@ -1273,6 +1284,15 @@ def sc4pk(idcap, selec):
         obtener(idcap)
 
 def urljump(select, cant):
+    
+    # Localizacion de header beta antes estaba en requests_multi_th
+    headers = {
+        "User-Agent": random.choice([
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+            "Mozilla/5.0 (Linux; Android 10)"
+        ])
+    }
 
     saved_ = []
 
@@ -1345,14 +1365,6 @@ def urljump(select, cant):
 
         # BETA
         def requests_mulith(url_s):
-
-            headers = {
-                "User-Agent": random.choice([
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
-                    "Mozilla/5.0 (Linux; Android 10)"
-                ])
-            }
 
             try:
                 soli = requests.get(f"https://{url[select][0]}{url_s}", headers=headers)
