@@ -3015,7 +3015,7 @@ def fireleak(apk_path):
     try:
         shutil.copy(sht(apk_path), sht("./leak.apk"))
     except Exception as err:
-        print(f"[ERROR] {err}")
+        crint(f"[ERROR] {err}")
         exit(0)
 
     # Lista que incluye nombres de las variables comunes de firebase en xml
@@ -3056,7 +3056,7 @@ def fireleak(apk_path):
                 apk_tool_bat.write(down_bat.content)
 
     except Exception as err:
-        print(f"[ERROR] {err}")
+        crint(f"[ERROR] {err}")
 
     if "win" in SYS_GLOBAL:
         os.system(".\\apktool.bat leak.apk")
@@ -3569,7 +3569,224 @@ def wpscrap(url, brute, check):
             crint(f"[INFO] Se han verificado {len(apis_Wordpress)} Endpoints ...")
 
         except Exception as err:
-            print(f"[ERROR] {err}")
+            crint(f"[ERROR] {err}")
+
+def gitdox(user_ = "test", scan_type_ = "normal"):
+
+    profile_ = {} # Informacion del perfil principal
+    profile_commits = [] # Variable para almacenar los usuarios que han hecho commits [NOMBRE, EMAIL]
+    matchs_profiles = [] # Usuarios que posiblemente interactuan con el
+    save_emails = {} # Variable encargada de almacenar los emails asignados en busquedas profundas
+
+    my_repo_list = [] # Variable de repositorios para iterar en threads
+
+    # Funcion encargada de guardar los resultados
+    def save_results():
+        my_save_ = ""
+
+        if profile_ != {}:
+            my_save_ = my_save_ + "---------------PROFILE-INFO---------------\n"
+            for key_ in profile_.keys():
+                my_save_ = my_save_ + f"[{key_.upper()}] =>> [{profile_[key_]}]\n"
+            
+        if profile_commits != []:
+
+            my_save_ = my_save_ + "-------------NAMES-&-EMAILS---------------\n"
+            for block in profile_commits:
+                my_save_ = my_save_ + f"[{block[0]}] =>> [{block[1]}]\n"
+        
+        if matchs_profiles != []:
+
+            my_save_ = my_save_ + "-------------FRIENDS-POSIBLES-------------\n"
+            for match_ in matchs_profiles:
+                my_save_ = my_save_ + f"[USUARIO] {match_} =>> [MATCH]\n"
+        
+        if scan_type_ != "normal" and save_emails != {}:
+
+            for user_iter in save_emails.keys():
+                my_save_ = my_save_ + f"------------------------------------------\n"
+                my_save_ = my_save_ + tabulate(save_emails[user_iter], headers=[user_iter.upper(), "EMAIL"])+"\n"
+
+
+        if my_save_ != "":
+            with open(f"gitdox-{user_}.txt", "w", encoding="utf-8") as save_txt_:
+                save_txt_.write(my_save_)
+            
+            crint(my_save_+f"------------------------------------------\n[PASS] Informacion guardada en =>> [gitdox-{user_}.txt]")
+            
+        else:
+            crint(f"[INFO] No se logro encontrar informacion de el usuario {user_} ...")
+        
+    try:
+        crint(f"[INFO] Iniciando busqueda para el usuario =>> [{user_}]")
+        start_point = requests.get(f"https://api.github.com/users/{user_}", timeout=10)
+        share_points = json.loads(start_point.content)
+        
+    except Exception as err:
+        crint(f"[ERROR] {err}")
+        return
+    
+    # Si el usuario no existe o hay problema de la api se termina el programa
+    if start_point.status_code != 200 or "login" not in share_points:
+        crint(f"[ERROR] Usuario {user_} no encontrado o API rest limitada =>> [{str(start_point.status_code)}]")
+        return
+
+    # Obtenemos los datos del usuario
+    for key_util in share_points.keys():
+        try:
+            if "github" not in str(share_points[key_util]):
+                profile_.setdefault(key_util, share_points[key_util])
+        except:
+            pass
+
+    # Si es que hay repositorio obtenemos sus commits
+    if share_points["public_repos"] != 0:
+
+        # Intentamos obtener la lista de repositorios
+        try:
+            repost_points = requests.get(f"https://api.github.com/users/{user_}/repos", timeout=10)
+            repost_share_points = json.loads(repost_points.content)
+
+        except Exception as err:
+            save_results()
+            crint(f"[ERROR] {err}")
+            return
+
+        # Por cada posible nombre de repositorio obtenido se agrega a la array de: my repo list
+        for posible_name in repost_share_points:
+            try:
+                if "url" in posible_name:
+                    my_repo_list.append(posible_name["url"])
+            except:
+                pass
+        
+        # Obtenemos el historial de commit de cada repositorio
+        def mail_requests(ulrs_array_repos):
+
+            srint(f"[INFO] Analizando commits en =>> [{ulrs_array_repos.split('/')[5]}]")
+            try:
+                my_query = requests.get(ulrs_array_repos+"/commits", timeout=10)
+                email_process = json.loads(my_query.content)
+
+            except:
+                return
+            
+            # Por cada seccion grande del json
+            for block_json in email_process:
+            
+                # Intentamos obtener la seccion que contiene los detalles de los commits
+                try:
+                    only_names = block_json["commit"]["author"]
+                    
+                    # Si el paquete de nombre y email no esta en la lista de commits se obtienen y se guardan
+                    if [only_names["name"], only_names["email"]] not in profile_commits:
+                        profile_commits.append([only_names["name"], only_names["email"]])
+                    
+                except:
+                    pass
+
+        # En cada 10 hilos enviamos el proceso de identificar las url necesarias para el tema
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as threads_mails_get:
+            threads_mails_get.map(mail_requests, my_repo_list)
+    
+    else:
+        crint(f"[INFO] El usuario {user_} no tiene repositorios que mostrar ...")
+
+    # Si es que hay seguidores y seguidos se obtienen los json correspondientes
+    if profile_["following"] != 0 and profile_["followers"] != 0:
+        
+        # Intentamos obtener los seguidores y seguidos
+        try:
+            followings_query = requests.get(f"https://api.github.com/users/{user_}/following", timeout=10)
+            followings_data = json.loads(followings_query.content)
+
+            followers_query = requests.get(f"https://api.github.com/users/{user_}/followers", timeout=10)
+            followers_list = followers_query.text
+
+        except Exception as err:
+            save_results()
+            crint(f"[ERROR] {err}")
+            return
+
+        # Por cada seccion del json se obtiene el nombre de usuario y se verifica dentro del str que contiene followers
+        for block in followings_data:
+
+            try:
+                # Si contiene se agrega a la array matchs profiles 
+                if block["login"] in followers_list:
+                    crint(f"[MATCH] Estos usuarios interactuan fuera de github: {block['login']}")
+                    matchs_profiles.append(block["login"])
+            except:
+                pass
+    
+    else:
+        crint(f"[INFO] Imposible determinar matchs con 0 followings ...")
+
+    # Escaneo profundo de matchs
+    if scan_type_ != "normal" and matchs_profiles != []:
+
+        repos_asignados = []
+        def scan_to_match_dox(urls_to):
+
+            # Intentamos obtener el nombre de cada repositorio publico de cada usuario que es amigo del perfil
+            # es decir que coincide en followers y following
+            try:
+                my_matchs_querys = requests.get(f"https://api.github.com/users/{urls_to}/repos")
+                my_info_repos = json.loads(my_matchs_querys.content)
+
+                # Si el contenido de la respuesta tiene menos de 10 caraceres o no carga correctamente se cierra la coneccion
+                if len(my_matchs_querys.text) < 10 or my_matchs_querys.status_code != 200:
+                    return
+            except:
+                return
+
+            # Por cada bloque de los usuarios que estamos listando los repositorios, los obtenemos
+            for block in my_info_repos:
+                repos_asignados.append(block["full_name"])
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as scan_deep_th:
+            scan_deep_th.map(scan_to_match_dox, matchs_profiles)
+
+        # Si no se obtuvieron repositorios asignados a cada perfil, se termina
+        if repos_asignados == []:
+            save_results()
+            return
+        
+        # Creamos una variable con una iteracion similar a any()
+        # creando un diccionario con cada nombre de usuario en una key y con un array vacio
+        save_emails = { username_: [] for username_ in matchs_profiles }
+        
+        def get_commits(emails_get):
+
+            # Se intenta obtener el json de cada repositorio la variable del repositorio es emails_get
+            try:
+                commits_query = requests.get(f"https://api.github.com/repos/{emails_get}/commits")
+                my_info_commits = json.loads(commits_query.content)
+
+                if len(commits_query.text) < 10 or commits_query.status_code != 200:
+                    return
+            except:
+                return
+            
+            # Por cada bloque del json que nos entrega la url de commits
+            for block_json in my_info_commits:
+                
+                # Se intenta obtener la seccion especifica del commit y despues de autor
+                try:
+                    thrash_date = block_json["commit"]["author"] # Nombre y correo del commit con fecha
+                    name_user = emails_get.split("/")[0] # Nombre del usuario a quien se esta escaneando
+                    
+                    # Luego si el email y el nombre no estan dentro de el diccionario se agrega
+                    if [thrash_date["name"], thrash_date["email"]] not in save_emails[name_user]:
+                        save_emails[name_user].append([thrash_date["name"], thrash_date["email"]])
+
+                except:
+                    pass
+            
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as final_scan_:
+            final_scan_.map(get_commits, repos_asignados)
+
+    save_results()
 
 ################################################
 # CREACION DE JSON PARA OPTIMIZACION EN FSH.PY #

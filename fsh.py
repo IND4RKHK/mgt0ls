@@ -28,7 +28,8 @@ def gui_mg():
         "sshforce": [["IP del servidor", "ip"], ["Puerto", "port"], ["Usuario o diccionario", "user"], ["Contraseña o diccionario", "password"]],
         "eashi": [["Ruta del archivo MHTML", "mhtml_path"]],
         "fireleak": [["Ruta del archivo APK", "apk_path"]],
-        "wpscrap": [["Página web", "url"], ["Modo de escaneo", "mode"], ["Check mode", "check"]]
+        "wpscrap": [["Página web", "url"], ["Modo de escaneo", "mode"], ["Check mode", "check"]],
+        "gitdox": [["Usuario de Github", "usrgit"], ["Modo de escaneo", "mode"]]
     }
 
     app = Flask(__name__)
@@ -328,8 +329,16 @@ execute_s = {
         "--b: Modo de uso (SET para escaneo normal, DIC para escaneo por diccionario, obligatorio).\n"
         "--c: CHECK para un escaneo profundo (opcional).",
         "vec"
+    ],
+    "gitdox": [
+        gitdox,
+        2,
+        "[DESCRIPCION]\nHerramienta para obtener informacion de un usuario en GitHub.\n\n"
+        "[USO]\npython3 fsh.py gitdox --a <USERNAME> --b <DEEP>\n\n"
+        "[PARAMETROS]\n--a: Nombre de usuario a buscar, (obligatorio).\n"
+        "--b: Modo (DEEP: Se usa para realizar un escaneo profundo, opcional).",
+        "dox"
     ]
-
 }
 
 GUI_scripts = ["m4cware", "macromaker"]
