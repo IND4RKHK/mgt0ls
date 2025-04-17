@@ -107,19 +107,23 @@ Si no está de acuerdo con estos términos, absténgase de utilizarlo.
                 mod_comm.append(mod_)
 
         print("""
-╔════════════════════════════════════════════╗
-║               [PASS] MGT0L$                ║
-║      Se ha instalado correctamente...      ║
-╚════════════════════════════════════════════╝
-╔════════════════════════════════════════════╗
-║                   [USOS]                   ║
-╠════════════════════════════════════════════╣
-║   ___         [ADVERTENCIA]                ║
-║  (o,o)                                     ║
-║  { " } :: Usalo bajo tu responsabilidad.   ║ 
-║  -"-"-                                     ║
-║ python3 fsh.py --h  =>> Uso con parámetros ║
-╚════════════════════════════════════════════╝
+   ...    *    .   _  .
+*  .  *     .   * (_)   *
+  .      |*  ..   *   ..     :: DEV BY =>> [ HKNX ] ↓
+   .  * \|  *  ___  . . *
+*   \/   |/ \/{o,o}     .    [ https://ytub.ee/IND4RKHK ]
+  _\_\   |  / /)  )* _/_ *
+      \ \| /,--"-"---  ..
+_-----`  |(,__,__/__/_ .      
+       \ ||      ..
+        ||| .            *    
+        |||
+        |||         $hell-root >> python3 fsh.py --help
+  , -=-~' .-^- _
+           `
+[PASS] MGT0LS Se ha instalado correctamente   =>>  [OK]
+-------------------------------------------------------
+:: Script desarrollado como historial de aprendizaje ::
 """)
 
 

@@ -29,7 +29,8 @@ def gui_mg():
         "eashi": [["Ruta del archivo MHTML", "mhtml_path"]],
         "fireleak": [["Ruta del archivo APK", "apk_path"]],
         "wpscrap": [["Página web", "url"], ["Modo de escaneo", "mode"], ["Check mode", "check"]],
-        "gitdox": [["Usuario de Github", "usrgit"], ["Modo de escaneo", "mode"]]
+        "gitdox": [["Usuario de Github", "usrgit"], ["Modo de escaneo", "mode"]],
+        "lnkforge": []
     }
 
     app = Flask(__name__)
@@ -338,10 +339,17 @@ execute_s = {
         "[PARAMETROS]\n--a: Nombre de usuario a buscar, (obligatorio).\n"
         "--b: Modo (DEEP: Se usa para realizar un escaneo profundo, opcional).",
         "dox"
-    ]
+    ],
+    "lnkforge": [
+        lnkforge,
+        "None",
+        "[DESCRIPCION]\nCrea accesos directos de Windows con comandos embebidos.\n\n"
+        "[USO]\npython3 fsh.py lnkforge",
+        "mal"
+    ],
 }
 
-GUI_scripts = ["m4cware", "macromaker"]
+GUI_scripts = ["m4cware", "macromaker", "lnkforge"]
 MG_commands = ["update", "gui_mg"]
 
 keys_ = execute_s.keys()
