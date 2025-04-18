@@ -4200,6 +4200,103 @@ def lnkforge():
     except Exception as err:
         crint(f"[ERROR] {err}")
 
+def domainforce(url_ = "https://example.com", dic_ = None):
+
+    # Si el usuario quiere usar un diccionario propio
+    if dic_ != None:
+        
+        # Lo intentamos abrir y si existe continuamos con la ejecucion
+        try:
+            with open(dic_, "r", encoding="utf-8") as try_:
+                pass
+        
+        # Si no existe usamos el diccionario que tenemos en assets
+        except:
+            crint(f"[ERROR] Diccionario no encontrado en la ruta: {dic_}\n[INFO] Dictionary changed to preset =>> [OK]")
+            dic_ = sht("assets/subdomain_dict.txt")
+    
+    else:
+        # Si no se especifica diccionario se usa el preedefinido
+        dic_ = sht("assets/subdomain_dict.txt")
+
+    # Lista donde se almacenarán los subdominios encontrados exitosamente
+    match_ = []
+
+    # Lista de prefijos y esquemas que se eliminarán del dominio ingresado
+    not_in_my_url = ["www.", "https://", "http://", "ftp://", "sftp://"]
+
+    # Función que intentará acceder a un subdominio y guardarlo si responde correctamente
+    def concurrent_scr_test(url):
+
+        # Construye la URL con el subdominio, el esquema (http/https) y el dominio base
+        url = my_type_ssl + url.strip() + "." + url_
+
+        # Intenta hacer una solicitud HTTP al subdominio
+        try:
+            intent_ = requests.get(url, timeout=10)
+        except:
+            # Si ocurre un error (como timeout o conexión fallida), se ignora
+            srint(f"[ERROR] Subdominio no encontrado =>> [{url}]")
+            return
+
+        # Si el servidor no responde con un estado 200 (OK), se informa como error
+        if intent_.status_code != 200:
+            srint(f"[ERROR] Subdominio no encontrado =>> [{url}]")
+            return
+        
+        # Si la URL ya esta dentro de los matchs se salta la iteracion
+        if url in match_:
+            return
+        
+        # Si el subdominio responde correctamente, se informa como encontrado
+        srint(f"[INFO] Subdominio encontrado =>> [{url}]")
+
+        # Se agrega el subdominio a la lista de coincidencias
+        match_.append([url])
+
+    # Verifica que la URL ingresada tenga un esquema válido (ej: https://)
+    if "://" not in url_:
+        crint(f"[ERROR] El dominio ingresado no tiene formato valido. Ejemplo: https://example.com")
+        return
+
+    # Elimina de la URL los esquemas y prefijos no deseados
+    for elem in not_in_my_url:
+
+        # Si encuentra un esquema válido en la URL, lo guarda
+        if elem in url_ and "://" in elem:
+            my_type_ssl = elem
+
+        # Elimina el esquema o prefijo encontrado
+        url_ = url_.replace(elem, "")
+
+    # Separa y conserva solo el dominio principal (quita rutas como /pagina)
+    url_ = url_.split("/")[0]
+
+    # Abre el archivo de diccionario de subdominios y usa hilos para probar cada uno
+    with open(dic_, "r", encoding="utf-8") as read_, concurrent.futures.ThreadPoolExecutor(max_workers=10) as th_work:
+
+        # Lee todas las líneas (subdominios) del archivo
+        read_r = read_.readlines()
+
+        # Ejecuta la función para cada subdominio en paralelo con hasta 10 hilos
+        th_work.map(concurrent_scr_test, read_r)
+
+    # Si hay elemntos en la lista se guardan en un txt y se muestran en pantalla
+    if match_:
+        print("\n\n" + tabulate(match_, ["URLS GET"]))
+        
+        with open("saved_subdomain.txt", "w", encoding="utf-8") as save_:
+            for elem in match_:
+                try:
+                    save_.write(elem[0]+"\n")
+                except:
+                    pass
+
+        crint("\n[INFO] Resultados guardados en =>> [saved_subdomain.txt]")
+
+    else:
+        crint("\n\n[ERROR] No se lograron encontrar subdominios =>> [BAD]")
+
 ################################################
 # CREACION DE JSON PARA OPTIMIZACION EN FSH.PY #
 ################################################

@@ -30,7 +30,8 @@ def gui_mg():
         "fireleak": [["Ruta del archivo APK", "apk_path"]],
         "wpscrap": [["Página web", "url"], ["Modo de escaneo", "mode"], ["Check mode", "check"]],
         "gitdox": [["Usuario de Github", "usrgit"], ["Modo de escaneo", "mode"]],
-        "lnkforge": []
+        "lnkforge": [],
+        "domainforce": [["Página web", "url"], ["Diccionario de subdominios", "dict_path"]],
     }
 
     app = Flask(__name__)
@@ -346,6 +347,15 @@ execute_s = {
         "[DESCRIPCION]\nCrea accesos directos de Windows con comandos embebidos.\n\n"
         "[USO]\npython3 fsh.py lnkforge",
         "mal"
+    ],
+    "domainforce": [
+        domainforce,
+        2,
+        "[DESCRIPCION]\nBrute Force a subdominios de una pagina web.\n\n"
+        "[USO]\npython3 fsh.py domainforce --a <URL> --b <PATH_DICT>\n\n"
+        "[PARAMETROS]\n--a: Pagina web a escanear ej: https://example.com/, (obligatorio).\n"
+        "--b: Diccionario de subdominios, (opcional).\n",
+        "dic"
     ],
 }
 
